@@ -256,7 +256,7 @@ export function CatalogFormClient({
             <span>เลือกรูปแบบการจัดชุดข้อสอบ (สลับได้ตลอด ไม่ต้องรีเซ็ตประวัติ)</span>
           </div>
           <Link
-            href="/catalog/review"
+            href="/catalog/completed?tab=review"
             className="inline-flex items-center gap-1.5 rounded-lg border border-gold/40 bg-gold/10 px-2.5 py-1 text-xs font-semibold text-gold-ink transition-colors hover:bg-gold/20"
           >
             <BookmarkCheck className="h-3.5 w-3.5" />

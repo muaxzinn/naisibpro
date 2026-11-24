@@ -26,7 +26,7 @@ export default function CatalogHubPage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Link
-            href="/catalog/real-exam"
+            href="/catalog/form"
             className="card-hover sm:col-span-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-card border border-accent/40 bg-accent/[0.04] p-5 shadow-card"
           >
             <div className="flex items-start gap-3.5">
@@ -133,7 +133,7 @@ export default function CatalogHubPage() {
           </Link>
 
           <Link
-            href="/catalog/review"
+            href="/catalog/completed?tab=review"
             className="card-hover flex flex-col justify-between rounded-card border border-line bg-panel p-5 shadow-card"
           >
             <div>

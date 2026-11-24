@@ -49,6 +49,7 @@ export interface ResetCompletedFilter {
   subject?: SubjectKey;
   topic?: string;
   pool?: CompletedPoolMode;
+  target?: 'practice' | 'real-exam';
 }
 
 export interface PoolQuestionMeta {
@@ -225,9 +226,45 @@ export function resetCompletedHistory(
   filter: ResetCompletedFilter | undefined,
   allQuestions: PoolQuestionMeta[]
 ): void {
+  const isRealTarget = filter?.target === 'real-exam';
   const pool: CompletedPoolMode =
     filter?.pool === 'correct' || filter?.pool === 'wrong' ? filter.pool : 'all';
   const scopeAll = filter?.scope === 'all' || (!filter?.subject && !filter?.topic);
+
+  if (isRealTarget) {
+    if (scopeAll) {
+      if (pool === 'all' || pool === 'correct') {
+        profile.realExamCorrectIds = [];
+      }
+      if (pool === 'all' || pool === 'wrong') {
+        profile.realExamMistakeIds = [];
+      }
+      return;
+    }
+
+    const hasSubject = Boolean(filter?.subject);
+    const hasTopic = filter?.scope === 'topic' || Boolean(filter?.topic);
+    const topicMatcher = hasTopic && filter?.topic ? resolveTopicSelection(filter.topic) : null;
+
+    const targetIds = new Set<number>();
+    for (const q of allQuestions) {
+      if (!REAL_EXAM_ID_SET.has(q.id)) continue;
+      if (hasSubject && q.subject_key !== filter?.subject) continue;
+      if (topicMatcher && !topicMatcher.matches(q.title)) continue;
+      targetIds.add(q.id);
+    }
+
+    const { realCorrectSet, realMistakeSet } = getRealExamStatusSets(profile);
+    if (pool === 'all' || pool === 'correct') {
+      for (const id of targetIds) realCorrectSet.delete(id);
+    }
+    if (pool === 'all' || pool === 'wrong') {
+      for (const id of targetIds) realMistakeSet.delete(id);
+    }
+    profile.realExamCorrectIds = Array.from(realCorrectSet);
+    profile.realExamMistakeIds = Array.from(realMistakeSet);
+    return;
+  }
 
   if (scopeAll) {
     if (pool === 'all' || pool === 'correct') {
@@ -530,24 +567,55 @@ export function buildExamFromSource(
             ? realMistakeSet
             : realAttemptedSet;
       const topicMatcher = options?.topic ? resolveTopicSelection(options.topic) : null;
-      let picked = REAL_EXAM_ALL_IDS.filter((id) => targetSet.has(id))
+      let filtered = REAL_EXAM_ALL_IDS.filter((id) => targetSet.has(id))
         .map((id) => source.findById(id))
         .filter((q): q is QuestionRecord => Boolean(q));
-      if (topicMatcher) picked = picked.filter((q) => topicMatcher.matches(q.title));
-      picked.sort((a, b) => officialSubjRank[a.subject_key] - officialSubjRank[b.subject_key]);
+      if (options?.subject && Object.prototype.hasOwnProperty.call(SUBJECT_MAP, options.subject)) {
+        filtered = filtered.filter((q) => q.subject_key === options.subject);
+      }
+      if (topicMatcher) filtered = filtered.filter((q) => topicMatcher.matches(q.title));
+      filtered.sort(
+        (a, b) => officialSubjRank[a.subject_key] - officialSubjRank[b.subject_key] || a.id - b.id
+      );
+
       const poolLabel =
         poolMode === 'correct'
           ? 'ทำถูกอย่างเดียว'
           : poolMode === 'wrong'
             ? 'ทำผิดอย่างเดียว'
             : 'ที่ทำแล้วทั้งหมด';
-      return withSubjectFilter(
-        options?.shuffleMode ? shufflePool(picked) : picked,
-        `สนามจริง · ข้อสอบ${poolLabel} (${picked.length} ข้อ)`,
-        Math.max(10, picked.length),
-        'overall',
-        options?.subject
-      );
+      const chunkSize = Math.max(5, Math.min(200, options?.count || 150));
+
+      if (options?.shuffleMode) {
+        const picked = shufflePool(filtered).slice(0, chunkSize);
+        return {
+          title: `สนามจริง · สุ่มข้อสอบ${poolLabel} (${picked.length} ข้อ)`,
+          durationSec: Math.max(5, picked.length) * 60,
+          passRule: 'overall',
+          items: picked.map(toRunnerQuestion),
+        };
+      }
+
+      if (options?.setIndex && Number.isFinite(options.setIndex) && options.setIndex >= 1) {
+        const totalSets = Math.max(1, Math.ceil(filtered.length / chunkSize));
+        const safeSetIdx = Math.min(Math.floor(options.setIndex), totalSets);
+        const start = (safeSetIdx - 1) * chunkSize;
+        const picked = filtered.slice(start, start + chunkSize);
+        return {
+          title: `สนามจริง · ข้อสอบ${poolLabel} ชุดที่ ${safeSetIdx}/${totalSets} (${picked.length} ข้อ)`,
+          durationSec: Math.max(5, picked.length) * 60,
+          passRule: 'overall',
+          items: picked.map(toRunnerQuestion),
+        };
+      }
+
+      const picked = options?.count ? filtered.slice(0, chunkSize) : filtered;
+      return {
+        title: `สนามจริง · ข้อสอบ${poolLabel} (${picked.length} ข้อ)`,
+        durationSec: Math.max(5, picked.length) * 60,
+        passRule: 'overall',
+        items: picked.map(toRunnerQuestion),
+      };
     }
 
     if (setId === 'real-mistakes') {
@@ -571,12 +639,45 @@ export function buildExamFromSource(
 
     if (setId === 'real-mix') {
       const topicMatcher = options?.topic ? resolveTopicSelection(options.topic) : null;
-      const candidateIds = topicMatcher
-        ? REAL_EXAM_ALL_IDS.filter((id) => {
-            const q = source.findById(id);
-            return Boolean(q && topicMatcher.matches(q.title));
-          })
-        : [...REAL_EXAM_ALL_IDS];
+      const hasSubject =
+        Boolean(options?.subject) &&
+        Object.prototype.hasOwnProperty.call(SUBJECT_MAP, options!.subject!);
+      const candidateQuestions = REAL_EXAM_ALL_IDS.map((id) => source.findById(id)).filter(
+        (q): q is QuestionRecord => {
+          if (!q) return false;
+          if (hasSubject && q.subject_key !== options!.subject) return false;
+          if (topicMatcher && !topicMatcher.matches(q.title)) return false;
+          return true;
+        }
+      );
+
+      // Deterministic sequential sub-set slicing when `set=1..N` is passed from /catalog/subject or /catalog/topics
+      if (options?.setIndex && Number.isFinite(options.setIndex) && options.setIndex >= 1) {
+        const pool = options.excludeCompleted
+          ? candidateQuestions.filter((q) => !realAttemptedSet.has(q.id))
+          : candidateQuestions;
+        pool.sort(
+          (a, b) => officialSubjRank[a.subject_key] - officialSubjRank[b.subject_key] || a.id - b.id
+        );
+        const chunkSize = Math.max(5, Math.min(150, options?.count || 20));
+        const totalSets = Math.max(1, Math.ceil(pool.length / chunkSize));
+        const safeSetIdx = Math.min(Math.floor(options.setIndex), totalSets);
+        const start = (safeSetIdx - 1) * chunkSize;
+        const picked = pool.slice(start, start + chunkSize);
+        const scopeTitle = topicMatcher
+          ? topicMatcher.displayTopic
+          : hasSubject
+            ? `วิชา${SUBJECT_MAP[options!.subject as SubjectKey].name}`
+            : 'รวมสนามจริง';
+        return {
+          title: `สนามจริง · ${scopeTitle} ชุดที่ ${safeSetIdx}/${totalSets}`,
+          durationSec: Math.max(5, picked.length) * 60,
+          passRule: 'overall',
+          items: picked.map(toRunnerQuestion),
+        };
+      }
+
+      const candidateIds = candidateQuestions.map((q) => q.id);
 
       const targetSize = Math.max(
         1,

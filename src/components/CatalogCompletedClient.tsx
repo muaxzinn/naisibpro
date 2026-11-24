@@ -76,6 +76,7 @@ export function CatalogCompletedClient({
   const correctSet = isRealMode ? realCorrectSet : mainCorrectSet;
   const mistakeSet = isRealMode ? realMistakeSet : mainMistakeSet;
   const allCompletedSet = isRealMode ? realAttemptedSet : mainCompletedSet;
+  const resetTarget: 'practice' | 'real-exam' = isRealMode ? 'real-exam' : 'practice';
   void resetRealExam;
 
   const [poolMode, setPoolMode] = useState<CompletedPoolMode>('all');
@@ -201,7 +202,7 @@ export function CatalogCompletedClient({
     ) {
       return;
     }
-    await resetCompleted({ scope: 'all', pool: poolMode });
+    await resetCompleted({ scope: 'all', pool: poolMode, target: resetTarget });
     pushNotice(`รีเซ็ตประวัติในหมวด "${poolLabel}" เรียบร้อยแล้ว`);
   };
 
@@ -632,7 +633,7 @@ export function CatalogCompletedClient({
                         disabled={saving}
                         onClick={async () => {
                           if (!window.confirm(`รีเซ็ตประวัติวิชา "${meta.name}" ในหมวด ${poolLabel}?`)) return;
-                          await resetForSubject(meta.key, poolMode);
+                          await resetForSubject(meta.key, poolMode, resetTarget);
                           pushNotice(`รีเซ็ตประวัติวิชา${meta.shortName} เรียบร้อยแล้ว`);
                         }}
                         className="inline-flex items-center gap-1 text-[11px] font-bold text-muted hover:text-accent"
@@ -833,7 +834,7 @@ export function CatalogCompletedClient({
                               if (!window.confirm(`รีเซ็ตประวัติหัวข้อ "${item.displayTitle}" ในหมวด ${poolLabel}?`)) {
                                 return;
                               }
-                              await resetForTopic(item.subjectKey, item.rawTitles.join('||'), poolMode);
+                              await resetForTopic(item.subjectKey, item.rawTitles.join('||'), poolMode, resetTarget);
                               setSelectedCompletedTopicKey(null);
                               pushNotice(`รีเซ็ตประวัติหัวข้อ "${item.displayTitle}" เรียบร้อยแล้ว`);
                             }}
@@ -1024,7 +1025,7 @@ export function CatalogCompletedClient({
                                 ) {
                                   return;
                                 }
-                                await resetForTopic(item.subjectKey, item.rawTitles.join('||'), poolMode);
+                                await resetForTopic(item.subjectKey, item.rawTitles.join('||'), poolMode, resetTarget);
                                 pushNotice(`รีเซ็ตประวัติหัวข้อ "${item.displayTitle}" เรียบร้อยแล้ว`);
                               }}
                               className="inline-flex items-center gap-1 text-[11px] font-bold text-muted hover:text-accent"

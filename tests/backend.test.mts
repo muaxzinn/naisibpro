@@ -610,6 +610,40 @@ test('real-exam-sets: 4 fixed sets (exact 1-150 order, >=2/sub-topic), isolation
   const realCompletedWrong = buildExamFromSource(source, 'real-completed', { pool: 'wrong' });
   assert.equal(realCompletedWrong.items.length, 30);
 
+  // Pagination on real-completed (set=1 vs set=2 with count=12)
+  const realCompPage1 = buildExamFromSource(source, 'real-completed', {
+    pool: 'wrong',
+    setIndex: 1,
+    count: 12,
+  });
+  const realCompPage2 = buildExamFromSource(source, 'real-completed', {
+    pool: 'wrong',
+    setIndex: 2,
+    count: 12,
+  });
+  assert.equal(realCompPage1.items.length, 12);
+  assert.equal(realCompPage2.items.length, 12);
+  const p1Set = new Set(realCompPage1.items.map((q) => q.id));
+  assert.ok(realCompPage2.items.every((q) => !p1Set.has(q.id)), 'Paginated real-completed sets must not overlap');
+
+  // Sequential sub-sets on real-mix (`set=1` vs `set=2` for subject=com)
+  const realComSet1 = buildExamFromSource(source, 'real-mix', {
+    subject: 'com',
+    setIndex: 1,
+    count: 15,
+    excludeCompleted: false,
+  });
+  const realComSet2 = buildExamFromSource(source, 'real-mix', {
+    subject: 'com',
+    setIndex: 2,
+    count: 15,
+    excludeCompleted: false,
+  });
+  assert.equal(realComSet1.items.length, 15);
+  assert.equal(realComSet2.items.length, 15);
+  const com1Set = new Set(realComSet1.items.map((q) => q.id));
+  assert.ok(realComSet2.items.every((q) => !com1Set.has(q.id)), 'Sequential real-mix sub-sets must not overlap');
+
   // Auto-fill mix 150: must include all 30 wrong + 120 topped up from correct in the 4 sets = 150 total
   const mix150 = buildExamFromSource(source, 'real-mix');
   assert.equal(mix150.items.length, 150);
@@ -619,7 +653,27 @@ test('real-exam-sets: 4 fixed sets (exact 1-150 order, >=2/sub-topic), isolation
   }
   assert.ok(mix150.items.every((q) => REAL_EXAM_ID_SET.has(q.id)));
 
-  // Reset only real-exam history
+  // Scoped reset with target='real-exam' must NOT touch practice pool (`correctIds` / `mistakeIds`)
+  profile.correctIds = [999001, 999002];
+  profile.mistakeIds = [999003];
+  resetCompletedHistory(
+    profile,
+    { scope: 'subject', subject: 'math', pool: 'wrong', target: 'real-exam' },
+    store.questions
+  );
+  assert.deepEqual(profile.correctIds, [999001, 999002]);
+  assert.deepEqual(profile.mistakeIds, [999003]);
+  assert.ok(getRealExamStatusSets(profile).realMistakeSet.size < 30);
+
+  resetCompletedHistory(
+    profile,
+    { scope: 'all', pool: 'all', target: 'real-exam' },
+    store.questions
+  );
+  assert.equal(getRealExamStatusSets(profile).realAttemptedSet.size, 0);
+  assert.deepEqual(profile.correctIds, [999001, 999002]);
+
+  // Reset only real-exam history helper
   resetRealExamHistory(profile);
   assert.equal(getRealExamStatusSets(profile).realAttemptedSet.size, 0);
 });

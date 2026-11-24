@@ -2,11 +2,10 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
   Archive,
   BarChart3,
-  BookmarkCheck,
   BookMarked,
   BookOpenCheck,
   Check,
@@ -112,15 +111,15 @@ export function ThemeAndBrandControls() {
 
 const PRIMARY_APP_NAV = [
   { href: '/dashboard', label: 'แดชบอร์ด', icon: PenLine },
-  { href: '/catalog', label: 'ชุดข้อสอบ', icon: BookMarked },
+  { href: '/catalog/form', label: 'ชุดข้อสอบ', icon: BookMarked },
   { href: '/catalog/subject', label: 'แยกรายวิชา', icon: Layers },
   { href: '/catalog/topics', label: 'หัวข้อย่อย', icon: BookOpenCheck },
   { href: '/weakness', label: 'จุดอ่อน', icon: BarChart3 },
-  { href: '/catalog/review', label: 'คลังทบทวน', icon: BookmarkCheck },
-  { href: '/catalog/completed', label: 'ที่ทำแล้ว', icon: Archive },
+  { href: '/catalog/completed', label: 'ทบทวน & ทำแล้ว', icon: Archive },
 ];
 
 const SECONDARY_APP_NAV = [
+  { href: '/catalog', label: 'รวมทุกโหมดข้อสอบ', icon: BookMarked },
   { href: '/bank', label: 'คลังข้อสอบทั้งหมด', icon: Database },
   { href: '/history', label: 'ประวัติการสอบ', icon: History },
   { href: '/reports', label: 'แจ้งปัญหาข้อสอบ', icon: Wrench },
@@ -136,8 +135,8 @@ const MOBILE_BOTTOM_NAV = [
   { href: '/catalog/subject', label: 'แยกวิชา', icon: Layers },
   { href: '/catalog/topics', label: 'หัวข้อ', icon: BookOpenCheck },
   { href: '/weakness', label: 'จุดอ่อน', icon: BarChart3 },
-  { href: '/catalog/review', label: 'ทบทวน', icon: BookmarkCheck },
-  { href: '/catalog/completed', label: 'ทำแล้ว', icon: Archive },
+  { href: '/catalog/completed', label: 'ทบทวน', icon: Archive },
+  { href: '/bank', label: 'คลัง', icon: Database },
 ];
 
 const PUBLIC_NAV = [
@@ -150,7 +149,6 @@ const PUBLIC_NAV = [
 
 export function SiteHeader({ mode = 'app' }: { mode?: 'public' | 'app' }) {
   const pathname = usePathname();
-  const router = useRouter();
   const { workspaceMode, setWorkspaceMode } = useWorkspaceMode();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
@@ -158,11 +156,6 @@ export function SiteHeader({ mode = 'app' }: { mode?: 'public' | 'app' }) {
 
   const handleGlobalModeSwitch = (next: WorkspaceMode) => {
     setWorkspaceMode(next);
-    if (pathname === '/catalog/real-exam' && next === 'practice') {
-      router.push('/catalog/form');
-    } else if (pathname === '/catalog/form' && next === 'real-exam') {
-      // stays on /catalog/form which renders real-exam mode in-place
-    }
   };
 
   useEffect(() => {

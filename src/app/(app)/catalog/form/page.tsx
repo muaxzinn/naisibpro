@@ -80,7 +80,7 @@ export default function CatalogFormPage() {
 
           <div className="flex flex-wrap items-center gap-2">
             <Link
-              href="/catalog/review"
+              href="/catalog/completed?tab=review"
               className="inline-flex items-center gap-1.5 rounded-btn border border-line bg-panel px-3 py-2 text-xs font-semibold text-ink transition-colors hover:border-brand/50 hover:text-brand"
             >
               <BookmarkCheck className="h-4 w-4 text-gold-ink" />

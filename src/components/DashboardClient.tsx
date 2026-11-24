@@ -678,7 +678,7 @@ export function DashboardClient({
           </Link>
 
           <Link
-            href="/catalog/review"
+            href="/catalog/completed?tab=review"
             className="card-hover rounded-card border border-line bg-panel p-4 shadow-card"
           >
             <div className="flex items-center justify-between">

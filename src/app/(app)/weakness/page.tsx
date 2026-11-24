@@ -50,7 +50,7 @@ export default function WeaknessPage() {
               <span>ชุดข้อสอบ (ฝึกปกติ / สนามจริง)</span>
             </Link>
             <Link
-              href="/catalog/review"
+              href="/catalog/completed?tab=review"
               className="inline-flex items-center gap-1.5 rounded-btn border border-line bg-panel px-3 py-2 text-xs font-semibold text-ink hover:border-brand/50 hover:text-brand"
             >
               <BookmarkCheck className="h-4 w-4 text-gold-ink" />

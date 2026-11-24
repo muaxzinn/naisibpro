@@ -83,6 +83,7 @@ export async function PATCH(req: NextRequest) {
       subject?: SubjectKey;
       topic?: string;
       pool?: CompletedPoolMode;
+      target?: 'practice' | 'real-exam';
     };
     resetCompletedHistory(runtime.profile, rc, getAllQuestionsMerged());
   }

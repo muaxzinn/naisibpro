@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { Archive, ArrowLeft, BookOpenCheck, Layers } from 'lucide-react';
 import { SiteHeader } from '@/components/SiteHeader';
-import { CatalogCompletedClient } from '@/components/CatalogCompletedClient';
+import { CatalogCompletedHubClient } from '@/components/CatalogCompletedHubClient';
+import { AppLoadingScreen } from '@/components/AppLoadingScreen';
 import { HIDDEN_SUBJECT_KEYS } from '@/lib/constants';
 import { REAL_EXAM_ID_SET } from '@/lib/real-exam-sets';
 import { buildSubTopicsCatalog } from '@/lib/topic-catalog';
@@ -15,6 +16,7 @@ export default function CatalogCompletedPage() {
   const practiceQuestions = activeQuestions.filter((q) => !REAL_EXAM_ID_SET.has(q.id));
   const realExamQuestions = activeQuestions.filter((q) => REAL_EXAM_ID_SET.has(q.id));
 
+  const allActiveCat = buildSubTopicsCatalog(activeQuestions);
   const practiceCat = buildSubTopicsCatalog(practiceQuestions);
   const realExamCat = buildSubTopicsCatalog(realExamQuestions);
 
@@ -33,10 +35,10 @@ export default function CatalogCompletedPage() {
             </Link>
             <h1 className="mt-2 flex items-center gap-2.5 text-2xl font-bold tracking-tight sm:text-3xl">
               <Archive className="h-6 w-6 text-brand shrink-0" />
-              <span>ชุดข้อสอบที่เคยทำแล้ว</span>
+              <span>ที่ทำแล้ว &amp; คลังทบทวนรายข้อ</span>
             </h1>
             <p className="mt-1 text-sm text-muted">
-              ทบทวนข้อที่เคยทำ แยกรวมทั้งหมด ทำถูกอย่างเดียว หรือทำผิดอย่างเดียว — เปลี่ยนตามโหมดฝึกปกติ/สนามจริงด้านบน
+              รวมข้อสอบที่เคยทำ (ถูก/ผิด) และข้อที่คุณกดเก็บไว้ทบทวนในหน้าเดียว — สลับโหมดฝึกปกติ/สนามจริงได้จากแถบด้านบน
             </p>
           </div>
 
@@ -58,12 +60,24 @@ export default function CatalogCompletedPage() {
           </div>
         </div>
 
-        <CatalogCompletedClient
-          topicsBySubject={practiceCat.topicsBySubject}
-          totalCatalogQuestions={practiceQuestions.length}
-          realExamTopicsBySubject={realExamCat.topicsBySubject}
-          realExamTotalQuestions={realExamQuestions.length}
-        />
+        <Suspense
+          fallback={
+            <AppLoadingScreen
+              variant="catalog"
+              includeHeader={false}
+              title="กำลังโหลดข้อสอบที่ทำแล้วและคลังทบทวน..."
+              subtitle="ซิงก์ข้อมูลล่าสุดของคุณ"
+            />
+          }
+        >
+          <CatalogCompletedHubClient
+            practiceTopicsBySubject={practiceCat.topicsBySubject}
+            practiceTotalQuestions={practiceQuestions.length}
+            realExamTopicsBySubject={realExamCat.topicsBySubject}
+            realExamTotalQuestions={realExamQuestions.length}
+            allActiveTopicsBySubject={allActiveCat.topicsBySubject}
+          />
+        </Suspense>
       </main>
     </div>
   );

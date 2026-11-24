@@ -12,7 +12,7 @@ import {
   Shuffle,
   Sparkles,
 } from 'lucide-react';
-import { SUBJECT_MAP, SUBJECTS, type SubjectKey } from '@/lib/constants';
+import { ACTIVE_SUBJECTS, SUBJECT_MAP, type SubjectKey } from '@/lib/constants';
 import { useProfileHistory } from '@/lib/use-profile-history';
 import { SubjectIcon } from '@/components/SubjectIcon';
 import { QuestionPoolSettingsBar } from '@/components/QuestionPoolSettingsBar';
@@ -61,6 +61,7 @@ export function CatalogSubjectClient({
   const correctSet = isRealMode ? realCorrectSet : mainCorrectSet;
   const mistakeSet = isRealMode ? realMistakeSet : mainMistakeSet;
   const allCompletedSet = isRealMode ? realAttemptedSet : mainCompletedSet;
+  const resetTarget: 'practice' | 'real-exam' = isRealMode ? 'real-exam' : 'practice';
   void resetRealExam;
 
   const totalCatalogQuestions = useMemo(
@@ -68,7 +69,7 @@ export function CatalogSubjectClient({
     [items]
   );
 
-  const activeMeta = SUBJECT_MAP[activeKey] || SUBJECTS[0];
+  const activeMeta = SUBJECT_MAP[activeKey] || ACTIVE_SUBJECTS[0];
   const activeData = useMemo(
     () => items.find((i) => i.key === activeKey) || items[0],
     [items, activeKey]
@@ -119,14 +120,14 @@ export function CatalogSubjectClient({
               `ต้องการรีเซ็ตประวัติข้อสอบที่เคยทำทั้งหมด (${allCompletedSet.size} ข้อ) เพื่อให้นำกลับมาฝึกใหม่ทุกวิชาใช่หรือไม่?`
             )
           ) {
-            void resetCompleted({ scope: 'all', pool: 'all' });
+            void resetCompleted({ scope: 'all', pool: 'all', target: resetTarget });
           }
         }}
       />
 
-      {/* 7 Subject Selector Tabs */}
-      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 lg:grid-cols-7">
-        {SUBJECTS.map((sub) => {
+      {/* 6 Active Subject Selector Tabs */}
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
+        {ACTIVE_SUBJECTS.map((sub) => {
           const info = items.find((it) => it.key === sub.key);
           const selected = sub.key === activeKey;
           const doneInSub = (info?.questionIds || []).filter((id) => allCompletedSet.has(id)).length;
@@ -281,7 +282,7 @@ export function CatalogSubjectClient({
                 disabled={saving}
                 onClick={() => {
                   if (window.confirm(`ต้องการรีเซ็ตประวัติวิชา${activeMeta.name} เพื่อเริ่มนับใหม่หรือไม่?`)) {
-                    void resetForSubject(activeMeta.key, 'all');
+                    void resetForSubject(activeMeta.key, 'all', resetTarget);
                   }
                 }}
                 className="inline-flex items-center gap-1.5 rounded-btn border border-line bg-panel px-4 py-2 text-xs font-bold text-ink hover:border-accent/50 hover:text-accent"
@@ -318,7 +319,7 @@ export function CatalogSubjectClient({
                     <Link
                       href={
                         isRealMode
-                          ? `/exam/real-mix?subject=${activeMeta.key}&count=${chunkSize}&mode=practice&fresh=1`
+                          ? `/exam/real-mix?subject=${activeMeta.key}&set=${setNum}&count=${chunkSize}&mode=practice&fresh=1${excludeParam}`
                           : `/exam/subject-${activeMeta.key}?set=${setNum}&count=${chunkSize}&mode=practice&fresh=1${excludeParam}`
                       }
                       className="flex-1 rounded-xl border border-line bg-panel py-2 text-center text-xs font-bold text-ink transition-colors hover:border-brand/50 hover:text-brand"
@@ -328,7 +329,7 @@ export function CatalogSubjectClient({
                     <Link
                       href={
                         isRealMode
-                          ? `/exam/real-mix?subject=${activeMeta.key}&count=${chunkSize}&mode=real&fresh=1`
+                          ? `/exam/real-mix?subject=${activeMeta.key}&set=${setNum}&count=${chunkSize}&mode=real&fresh=1${excludeParam}`
                           : `/exam/subject-${activeMeta.key}?set=${setNum}&count=${chunkSize}&mode=real&fresh=1${excludeParam}`
                       }
                       className="flex-1 rounded-xl bg-brand py-2 text-center text-xs font-bold text-white transition-colors hover:bg-brand-dark"

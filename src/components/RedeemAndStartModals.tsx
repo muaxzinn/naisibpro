@@ -10,7 +10,7 @@ import {
   Shuffle,
   X,
 } from 'lucide-react';
-import { SUBJECTS, TRACKS } from '@/lib/constants';
+import { ACTIVE_SUBJECTS, TRACKS } from '@/lib/constants';
 import { SubjectIcon } from '@/components/SubjectIcon';
 
 export function StartExamModalButton({
@@ -105,7 +105,7 @@ export function StartExamModalButton({
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 text-xs font-extrabold text-ink">
                   <Layers className="h-4 w-4 text-teal-ink" />
-                  <span>ฝึกทำข้อสอบแยกรายวิชา (7 วิชา)</span>
+                  <span>ฝึกทำข้อสอบแยกรายวิชา ({ACTIVE_SUBJECTS.length} วิชา)</span>
                 </div>
                 <Link
                   href="/catalog/subject"
@@ -115,8 +115,8 @@ export function StartExamModalButton({
                   ดูทุกชุดย่อย →
                 </Link>
               </div>
-              <div className="mt-2.5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {SUBJECTS.map((s) => (
+              <div className="mt-2.5 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {ACTIVE_SUBJECTS.map((s) => (
                   <Link
                     key={s.key}
                     href={`/exam/subject-${s.key}?set=1&count=20&mode=practice&fresh=1${excludeParam}`}

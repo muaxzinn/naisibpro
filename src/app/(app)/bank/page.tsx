@@ -24,10 +24,10 @@ import { RichExamContent } from '@/components/RichExamContent';
 import { primeProfileHistoryCache } from '@/lib/use-profile-history';
 import { AppLoadingScreen } from '@/components/AppLoadingScreen';
 import {
+  ACTIVE_SUBJECTS,
   CHOICE_LABELS,
   resolveTopicSelection,
   SUBJECT_MAP,
-  SUBJECTS,
   type SubjectKey,
 } from '@/lib/constants';
 import type { QuestionRecord } from '@/lib/server-db';
@@ -199,8 +199,8 @@ function QuestionBankInner() {
               }}
               className="w-full min-w-0 max-w-full truncate rounded-lg border border-line bg-bg2/50 px-3 py-2 text-sm outline-none transition-colors focus:border-brand focus:bg-panel"
             >
-              <option value="">ทุกรายวิชา (7 วิชา)</option>
-              {SUBJECTS.map((s) => (
+              <option value="">ทุกรายวิชา ({ACTIVE_SUBJECTS.length} วิชา)</option>
+              {ACTIVE_SUBJECTS.map((s) => (
                 <option key={s.key} value={s.key}>
                   {s.name}
                 </option>
@@ -323,8 +323,8 @@ function QuestionBankInner() {
           </div>
 
           {!subject ? (
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 lg:grid-cols-7 min-w-0">
-              {SUBJECTS.map((s) => {
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6 min-w-0">
+              {ACTIVE_SUBJECTS.map((s) => {
                 const subTopics = topics.filter((t) => t.subjectKey === s.key);
                 const subQuestionCount = subTopics.reduce((sum, t) => sum + t.count, 0);
                 return (

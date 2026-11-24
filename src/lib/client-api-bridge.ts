@@ -537,6 +537,7 @@ async function handleApiRequest(
           subject?: SubjectKey;
           topic?: string;
           pool?: CompletedPoolMode;
+          target?: 'practice' | 'real-exam';
         };
         const poolMeta: PoolQuestionMeta[] =
           metaStore.allMetaList.length > 0 || !runtime.customQuestions?.length

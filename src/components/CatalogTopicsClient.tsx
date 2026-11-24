@@ -73,6 +73,7 @@ export function CatalogTopicsClient({
   const correctSet = isRealMode ? realCorrectSet : mainCorrectSet;
   const mistakeSet = isRealMode ? realMistakeSet : mainMistakeSet;
   const allCompletedSet = isRealMode ? realAttemptedSet : mainCompletedSet;
+  const resetTarget: 'practice' | 'real-exam' = isRealMode ? 'real-exam' : 'practice';
 
   const totalCatalogQuestions = useMemo(
     () => ACTIVE_SUBJECTS.reduce((sum, s) => sum + (subjectTotals[s.key] || 0), 0),
@@ -157,7 +158,7 @@ export function CatalogTopicsClient({
               `ต้องการรีเซ็ตประวัติข้อสอบที่เคยทำทั้งหมด (${allCompletedSet.size} ข้อ) เพื่อให้นำกลับมาฝึกใหม่ทุกวิชาใช่หรือไม่?`
             )
           ) {
-            void resetCompleted({ scope: 'all', pool: 'all' });
+            void resetCompleted({ scope: 'all', pool: 'all', target: resetTarget });
           }
         }}
       />
@@ -372,7 +373,7 @@ export function CatalogTopicsClient({
                 className="inline-flex items-center gap-1.5 rounded-lg border border-brand/30 bg-brand/5 px-3 py-1.5 text-xs font-semibold text-brand transition-colors hover:bg-brand hover:text-white"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
-                <span>กลับไปเลือกการ์ดวิชาหลัก (7 วิชา)</span>
+                <span>กลับไปเลือกการ์ดวิชาหลัก ({ACTIVE_SUBJECTS.length} วิชา)</span>
               </button>
 
               {selectedSubject && (
@@ -539,7 +540,7 @@ export function CatalogTopicsClient({
                                     `รีเซ็ตประวัติบท "${item.displayTitle}" เพื่อทำใหม่ทั้งหมดหรือไม่?`
                                   )
                                 ) {
-                                  void resetForTopic(item.subjectKey, item.rawTitles.join('||'), 'all');
+                                  void resetForTopic(item.subjectKey, item.rawTitles.join('||'), 'all', resetTarget);
                                 }
                               }}
                               className="rounded-md border border-line bg-panel px-2.5 py-1 text-xs font-medium text-muted hover:text-accent"
@@ -587,7 +588,7 @@ export function CatalogTopicsClient({
                     }}
                     className="inline-flex items-center gap-1 rounded-lg border border-line bg-bg2/60 px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-brand/50 hover:text-ink"
                   >
-                    <span>กลับไปการ์ดวิชาหลัก (7 วิชา)</span>
+                    <span>กลับไปการ์ดวิชาหลัก ({ACTIVE_SUBJECTS.length} วิชา)</span>
                   </button>
                 </div>
 

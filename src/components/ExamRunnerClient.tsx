@@ -762,7 +762,7 @@ function ExamRunnerInner() {
 
   const getExitDestination = useCallback(() => {
     if (setId.startsWith('real-')) return '/catalog/form';
-    if (setId.startsWith('review-') || setId === 'bookmarks') return '/catalog/review';
+    if (setId.startsWith('review-') || setId === 'bookmarks') return '/catalog/completed?tab=review';
     if (setId.startsWith('completed-')) return '/catalog/completed';
     if (setId.startsWith('subject-')) return '/catalog/subject';
     if (setId === 'topic') return '/catalog/topics';

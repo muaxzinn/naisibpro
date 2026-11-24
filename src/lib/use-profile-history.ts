@@ -280,14 +280,21 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
   }, [applyAndCache]);
 
   const resetForSubject = useCallback(
-    (subject: SubjectKey, pool: 'all' | 'correct' | 'wrong' = 'all') =>
-      resetCompleted({ scope: 'subject', subject, pool }),
+    (
+      subject: SubjectKey,
+      pool: 'all' | 'correct' | 'wrong' = 'all',
+      target: 'practice' | 'real-exam' = 'practice'
+    ) => resetCompleted({ scope: 'subject', subject, pool, target }),
     [resetCompleted]
   );
 
   const resetForTopic = useCallback(
-    (subject: SubjectKey, topic: string, pool: 'all' | 'correct' | 'wrong' = 'all') =>
-      resetCompleted({ scope: 'topic', subject, topic, pool }),
+    (
+      subject: SubjectKey,
+      topic: string,
+      pool: 'all' | 'correct' | 'wrong' = 'all',
+      target: 'practice' | 'real-exam' = 'practice'
+    ) => resetCompleted({ scope: 'topic', subject, topic, pool, target }),
     [resetCompleted]
   );
 
