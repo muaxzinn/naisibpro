@@ -15,13 +15,16 @@ import {
   backfillProfileHistoryFromAttempts,
   buildExamFromSource,
   computeSubjectBreakdown,
+  DEFAULT_EXAM_SETTINGS,
   getCompletedIdSets,
   resetCompletedHistory,
   resetRealExamHistory,
+  sanitizeExamSettings,
   shufflePool,
   toRunnerQuestion,
   type BuildExamOptions,
   type CompletedPoolMode,
+  type ExamUserSettings,
   type PoolQuestionMeta,
   type QuestionOutcome,
 } from './question-pool';
@@ -110,6 +113,7 @@ function getDefaultRuntimeState(defaultLeaderboard?: RuntimeState['leaderboard']
       realExamCorrectIds: [],
       realExamMistakeIds: [],
       excludeCompleted: true,
+      examSettings: { ...DEFAULT_EXAM_SETTINGS },
       streakDays: 1,
       lastActiveDate: null,
     },
@@ -282,6 +286,7 @@ function readRuntimeStateFromMeta(
       : [],
     excludeCompleted:
       typeof rawProf.excludeCompleted === 'boolean' ? rawProf.excludeCompleted : true,
+    examSettings: sanitizeExamSettings(rawProf.examSettings),
     streakDays: typeof rawProf.streakDays === 'number' ? rawProf.streakDays : 1,
     lastActiveDate: typeof rawProf.lastActiveDate === 'string' ? rawProf.lastActiveDate : null,
   };
@@ -488,6 +493,20 @@ async function handleApiRequest(
       if (typeof body.excludeCompleted === 'boolean') {
         runtime.profile.excludeCompleted = body.excludeCompleted;
       }
+      if (body.examSettings && typeof body.examSettings === 'object') {
+        const incoming = body.examSettings as Partial<ExamUserSettings>;
+        runtime.profile.examSettings = sanitizeExamSettings(
+          {
+            ...(runtime.profile.examSettings || {}),
+            ...incoming,
+            updatedAt: new Date().toISOString(),
+          },
+          sanitizeExamSettings(runtime.profile.examSettings)
+        );
+        if (incoming.selectedTrack) {
+          runtime.profile.track = runtime.profile.examSettings.selectedTrack;
+        }
+      }
       if (body.toggleBookmarkId !== undefined) {
         const bid = Number(body.toggleBookmarkId);
         const set = new Set(runtime.profile.bookmarks || []);
@@ -567,10 +586,20 @@ async function handleApiRequest(
             correctIds: Array.isArray(imp.profile.correctIds)
               ? imp.profile.correctIds.map(Number)
               : runtime.profile.correctIds || [],
+            realExamCorrectIds: Array.isArray(imp.profile.realExamCorrectIds)
+              ? imp.profile.realExamCorrectIds.map(Number)
+              : runtime.profile.realExamCorrectIds || [],
+            realExamMistakeIds: Array.isArray(imp.profile.realExamMistakeIds)
+              ? imp.profile.realExamMistakeIds.map(Number)
+              : runtime.profile.realExamMistakeIds || [],
             excludeCompleted:
               typeof imp.profile.excludeCompleted === 'boolean'
                 ? imp.profile.excludeCompleted
                 : runtime.profile.excludeCompleted ?? true,
+            examSettings: sanitizeExamSettings(
+              imp.profile.examSettings,
+              sanitizeExamSettings(runtime.profile.examSettings)
+            ),
           };
         }
         if (Array.isArray(imp.attempts)) {
@@ -622,6 +651,8 @@ async function handleApiRequest(
     const rawPackMode = searchParams.get('packMode');
     const packMode =
       rawPackMode === 'strict' ? 'strict' : rawPackMode === 'fill' ? 'fill' : undefined;
+    const rawMaxTopic = searchParams.get('maxPerTopic');
+    const maxPerTopic = rawMaxTopic === '2' ? 2 : rawMaxTopic === '3' ? 3 : undefined;
     const rawQid = searchParams.get('qid');
     const qid = rawQid ? Number(rawQid) : undefined;
 
@@ -647,6 +678,7 @@ async function handleApiRequest(
       excludeCompleted,
       pool,
       packMode,
+      maxPerTopic,
       qid,
     });
     return jsonResponse({

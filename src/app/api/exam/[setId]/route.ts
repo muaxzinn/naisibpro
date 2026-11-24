@@ -24,6 +24,8 @@ export async function GET(
     rawPool === 'correct' || rawPool === 'wrong' || rawPool === 'all' ? rawPool : undefined;
   const rawPackMode = searchParams.get('packMode');
   const packMode = rawPackMode === 'strict' ? 'strict' : rawPackMode === 'fill' ? 'fill' : undefined;
+  const rawMaxTopic = searchParams.get('maxPerTopic');
+  const maxPerTopic = rawMaxTopic === '2' ? 2 : rawMaxTopic === '3' ? 3 : undefined;
   const rawQid = searchParams.get('qid');
   const qid = rawQid ? Number(rawQid) : undefined;
 
@@ -37,6 +39,7 @@ export async function GET(
     excludeCompleted,
     pool,
     packMode,
+    maxPerTopic,
     qid,
   });
 

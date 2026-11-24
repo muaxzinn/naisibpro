@@ -7,13 +7,17 @@ import {
   backfillProfileHistoryFromAttempts,
   buildExamFromSource,
   computeSubjectBreakdown,
+  DEFAULT_EXAM_SETTINGS,
   getCompletedIdSets,
   getRealExamStatusSets,
   resetCompletedHistory,
   resetRealExamHistory,
+  sanitizeExamSettings,
   toRunnerQuestion,
   type BuildExamOptions,
   type CompletedPoolMode,
+  type ExamUserSettings,
+  type MaxQuestionsPerTopic,
   type QuestionOutcome,
   type QuestionRecord,
   type ResetCompletedFilter,
@@ -26,13 +30,17 @@ export {
   applyQuestionOutcomes,
   applyRealExamOutcomes,
   computeSubjectBreakdown,
+  DEFAULT_EXAM_SETTINGS,
   getCompletedIdSets,
   getRealExamStatusSets,
   resetCompletedHistory,
   resetRealExamHistory,
+  sanitizeExamSettings,
   toRunnerQuestion,
   type BuildExamOptions,
   type CompletedPoolMode,
+  type ExamUserSettings,
+  type MaxQuestionsPerTopic,
   type QuestionOutcome,
   type QuestionRecord,
   type ResetCompletedFilter,
@@ -140,6 +148,7 @@ export interface UserProfile {
   realExamCorrectIds?: number[];
   realExamMistakeIds?: number[];
   excludeCompleted?: boolean;
+  examSettings?: ExamUserSettings;
   streakDays: number;
   lastActiveDate: string | null;
 }
@@ -360,6 +369,7 @@ function getDefaultRuntimeState(): RuntimeState {
       realExamCorrectIds: [],
       realExamMistakeIds: [],
       excludeCompleted: true,
+      examSettings: { ...DEFAULT_EXAM_SETTINGS },
       streakDays: 1,
       lastActiveDate: null,
     },
@@ -442,6 +452,7 @@ export function readRuntimeState(): RuntimeState {
       : [],
     excludeCompleted:
       typeof rawProf?.excludeCompleted === 'boolean' ? rawProf.excludeCompleted : true,
+    examSettings: sanitizeExamSettings(rawProf?.examSettings),
     streakDays: typeof rawProf?.streakDays === 'number' ? rawProf.streakDays : 1,
     lastActiveDate: typeof rawProf?.lastActiveDate === 'string' ? rawProf.lastActiveDate : null,
   };

@@ -117,6 +117,7 @@ function ExamRunnerInner() {
   const urlExcludeParam = searchParams.get('excludeCompleted');
   const poolParam = searchParams.get('pool') || '';
   const packModeParam = searchParams.get('packMode') || '';
+  const maxPerTopicParam = searchParams.get('maxPerTopic') || '';
   const qidParam = searchParams.get('qid') || '';
   const isRealExamSet = setId.startsWith('real-');
   const isCompletedReviewSet =
@@ -204,6 +205,7 @@ function ExamRunnerInner() {
         if (setParam) qs.set('set', setParam);
         if (poolParam) qs.set('pool', poolParam);
         if (packModeParam) qs.set('packMode', packModeParam);
+        if (maxPerTopicParam) qs.set('maxPerTopic', maxPerTopicParam);
         if (qidParam) qs.set('qid', qidParam);
         if (urlExcludeParam === '1' || urlExcludeParam === '0') {
           qs.set('excludeCompleted', urlExcludeParam);
@@ -367,6 +369,9 @@ function ExamRunnerInner() {
     shuffle,
     setParam,
     poolParam,
+    packModeParam,
+    maxPerTopicParam,
+    qidParam,
     urlExcludeParam,
     fresh,
     autostart,
@@ -507,6 +512,18 @@ function ExamRunnerInner() {
       } catch {
         // ignore storage failure
       }
+      fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          examSettings: { revealMode: nextReveal, timerMode: nextTimer },
+        }),
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d?.profile) primeProfileHistoryCache(d.profile);
+        })
+        .catch(() => {});
 
       if (!isCompletedReviewSet && nextExclude !== loadedExcludeRef.current) {
         setDraftExcludeCompleted(nextExclude);
@@ -532,6 +549,8 @@ function ExamRunnerInner() {
           if (topic) qs.set('topic', topic);
           if (shuffle) qs.set('shuffle', shuffle);
           if (setParam) qs.set('set', setParam);
+          if (packModeParam) qs.set('packMode', packModeParam);
+          if (maxPerTopicParam) qs.set('maxPerTopic', maxPerTopicParam);
           qs.set('excludeCompleted', nextExclude ? '1' : '0');
 
           const res = await fetch(`/api/exam/${encodeURIComponent(setId)}?${qs.toString()}`, {
@@ -581,6 +600,8 @@ function ExamRunnerInner() {
       topic,
       shuffle,
       setParam,
+      packModeParam,
+      maxPerTopicParam,
       pushToast,
     ]
   );

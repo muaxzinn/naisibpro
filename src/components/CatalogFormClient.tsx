@@ -6,6 +6,7 @@ import {
   Archive,
   ArrowRight,
   BookmarkCheck,
+  Check,
   CheckCircle2,
   Clock,
   Layers,
@@ -14,14 +15,20 @@ import {
   PlayCircle,
   RefreshCw,
   RotateCcw,
+  Save,
   SlidersHorizontal,
+  Sparkles,
   XCircle,
 } from 'lucide-react';
 import { ACTIVE_SUBJECTS, SUBJECT_MAP, TRACKS, type SubjectKey } from '@/lib/constants';
 import type { AttemptRecord, ExamSetSummary } from '@/lib/server-db';
 import {
   buildDynamicFormPacks,
+  DEFAULT_EXAM_SETTINGS,
+  sanitizeExamSettings,
   type DynamicPackMode,
+  type ExamUserSettings,
+  type MaxQuestionsPerTopic,
 } from '@/lib/question-pool';
 import { useProfileHistory } from '@/lib/use-profile-history';
 import { readAllSetDrafts, type SetDraftRecord } from '@/lib/set-draft-progress';
@@ -35,90 +42,126 @@ import {
 interface CatalogFormClientProps {
   sets: ExamSetSummary[];
   attempts: AttemptRecord[];
-  subjectQuestionIds: Record<SubjectKey, number[]>;
+  subjectTopicGroups: Record<SubjectKey, Array<[string, number[]]>>;
   fixedSetIds: Record<string, number[]>;
   realExamSets: RealExamSetCardMeta[];
+  initialExamSettings?: ExamUserSettings;
 }
 
 type FormViewMode = 'repack' | 'fixed';
 type BucketFilter = 'all' | 'full' | 'remainder' | 'completed';
 
-const FORM_PREF_KEY = 'gp:catalog-form-pref:v1';
+const FORM_PREF_KEY = 'gp:catalog-form-pref:v2';
 
 export function CatalogFormClient({
   sets: initialSets,
   attempts: initialAttempts,
-  subjectQuestionIds,
+  subjectTopicGroups,
   fixedSetIds,
   realExamSets,
+  initialExamSettings,
 }: CatalogFormClientProps) {
   const { workspaceMode } = useWorkspaceMode();
+  const baseInitial = sanitizeExamSettings(initialExamSettings, DEFAULT_EXAM_SETTINGS);
+
   const [sets, setSets] = useState<ExamSetSummary[]>(initialSets);
   const [attempts, setAttempts] = useState<AttemptRecord[]>(initialAttempts);
   const [selectedSubject, setSelectedSubject] = useState<SubjectKey | ''>('');
   const [setDrafts, setSetDrafts] = useState<Record<string, SetDraftRecord>>({});
 
-  const [viewMode, setViewMode] = useState<FormViewMode>('repack');
-  const [packMode, setPackMode] = useState<DynamicPackMode>('fill');
-  const [selectedTrack, setSelectedTrack] = useState<string>(TRACKS[0].name);
+  const [viewMode, setViewMode] = useState<FormViewMode>(baseInitial.viewMode);
+  const [packMode, setPackMode] = useState<DynamicPackMode>(baseInitial.packMode);
+  const [maxPerTopic, setMaxPerTopic] = useState<MaxQuestionsPerTopic>(baseInitial.maxPerTopic);
+  const [selectedTrack, setSelectedTrack] = useState<string>(baseInitial.selectedTrack);
   const [bucketFilter, setBucketFilter] = useState<BucketFilter>('all');
+  const [saveNotice, setSaveNotice] = useState<string | null>(null);
+  const [prefsHydrated, setPrefsHydrated] = useState(false);
 
   const {
     correctSet,
     mistakeSet,
     allCompletedSet,
     bookmarkSet,
+    examSettings,
     saving,
+    updateExamSettings,
     resetCompleted,
   } = useProfileHistory();
 
-  // Expand compact subjectQuestionIds -> array for buildDynamicFormPacks
+  // Expand compact subjectTopicGroups -> array with exact sub-topic title for 100% server parity
   const questionMeta = useMemo(() => {
-    const list: Array<{ id: number; subject_key: SubjectKey }> = [];
+    const list: Array<{ id: number; subject_key: SubjectKey; title: string }> = [];
     for (const s of ACTIVE_SUBJECTS) {
-      const ids = subjectQuestionIds[s.key] || [];
-      for (const id of ids) {
-        list.push({ id, subject_key: s.key });
+      const groups = subjectTopicGroups[s.key] || [];
+      for (const [topicTitle, ids] of groups) {
+        for (const id of ids) {
+          list.push({ id, subject_key: s.key, title: topicTitle });
+        }
       }
     }
     return list;
-  }, [subjectQuestionIds]);
+  }, [subjectTopicGroups]);
 
   const totalPoolQuestions = questionMeta.length;
 
-  // Load persisted view preferences & per-set drafts
+  // Hydrate persisted settings from localStorage first, falling back to profile.examSettings
   useEffect(() => {
     setSetDrafts(readAllSetDrafts());
+    let loadedLocal = false;
     try {
       const raw = window.localStorage.getItem(FORM_PREF_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as Partial<{
-        viewMode: FormViewMode;
-        packMode: DynamicPackMode;
-        selectedTrack: string;
-      }>;
-      if (parsed.viewMode === 'repack' || parsed.viewMode === 'fixed') {
+      if (raw) {
+        const parsed = sanitizeExamSettings(
+          JSON.parse(raw) as Partial<ExamUserSettings>,
+          baseInitial
+        );
         setViewMode(parsed.viewMode);
-      }
-      if (parsed.packMode === 'fill' || parsed.packMode === 'strict') {
         setPackMode(parsed.packMode);
-      }
-      if (parsed.selectedTrack && TRACKS.some((t) => t.name === parsed.selectedTrack)) {
+        setMaxPerTopic(parsed.maxPerTopic);
         setSelectedTrack(parsed.selectedTrack);
+        loadedLocal = true;
       }
     } catch {
       // ignore
     }
+    if (!loadedLocal && examSettings) {
+      setViewMode(examSettings.viewMode);
+      setPackMode(examSettings.packMode);
+      setMaxPerTopic(examSettings.maxPerTopic);
+      setSelectedTrack(examSettings.selectedTrack);
+    }
+    setPrefsHydrated(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const persistPrefs = (next: {
-    viewMode?: FormViewMode;
-    packMode?: DynamicPackMode;
-    selectedTrack?: string;
-  }) => {
+  // Keep synced if profile reloads with newer examSettings and no localstorage entry existed
+  useEffect(() => {
+    if (!prefsHydrated || !examSettings?.updatedAt) return;
+    try {
+      if (!window.localStorage.getItem(FORM_PREF_KEY)) {
+        setViewMode(examSettings.viewMode);
+        setPackMode(examSettings.packMode);
+        setMaxPerTopic(examSettings.maxPerTopic);
+        setSelectedTrack(examSettings.selectedTrack);
+      }
+    } catch {
+      // ignore
+    }
+  }, [prefsHydrated, examSettings]);
+
+  const persistPrefs = (
+    next: {
+      viewMode?: FormViewMode;
+      packMode?: DynamicPackMode;
+      maxPerTopic?: MaxQuestionsPerTopic;
+      selectedTrack?: string;
+    },
+    noticeMessage = 'บันทึกการตั้งค่าเรียบร้อยแล้ว'
+  ) => {
     const merged = {
       viewMode: next.viewMode ?? viewMode,
       packMode: next.packMode ?? packMode,
+      maxPerTopic: next.maxPerTopic ?? maxPerTopic,
       selectedTrack: next.selectedTrack ?? selectedTrack,
     };
     try {
@@ -126,6 +169,11 @@ export function CatalogFormClient({
     } catch {
       // ignore
     }
+    void updateExamSettings(merged);
+    setSaveNotice(noticeMessage);
+    window.setTimeout(() => {
+      setSaveNotice((prev) => (prev === noticeMessage ? null : prev));
+    }, 2800);
   };
 
   useEffect(() => {
@@ -168,8 +216,9 @@ export function CatalogFormClient({
         packMode,
         trackName: selectedTrack,
         chunkSize: 150,
+        maxPerTopic,
       }),
-    [questionMeta, allCompletedSet, packMode, selectedTrack]
+    [questionMeta, allCompletedSet, packMode, selectedTrack, maxPerTopic]
   );
 
   const availableSubjects = useMemo(() => {
@@ -196,6 +245,7 @@ export function CatalogFormClient({
 
   const subjectParam = selectedSubject ? `&subject=${selectedSubject}` : '';
   const trackParam = `&track=${encodeURIComponent(selectedTrack)}`;
+  const maxTopicParam = `&maxPerTopic=${maxPerTopic}`;
 
   return (
     <div className="space-y-5">
@@ -328,63 +378,162 @@ export function CatalogFormClient({
           </button>
         </div>
 
-        {/* Sub-options when in Dynamic Re-pack Mode */}
-        {viewMode === 'repack' && (
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-3.5">
+        {/* Sub-options when in Dynamic Re-pack Mode + Persistent Save System */}
+        <div className="space-y-3 border-t border-line pt-3.5">
+          {viewMode === 'repack' && (
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-medium text-muted">คละหัวข้อย่อยต่อชุด:</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMaxPerTopic(3);
+                    persistPrefs(
+                      { maxPerTopic: 3 },
+                      'บันทึก: คละหัวข้อย่อยชุดละ 2–3 ข้อ (ห้ามเกิน 3 ข้อ)'
+                    );
+                  }}
+                  className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
+                    maxPerTopic === 3
+                      ? 'border-brand bg-brand text-white font-semibold'
+                      : 'border-line bg-bg2/50 text-ink font-medium hover:border-brand/50'
+                  }`}
+                >
+                  2–3 ข้อ/หัวข้อ (แนะนำ · เหมือนสอบจริง)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMaxPerTopic(2);
+                    persistPrefs(
+                      { maxPerTopic: 2 },
+                      'บันทึก: คละหัวข้อย่อยไม่เกิน 2 ข้อต่อชุด'
+                    );
+                  }}
+                  className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
+                    maxPerTopic === 2
+                      ? 'border-brand bg-brand text-white font-semibold'
+                      : 'border-line bg-bg2/50 text-ink font-medium hover:border-brand/50'
+                  }`}
+                >
+                  ไม่เกิน 2 ข้อ/หัวข้อ
+                </button>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-medium text-muted">กติกาจัดชุด 150 ข้อ:</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPackMode('fill');
+                    persistPrefs({ packMode: 'fill' });
+                  }}
+                  className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
+                    packMode === 'fill'
+                      ? 'border-brand bg-brand text-white font-semibold'
+                      : 'border-line bg-bg2/50 text-ink font-medium hover:border-brand/50'
+                  }`}
+                >
+                  เติมให้ครบ 150 ข้อ (คละครบทุกบท)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPackMode('strict');
+                    persistPrefs({ packMode: 'strict' });
+                  }}
+                  className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
+                    packMode === 'strict'
+                      ? 'border-brand bg-brand text-white font-semibold'
+                      : 'border-line bg-bg2/50 text-ink font-medium hover:border-brand/50'
+                  }`}
+                >
+                  เป๊ะตามสัดส่วนสายสอบ
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-bg2/45 px-3.5 py-2.5">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-medium text-muted">กติกาจัดชุด 150 ข้อ:</span>
-              <button
-                type="button"
-                onClick={() => {
-                  setPackMode('fill');
-                  persistPrefs({ packMode: 'fill' });
-                }}
-                className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
-                  packMode === 'fill'
-                    ? 'border-brand bg-brand text-white font-semibold'
-                    : 'border-line bg-bg2/50 text-ink font-medium hover:border-brand/50'
-                }`}
-              >
-                เติมให้ครบ 150 ข้อ (ยืดหยุ่น)
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setPackMode('strict');
-                  persistPrefs({ packMode: 'strict' });
-                }}
-                className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
-                  packMode === 'strict'
-                    ? 'border-brand bg-brand text-white font-semibold'
-                    : 'border-line bg-bg2/50 text-ink font-medium hover:border-brand/50'
-                }`}
-              >
-                เป๊ะตามสัดส่วนสายสอบ
-              </button>
+              {viewMode === 'repack' && (
+                <div className="flex items-center gap-2">
+                  <label htmlFor="track-pack-select" className="text-xs font-medium text-muted">
+                    สัดส่วนสายสอบ:
+                  </label>
+                  <select
+                    id="track-pack-select"
+                    value={selectedTrack}
+                    onChange={(e) => {
+                      setSelectedTrack(e.target.value);
+                      persistPrefs({ selectedTrack: e.target.value });
+                    }}
+                    className="rounded-lg border border-line bg-panel px-2.5 py-1.5 text-xs font-semibold text-ink focus:border-brand focus:outline-none"
+                  >
+                    {TRACKS.map((t) => (
+                      <option key={t.id} value={t.name}>
+                        {t.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <span className="text-[11px] text-muted">
+                เรียงข้อ 1–150 ตามสนามจริง (คณิต · ไทย · คอม · สารบรรณ · กฎหมาย · อังกฤษ) และไม่เรียงหัวข้อเดิมติดกัน
+              </span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <label htmlFor="track-pack-select" className="text-xs font-medium text-muted">
-                สัดส่วนสายสอบ:
-              </label>
-              <select
-                id="track-pack-select"
-                value={selectedTrack}
-                onChange={(e) => {
-                  setSelectedTrack(e.target.value);
-                  persistPrefs({ selectedTrack: e.target.value });
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setViewMode('repack');
+                  setPackMode('fill');
+                  setMaxPerTopic(3);
+                  setSelectedTrack(TRACKS[0].name);
+                  persistPrefs(
+                    {
+                      viewMode: 'repack',
+                      packMode: 'fill',
+                      maxPerTopic: 3,
+                      selectedTrack: TRACKS[0].name,
+                    },
+                    'ตั้งค่าเสมือนข้อสอบจริงดีที่สุด (คละ 2–3 ข้อ/บท · เรียง 1–150) และบันทึกแล้ว'
+                  );
                 }}
-                className="rounded-lg border border-line bg-bg2 px-2.5 py-1.5 text-xs font-semibold text-ink focus:border-brand focus:outline-none"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-brand/35 bg-brand/10 px-2.5 py-1.5 text-xs font-semibold text-brand transition-colors hover:bg-brand/15"
               >
-                {TRACKS.map((t) => (
-                  <option key={t.id} value={t.name}>
-                    {t.name}
-                  </option>
-                ))}
-              </select>
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>จัดระบบเหมือนสอบจริงที่สุด</span>
+              </button>
+
+              <button
+                type="button"
+                disabled={saving}
+                onClick={() =>
+                  persistPrefs(
+                    { viewMode, packMode, maxPerTopic, selectedTrack },
+                    'บันทึกการตั้งค่าลงโปรไฟล์ถาวรแล้ว'
+                  )
+                }
+                className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-panel px-2.5 py-1.5 text-xs font-semibold text-ink transition-colors hover:border-brand/50 hover:text-brand disabled:opacity-60"
+              >
+                {saveNotice ? (
+                  <>
+                    <Check className="h-3.5 w-3.5 text-teal-ink" />
+                    <span className="text-teal-ink">{saveNotice}</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-3.5 w-3.5 text-brand" />
+                    <span>{saving ? 'กำลังบันทึก...' : 'บันทึกการตั้งค่า'}</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Subject Filter Strip */}
@@ -558,8 +707,8 @@ export function CatalogFormClient({
                     const effectiveCount = selectedSubject
                       ? pack.subjectBreakdown[selectedSubject] || 0
                       : pack.total;
-                    const practiceHref = `/exam/repack-form?set=${pack.setIndex}&packMode=${packMode}${trackParam}&mode=practice&fresh=1${subjectParam}`;
-                    const realHref = `/exam/repack-form?set=${pack.setIndex}&packMode=${packMode}${trackParam}&mode=real&fresh=1${subjectParam}`;
+                    const practiceHref = `/exam/repack-form?set=${pack.setIndex}&packMode=${packMode}${maxTopicParam}${trackParam}&mode=practice&fresh=1${subjectParam}`;
+                    const realHref = `/exam/repack-form?set=${pack.setIndex}&packMode=${packMode}${maxTopicParam}${trackParam}&mode=real&fresh=1${subjectParam}`;
 
                     return (
                       <div
@@ -701,13 +850,13 @@ export function CatalogFormClient({
 
                     <div className="flex shrink-0 items-center gap-2">
                       <Link
-                        href={`/exam/repack-form?set=0&packMode=${packMode}${trackParam}&mode=practice&fresh=1${subjectParam}`}
+                        href={`/exam/repack-form?set=0&packMode=${packMode}${maxTopicParam}${trackParam}&mode=practice&fresh=1${subjectParam}`}
                         className="inline-flex items-center gap-1.5 rounded-btn border border-line bg-panel px-4 py-2 text-xs font-semibold text-ink transition-colors hover:border-brand/50 hover:text-brand"
                       >
                         <span>ฝึกเก็บตก</span>
                       </Link>
                       <Link
-                        href={`/exam/repack-form?set=0&packMode=${packMode}${trackParam}&mode=real&fresh=1${subjectParam}`}
+                        href={`/exam/repack-form?set=0&packMode=${packMode}${maxTopicParam}${trackParam}&mode=real&fresh=1${subjectParam}`}
                         className="inline-flex items-center gap-1.5 rounded-btn bg-brand px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-brand-dark"
                       >
                         <span>ทำชุดเก็บตก</span>

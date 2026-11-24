@@ -17245,7 +17245,7 @@
     "set_id": null,
     "title": "Reading",
     "batch": "03_ภาษาอังกฤษ_ลงครั้งที่1",
-    "stem": "<table><tr><td></td><td>hair salon</td><th colspan=\"2\">Central Park<td>book shop</td></th></tr><tr><td></td><td",
+    "stem": "<table><tr><td></td><td>hair salon</td><th colspan=\"2\">Central Park</th><td>book shop</td></tr><tr><td></td></tr></table>",
     "img": null,
     "opts": [
       "Travel agency",
@@ -17385,7 +17385,7 @@
     "set_id": null,
     "title": "Reading",
     "batch": "03_ภาษาอังกฤษ_ลงครั้งที่1",
-    "stem": "<table><tr><td>Internet Cafe</td></tr><tr><td>computer store</td></tr><tr><td>MARTIN STREET</td></tr><tr><\n\nWhich place is not located on Market street?",
+    "stem": "<table><tr><td>Internet Cafe</td></tr><tr><td>computer store</td></tr><tr><td>MARTIN STREET</td></tr></table>\n\nWhich place is not located on Market street?",
     "img": null,
     "opts": [
       "Police station",
@@ -29265,7 +29265,7 @@
     "set_id": null,
     "title": "Reading",
     "batch": "03_ภาษาอังกฤษ_ลงครั้งที่1",
-    "stem": "<table><tr><td>bank</td><td>book store</td></tr><tr><td>Sukhumvit Rd.</td><td></td></tr><tr><td>shopping mall</td><td>Sansook Rd.</td></tr><tr><td></td\n\nWhich place is across from the hospital?",
+    "stem": "<table><tr><td>bank</td><td>book store</td></tr><tr><td>Sukhumvit Rd.</td><td></td></tr><tr><td>shopping mall</td><td>Sansook Rd.</td></tr></table>\n\nWhich place is across from the hospital?",
     "img": null,
     "opts": [
       "The bank",
@@ -46320,7 +46320,7 @@
     "set_id": null,
     "title": "ข้อมูลและสารสนเทศ",
     "batch": "05_วิชาคอม_ลงครั้งที่1",
-    "stem": "<table><tr><td>01000111</td><td>01010101</td></tr><tr><td>010\n\nจากรูปเป็นรูปแบบของรหัสใด ของภาษาโปรแกรมคอมพิวเตอร์",
+    "stem": "<table><tr><td>01000111</td><td>01010101</td></tr></table>\n\nจากรูปเป็นรูปแบบของรหัสใด ของภาษาโปรแกรมคอมพิวเตอร์",
     "img": null,
     "opts": [
       "รหัส ASCII",
@@ -50276,7 +50276,7 @@
     ],
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "<table><tr><td></td><td>Decision หมายถึง เงื่อนไข</td></tr><tr><td></td",
+    "explanation": "<table><tr><td></td><td>Decision หมายถึง เงื่อนไข</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -58341,7 +58341,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "เพราะ เครื่องหมาย > หมายถึง มากกว่า ซึ่งเป็นสูตรในการเปรียบเทียบ (Comparison Formula)\nผลลัพธ์ที่แสดงออกมาจะมีอยู่ 2 ค่า คือ\n1. เมื่อผลลัพธ์นั้นมีค่าเป็น \"จริง\" จะแสดงผลเป็น TRUE\n2. เมื่อผลลัพธ์นั้นมีค่าเป็น \"เท็จ\" จะแสดงผลเป็น FALSE\n\nและสูตรในการเปรียบเทียบ (Comparison Formula) มีดังนี้\n\n<table><tr><td>เครื่องหมาย</td><td>ความหมาย</td><td>ตัวอย่าง</td></tr><tr><td>=</td><td>เท่ากับ</td><td>=20=10 ผลลัพธ์ FALSE</td></",
+    "explanation": "เพราะ เครื่องหมาย > หมายถึง มากกว่า ซึ่งเป็นสูตรในการเปรียบเทียบ (Comparison Formula)\nผลลัพธ์ที่แสดงออกมาจะมีอยู่ 2 ค่า คือ\n1. เมื่อผลลัพธ์นั้นมีค่าเป็น \"จริง\" จะแสดงผลเป็น TRUE\n2. เมื่อผลลัพธ์นั้นมีค่าเป็น \"เท็จ\" จะแสดงผลเป็น FALSE\n\nและสูตรในการเปรียบเทียบ (Comparison Formula) มีดังนี้\n\n<table><tr><td>เครื่องหมาย</td><td>ความหมาย</td><td>ตัวอย่าง</td></tr><tr><td>=</td><td>เท่ากับ</td><td>=20=10 ผลลัพธ์ FALSE</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -58490,7 +58490,7 @@
     "set_id": null,
     "title": "Excel",
     "batch": "05_วิชาคอม_ลงครั้งที่1",
-    "stem": "จากตารางวิธีการใช้งานเครื่องหมายด้านล่าง เป็นเครื่องหมายประเภทใด\n\n<table><tr><td>เครื่องหมาย</td><td>ความหมาย</td><td>ตัวอย่างสูตร</td></tr><tr><td>=</td><td>เท่ากับ</td><td>=a1>=100 ถ้า a1 มีค่ามากกว่าหรือเท่ากับ 100 จะได้ผลลัพธ์ True แต่ถ้า a1 มีค่าน้อยกว่า 100 จะได้ผลลัพธ์ False</td></tr><tr><td>></td><td>มากกว่า</td><td></td></tr><tr",
+    "stem": "จากตารางวิธีการใช้งานเครื่องหมายด้านล่าง เป็นเครื่องหมายประเภทใด\n\n<table><tr><td>เครื่องหมาย</td><td>ความหมาย</td><td>ตัวอย่างสูตร</td></tr><tr><td>=</td><td>เท่ากับ</td><td>=a1>=100 ถ้า a1 มีค่ามากกว่าหรือเท่ากับ 100 จะได้ผลลัพธ์ True แต่ถ้า a1 มีค่าน้อยกว่า 100 จะได้ผลลัพธ์ False</td></tr><tr><td>></td><td>มากกว่า</td><td></td></tr></table>",
     "img": null,
     "opts": [
       "เครื่องหมายคำนวณทางคณิตศาสตร์ (Arithmetic Formula)",
@@ -58541,7 +58541,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "เพราะ เครื่องหมาย > หมายถึง มากกว่า ซึ่งเป็นสูตรในการเปรียบเทียบ (Comparison Formula) ผลลัพธ์ที่แสดงออกมาจะมีอยู่ 2 ค่า คือ\n1. เมื่อผลลัพธ์นั้นมีค่าเป็น \"จริง\" จะแสดงผลเป็น TRUE\n2. เมื่อผลลัพธ์นั้นมีค่าเป็น \"เท็จ\" จะแสดงผลเป็น FALSE\nและสูตรในการเปรียบเทียบ (Comparison Formula) มีดังนี้\n\n<table><tr><td>เครื่องหมาย</td><td>ความหมาย</td><td>ตัวอย่าง</td></tr><tr><td>=</td><td>เท่ากับ</td><td>=20=10 ผลลัพธ์ FALSE</td></",
+    "explanation": "เพราะ เครื่องหมาย > หมายถึง มากกว่า ซึ่งเป็นสูตรในการเปรียบเทียบ (Comparison Formula) ผลลัพธ์ที่แสดงออกมาจะมีอยู่ 2 ค่า คือ\n1. เมื่อผลลัพธ์นั้นมีค่าเป็น \"จริง\" จะแสดงผลเป็น TRUE\n2. เมื่อผลลัพธ์นั้นมีค่าเป็น \"เท็จ\" จะแสดงผลเป็น FALSE\nและสูตรในการเปรียบเทียบ (Comparison Formula) มีดังนี้\n\n<table><tr><td>เครื่องหมาย</td><td>ความหมาย</td><td>ตัวอย่าง</td></tr><tr><td>=</td><td>เท่ากับ</td><td>=20=10 ผลลัพธ์ FALSE</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -58850,7 +58850,7 @@
     "set_id": null,
     "title": "Excel",
     "batch": "05_วิชาคอม_ลงครั้งที่1",
-    "stem": "จากรูปภาพด้านล่าง โปรแกรมกำลังทำขั้นตอนใดอยู่\n\n<table><tr><td>ปี 2662</td><td></td><td>C6 X</td></tr><tr><td>11,000</td><td>B Bus GuruPolice</td><td></td></tr><tr",
+    "stem": "จากรูปภาพตารางด้านล่าง โปรแกรมกำลังทำขั้นตอนใดอยู่\n\n<table><tr><td>ปี 2562</td><td></td><td>C6</td></tr><tr><td>11,000</td><td>B Bus NaisibPro</td><td></td></tr></table>",
     "img": null,
     "opts": [
       "วาดรูปร่างต่าง ๆ",
@@ -59506,7 +59506,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "เพราะข้อ 1 ผิด : รูปร่าง",
+    "explanation": "ปุ่มคำสั่งรูปแถบฟิล์มและเครื่องหมายเล่น (Insert Video) ในโปรแกรม Microsoft PowerPoint ใช้สำหรับแทรกไฟล์วิดีโอลงในสไลด์",
     "explanation_img": "/question-svgs/408d9ca8add736cc.svg"
   },
   {
@@ -59715,7 +59715,7 @@
     "set_id": null,
     "title": "Powerpoint",
     "batch": "05_วิชาคอม_ลงครั้งที่1",
-    "stem": "# จากรูปภาพด้านล่าง คือชุดเครื่องมือที่อยู่ในโปรแกรมใด\n\n<table><tr><td>Preview</td><td>Entrance Effects</td><td>Emphasis Effects</td><td>Exit Effects</td><td>Path Animation</td><td>Animation Pane</td></tr><tr><td></td><td></td><td",
+    "stem": "# จากรูปภาพด้านล่าง คือชุดเครื่องมือที่อยู่ในโปรแกรมใด\n\n<table><tr><td>Preview</td><td>Entrance Effects</td><td>Emphasis Effects</td><td>Exit Effects</td><td>Path Animation</td><td>Animation Pane</td></tr><tr><td></td><td></td></tr></table>",
     "img": null,
     "opts": [
       "Microsoft Access",
@@ -61006,7 +61006,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "เพราะ 1. Messenger",
+    "explanation": "สัญลักษณ์ตัวอักษร \"in\" ในกรอบสี่เหลี่ยมเป็นไอคอนของ LinkedIn เครือข่ายสังคมออนไลน์สำหรับวิชาชีพและการสมัครงาน",
     "explanation_img": "/question-svgs/96f31d439de868a0.svg"
   },
   {
@@ -61486,7 +61486,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "เพราะ 1. Messenger",
+    "explanation": "สัญลักษณ์รูปตัวโน้ตดนตรีเป็นไอคอนของแอปพลิเคชัน TikTok แพลตฟอร์มวิดีโอสั้นออนไลน์",
     "explanation_img": "/question-svgs/c116eeacceb9662b.svg"
   },
   {
@@ -61586,7 +61586,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "เพราะ 1. Messenger",
+    "explanation": "สัญลักษณ์รูปเครื่องบินกระดาษในวงกลมเป็นไอคอนของแอปพลิเคชัน Telegram สำหรับส่งข้อความและสื่อสารออนไลน์",
     "explanation_img": "/question-svgs/95235aa11caabc82.svg"
   },
   {
@@ -62975,7 +62975,7 @@
     "set_id": null,
     "title": "Social Media + พื้นฐานโปรแกรม",
     "batch": "05_วิชาคอม_ลงครั้งที่1",
-    "stem": "จากรูปภาพไอคอนด้านล่าง เป็นเครื่องมือในโปรแกรมใด\n\n<table><tr><td>☐ Inbox</td><td>1</td></tr><tr><td>🖃 Drafts</td><td></td></tr><tr",
+    "stem": "จากรูปภาพไอคอนด้านล่าง เป็นเครื่องมือในโปรแกรมใด\n\n<table><tr><td>☐ Inbox</td><td>1</td></tr><tr><td>🖃 Drafts</td><td></td></tr></table>",
     "img": null,
     "opts": [
       "Microsoft Outlook",
@@ -63326,7 +63326,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "8<page_number",
+    "explanation": "พิจารณาผลต่างระหว่างพจน์ติดกัน: $15 - 8 = 7$, $36 - 15 = 21$, $99 - 36 = 63$ จะเห็นว่าผลต่างคูณด้วย $3$ ทุกขั้น ($7 \\times 3 = 21$, $21 \\times 3 = 63$, ขั้นถัดไป $63 \\times 3 = 189$) ดังนั้นพจน์ถัดไปคือ $99 + 189 = 288$",
     "explanation_img": null
   },
   {
@@ -63386,7 +63386,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "2",
+    "explanation": "อนุกรมเรขาคณิตคูณด้วย $4$ ทุกพจน์: $2 \\times 4 = 8$, $8 \\times 4 = 32$, $32 \\times 4 = 128$ ดังนั้นพจน์ถัดไปคือ $128 \\times 4 = 512$",
     "explanation_img": "/question-svgs/4de8dd165f58dc3e.svg"
   },
   {
@@ -63406,7 +63406,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "19",
+    "explanation": "พิจารณาผลต่างระหว่างพจน์ติดกัน: $-8, -7, -6, -5$ ($19 - 8 = 11$, $11 - 7 = 4$, $4 - 6 = -2$, $-2 - 5 = -7$) ขั้นถัดไปจึงลบด้วย $4$ ได้ $-7 - 4 = -11$",
     "explanation_img": "/question-svgs/3e66801bf24e7b1c.svg"
   },
   {
@@ -63446,7 +63446,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "88<page_number",
+    "explanation": "พิจารณาผลต่างระหว่างพจน์ติดกัน: $+3, +5, +7, +9$ (เพิ่มขึ้นเป็นจำนวนคี่เรียงกันทีละ $2$) ขั้นถัดไปจึงบวกด้วย $11$ ได้ $112 + 11 = 123$",
     "explanation_img": null
   },
   {
@@ -63506,7 +63506,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "17<page_number",
+    "explanation": "พิจารณาผลต่างสลับกันระหว่าง $+6$ และ $+8$: $17 + 6 = 23$, $23 + 8 = 31$, $31 + 6 = 37$, $37 + 8 = 45$ ขั้นถัดไปจึงบวกด้วย $6$ ได้ $45 + 6 = 51$",
     "explanation_img": null
   },
   {
@@ -63806,7 +63806,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "34",
+    "explanation": "อนุกรมสลับ 2 ชุด: ชุดตำแหน่งคี่ $34, 40, 46, \\dots$ เพิ่มขึ้นทีละ $+6$ ดังนั้นพจน์ถัดไป (ตำแหน่งที่ 7) คือ $46 + 6 = 52$ (ส่วนชุดตำแหน่งคู่ $67, 62, 57$ ลดลงทีละ $5$)",
     "explanation_img": "/question-svgs/5cc7cd0db1905a90.svg"
   },
   {
@@ -63826,7 +63826,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "6",
+    "explanation": "อนุกรมสลับ 2 ชุด: ชุดตำแหน่งคี่ $6, 8, 11, 15$ ($+2, +3, +4$) และชุดตำแหน่งคู่ $6, 7, 9, \\dots$ เพิ่มขึ้นทีละ $+1, +2, +3$ ดังนั้นพจน์ถัดไป (ตำแหน่งที่ 8) คือ $9 + 3 = 12$",
     "explanation_img": "/question-svgs/6d69c591711898f9.svg"
   },
   {
@@ -63846,7 +63846,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "+3 +4 +5",
+    "explanation": "อนุกรมสลับ 2 ชุด: ชุดตำแหน่งคี่ $59, 56, 52, 47$ ($-3, -4, -5$) และชุดตำแหน่งคู่ $31, 34, 38, \\dots$ เพิ่มขึ้นทีละ $+3, +4, +5$ ดังนั้นพจน์ถัดไป (ตำแหน่งที่ 8) คือ $38 + 5 = 43$",
     "explanation_img": "/question-svgs/8dd61fa6570ab16f.svg"
   },
   {
@@ -63906,7 +63906,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "-3",
+    "explanation": "อนุกรมสลับ 2 ชุด: ชุดตำแหน่งคี่ $72, 69, 66, \\dots$ ลดลงทีละ $-3$ ดังนั้นพจน์ถัดไป (ตำแหน่งที่ 7) คือ $66 - 3 = 63$ (ชุดตำแหน่งคู่ $40, 37, 34$ ลดลงทีละ $-3$ เช่นกัน)",
     "explanation_img": "/question-svgs/290aa2161eeea44d.svg"
   },
   {
@@ -64266,7 +64266,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "1<table><tr><td></td><td>$\\frac{5}{2}$</td><td>$\\frac{25}{4}$</td><td>$\\frac{125}{8}$</td><td>625</td></tr><tr><td>$x^{\\frac{5}{2}}$",
+    "explanation": "อนุกรมเรขาคณิตที่คูณด้วย $\\frac{5}{2}$ ทุกพจน์: $1 \\times \\frac{5}{2} = \\frac{5}{2}$, $\\frac{5}{2} \\times \\frac{5}{2} = \\frac{25}{4}$, $\\frac{25}{4} \\times \\frac{5}{2} = \\frac{125}{8}$ ดังนั้นพจน์ถัดไปคือ $\\frac{125}{8} \\times \\frac{5}{2} = \\frac{625}{16}$",
     "explanation_img": null
   },
   {
@@ -66430,7 +66430,7 @@
     "set_id": null,
     "title": "IQ",
     "batch": "01_เลข_ลงครั้งที่1",
-    "stem": "48<table><\n\nจงหาค่าของ 2A",
+    "stem": "กำหนดความสัมพันธ์ของตัวเลขดังนี้ ชุดที่ 1: (14, 16, 18 -> 48), ชุดที่ 2: (11, 13, 15 -> 39), ชุดที่ 3: (21, 14, A -> 52) จงหาค่าของ 2A",
     "img": null,
     "opts": [
       "17",
@@ -67001,7 +67001,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "$$ \\frac{6 + \\frac{3}{2}}",
+    "explanation": "คำนวณตัวตั้ง: $6 + \\frac{3}{2} = \\frac{15}{2}$\nคำนวณตัวหาร: $\\frac{12}{7} - 2\\left(\\frac{3}{4}\\right) = \\frac{12}{7} - \\frac{3}{2} = \\frac{24 - 21}{14} = \\frac{3}{14}$\nดังนั้น $\\frac{15}{2} \\div \\frac{3}{14} = \\frac{15}{2} \\times \\frac{14}{3} = 5 \\times 7 = 35$",
     "explanation_img": null
   },
   {
@@ -67401,7 +67401,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "<table><tr><td>มะละกอ</td><td>100 ผล</td><td>ราคา</td><",
+    "explanation": "เทียบบัญญัติไตรยางศ์: มะละกอ $100$ ผล ราคา $580$ บาท ถ้าซื้อ $300$ ผล คิดเป็นเงิน $\\frac{580 \\times 300}{100} = 580 \\times 3 = 1,740$ บาท",
     "explanation_img": null
   },
   {
@@ -67830,7 +67830,7 @@
     "set_id": null,
     "title": "เลขยกกำลังและพหุนาม",
     "batch": "01_เลข_ลงครั้งที่1",
-    "stem": "จงหาค่าของ 3757 ว่าหลักหน่วยมีค่าตรงกับข้อใด",
+    "stem": "จงหาค่าของ $3^{757}$ ว่าหลักหน่วยมีค่าตรงกับข้อใด",
     "img": null,
     "opts": [
       "1",
@@ -67841,7 +67841,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "ข้อนี้จะหาคำตอบได้ ต้องกระจายออกมาให้ได้ว่า เลขยกกำลังแต่ละตัว ลงท้ายด้วยเลขอะไร\n\n<table><tr><td>3</td><td>3</td></tr><tr><td>$3 \\",
+    "explanation": "หลักหน่วยของเลขยกกำลังฐาน $3$ วนซ้ำทุก $4$ รอบ คือ $3^1=3, 3^2=9, 3^3=27, 3^4=81$ (ลงท้ายด้วย $3, 9, 7, 1$) นำเลขชี้กำลัง $757 \\div 4$ ได้ $189$ เศษ $1$ จึงตรงกับลำดับที่ $1$ คือหลักหน่วยเป็น $3$",
     "explanation_img": null
   },
   {
@@ -67861,7 +67861,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "ข้อนี้จะหาคำตอบได้ ต้องกระจายออกมาให้ได้ว่า เลขยกกำลังแต่ละตัว ลงท้ายด้วยเลขอะไร\n\n<table><tr><td>7</td><td>7</td></tr><tr><td>$7 \\",
+    "explanation": "หลักหน่วยของเลขยกกำลังฐาน $7$ วนซ้ำทุก $4$ รอบ คือ $7^1=7, 7^2=49, 7^3=343, 7^4=2401$ (ลงท้ายด้วย $7, 9, 3, 1$) นำเลขชี้กำลัง $123 \\div 4$ ได้ $30$ เศษ $3$ จึงตรงกับลำดับที่ $3$ คือหลักหน่วยเป็น $3$",
     "explanation_img": null
   },
   {
@@ -67881,7 +67881,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "ข้อนี้จะหาคำตอบได้ ต้องกระจายออกมาให้ได้ว่า เลขยกกำลังแต่ละตัว ลงท้ายด้วยเลขอะไร\n\n<table><tr><td>4</td><td>4</td></tr><tr><td>$4 \\",
+    "explanation": "หลักหน่วยของเลขยกกำลังฐาน $4$ วนซ้ำทุก $2$ รอบ คือ เลขชี้กำลังคี่ลงท้ายด้วย $4$ ($4^1=4, 4^3=64$) และเลขชี้กำลังคู่ลงท้ายด้วย $6$ ($4^2=16$) เนื่องจาก $323$ เป็นจำนวนคี่ หลักหน่วยจึงเท่ากับ $4$",
     "explanation_img": null
   },
   {
@@ -68061,7 +68061,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "$$ (\\frac{5}{7})^{2-5x",
+    "explanation": "เนื่องจาก $\\frac{343}{125} = \\left(\\frac{7}{5}\\right)^3 = \\left(\\frac{5}{7}\\right)^{-3}$ เมื่อฐานเท่ากันจะได้ $2 - 5x = -3 \\Rightarrow 5x = 5 \\Rightarrow x = 1$",
     "explanation_img": null
   },
   {
@@ -71041,7 +71041,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "การแปลงฐานใดๆจะต้องแปลงเป็นฐานสิบก่อน แล้วจึงค่อยแปลงฐานสิบไปเป็นฐานอื่นๆที่ต้องการ เปรียบเสมือนกับว่าต้องมีฐานสิบเป็นตัวกลาง ขั้นแรกจะแปลงจากฐานสิบสองเป็นฐานสิบ ได้เป็นดังนี้\n$167B_{12} = (B \\times 12^0) + (7 \\times 12^1) + (6 \\times 12^2) + (1 \\times 12^3)$\n$= (11 \\times 12^0) + (7 \\times 12^1) + (6 \\times 12^2) + (1 \\times 12^3)$\n$= 11 + 84 + 864 + 1,728 = 2,687$\n\nพิจารณาฐานของแต่ละตัวเลือกเป็นฐานห้า จึงแปลงจากฐานสิบเป็นฐานห้า ได้เป็นดังนี้\n\n<table><tr><td>5) $2,687$</td><td></td><td>เศษ 2</td></tr><tr><td>5) $",
+    "explanation": "แปลงฐานสิบสองเป็นฐานสิบก่อน: $167B_{12} = (1 \\times 12^3) + (6 \\times 12^2) + (7 \\times 12^1) + (11 \\times 12^0) = 1,728 + 864 + 84 + 11 = 2,687$\nจากนั้นแปลง $2,687$ เป็นฐานห้าโดยหารสั้นด้วย $5$ ต่อเนื่อง ได้เศษเรียงย้อนกลับคือ $41222_5$ (ตรงกับตัวเลือก 412225)",
     "explanation_img": null
   },
   {
@@ -71081,7 +71081,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "จะต้องแปลงเป็นฐานสิบก่อน แล้วจึงค่อยแปลงฐานสิบไปเป็นฐานอื่นๆที่ต้องการ\nเสมือนฐานสิบเป็นตัวกลาง\n\nขั้นแรกจะแปลงจากฐานสิบหกเป็นฐานสิบ ได้เป็นดังนี้\n\n$$\n\\begin{aligned}\nAD_{12, 16} & = (2 \\times 16^0) + (1 \\times 16^1) + (D \\times 16^2) + (A \\times 16^3) \\\\\n& = (2 \\times 16^0) + (1 \\times 16^1) + (13 \\times 16^2) + (10 \\times 16^3) \\\\\n& = 2 + 16 + 3,328 + 40,960 = 44,306\n\\end{aligned}\n$$\n\nพิจารณาฐานของแต่ละตัวเลือกเป็นฐานสี่ จึงแปลงจากฐานสิบเป็นฐานสี่\nได้เป็นดังนี้\n\n<table><tr><td>4) 44,306</td><td></td><td>เศษ",
+    "explanation": "แปลงฐานสิบหกเป็นฐานสิบก่อน: $AD12_{16} = (10 \\times 16^3) + (13 \\times 16^2) + (1 \\times 16^1) + (2 \\times 16^0) = 40,960 + 3,328 + 16 + 2 = 44,306$\nจากนั้นแปลง $44,306$ เป็นฐานสี่โดยหารสั้นด้วย $4$ ต่อเนื่อง ได้ผลลัพธ์ $22310102_4$ (ตรงกับตัวเลือก 223101024)",
     "explanation_img": null
   },
   {
@@ -71101,7 +71101,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "จะต้องแปลงเป็นฐานสิบก่อน แล้วจึงค่อยแปลงฐานสิบไปเป็นฐานอื่นๆที่ต้องการ\nเสมือนฐานสิบเป็นตัวกลาง\n\nแปลงจากฐานสิบหกเป็นฐานสิบ ได้ดังนี้\n\n$$\n\\begin{aligned}\nBE35_{16} & = (5 \\times 16^0) + (3 \\times 16^1) + (Ex \\times 16^2) + (Bx \\times 16^3) \\\\\n& = (5 \\times 16^0) + (3 \\times 16^1) + (14 \\times 16^2) + (11 \\times 16^3) \\\\\n& = 5 + 48 + 3,584 + 45,056 \\\\\n& = 48,693\n\\end{aligned}\n$$\n\nแปลงจากฐานสิบเป็นฐานห้า ได้ดังนี้\n\n<table><tr><td>5 )</td><td>48,693</td></tr><tr><td>5 )</",
+    "explanation": "แปลงฐานสิบหกเป็นฐานสิบก่อน: $BE35_{16} = (11 \\times 16^3) + (14 \\times 16^2) + (3 \\times 16^1) + (5 \\times 16^0) = 45,056 + 3,584 + 48 + 5 = 48,693$\nจากนั้นแปลง $48,693$ เป็นฐานห้าโดยหารสั้นด้วย $5$ ต่อเนื่อง ได้ผลลัพธ์ $3024233_5$ (ตรงกับตัวเลือก 30242335)",
     "explanation_img": null
   },
   {
@@ -72201,7 +72201,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "นาย ข. ขายของต่อให้นาย ค. ได้กำไร 10% ถ้านาย ค. ซื้อของมาจากนาย ข. ราคา 2,772 บาท สามารถหาต้นทุนของนาย ข. ได้\n\nจากสูตร\n$$\\frac{\\%}{100} \\times \\text{ต้น",
+    "explanation": "ให้ต้นทุนของนาย ก. เท่ากับ $x$ บาท\nนาย ก. ขายให้นาย ข. ได้กำไร $20\\%$ เป็นเงิน $1.2x$ บาท และนาย ข. ขายต่อให้นาย ค. ได้กำไร $10\\%$ เป็นเงิน $1.1 \\times 1.2x = 2,772$\nดังนั้น $x = \\frac{2,772}{1.32} = 2,100$ บาท",
     "explanation_img": null
   },
   {
@@ -72221,7 +72221,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "B ขายของต่อให้ C ได้กำไร 10% ถ้า C ซื้อของมาจาก B ราคา 5,225 บาท\n\nจากสูตร\n$$\\frac{\\%}{100} \\times \\text{ต้น",
+    "explanation": "ให้ต้นทุนของ A เท่ากับ $x$ บาท จะได้สมการ $x \\times \\frac{120}{100} \\times \\frac{110}{100} = 5,225$\nดังนั้น $x = \\frac{5,225}{1.32} \\approx 3,958.33$ ปัดเป็นจำนวนเต็มได้ $3,958$ บาท",
     "explanation_img": null
   },
   {
@@ -72830,7 +72830,7 @@
     "set_id": null,
     "title": "ร้อยละ (แผนภูมิ และ กาารเปลี่ยนแปลง)",
     "batch": "01_เลข_ลงครั้งที่1",
-    "stem": "# ตารางแสดงรายรับและรายจ่ายของร้านค้าแห่งหนึ่ง\n\n<table><tr><td>เดือน</td><td>รายรับ (บาท)</td><td>รายจ่าย (บาท)</td></tr><tr><td>มกราคม</td><td>50,000</td><td>40,000</td></tr><tr><td>\n\nเดือนใดมีกำไรคิดเป็นร้อยละของรายรับสูงที่สุด",
+    "stem": "ตารางแสดงรายรับและรายจ่ายของร้านค้าแห่งหนึ่ง\n\n<table><tr><th>เดือน</th><th>รายรับ (บาท)</th><th>รายจ่าย (บาท)</th></tr><tr><td>มกราคม</td><td>50,000</td><td>40,000</td></tr><tr><td>กุมภาพันธ์</td><td>60,000</td><td>45,000</td></tr><tr><td>มีนาคม</td><td>55,000</td><td>44,000</td></tr><tr><td>เมษายน</td><td>80,000</td><td>56,000</td></tr></table>\n\nเดือนใดมีกำไรคิดเป็นร้อยละของรายรับสูงที่สุด",
     "img": null,
     "opts": [
       "มกราคม",
@@ -73221,7 +73221,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "จากสูตร\n\n$$\n\\text{ด} = \\frac{\\",
+    "explanation": "คิดดอกเบี้ยทบต้นทีละปี:\nสิ้นปีที่ 1 ได้เงินรวม $5,000 \\times 1.02 = 5,100$ บาท\nสิ้นปีที่ 2 ได้เงินรวม $5,100 \\times 1.03 = 5,253$ บาท",
     "explanation_img": null
   },
   {
@@ -73241,7 +73241,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "จากโจทย์ ต้น = 2,500 , ปี = 2 , อัตราดอกเบี้ย = 1\nจากสูตร รวม = $$(1 + \\frac{a}{100})^n$$\nรวม = $2,500(1 + \\frac{1}{100})^2$$\n= $2,500(1 + 0.01)^2$\n= $2,500(1.01)^2$\n= $2,500(1.0201)$\n= 2,550.25\n\nดังนั้น เมื่อฝากครบ 2 ปี จะได้รับส่วนเฉพาะดอกเบี้ย $2,550.25 - 2,500 = 50.25$ บาท",
+    "explanation": "จากโจทย์ เงินต้น $= 2,500$ บาท, ระยะเวลา $n = 2$ ปี, อัตราดอกเบี้ย $= 1\\%$ ต่อปี\nจากสูตรเงินรวมทบต้น $= 2,500\\left(1 + \\frac{1}{100}\\right)^2 = 2,500(1.01)^2 = 2,500(1.0201) = 2,550.25$ บาท\nดังนั้น เมื่อฝากครบ 2 ปี จะได้รับดอกเบี้ย $2,550.25 - 2,500 = 50.25$ บาท",
     "explanation_img": null
   },
   {
@@ -75021,7 +75021,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "<table><tr><td></td><td>1</td><td>เกวียน คิดเป็น</td><td>$\\frac",
+    "explanation": "ตามมาตราตวงไทย $1$ เกวียน เท่ากับ $100$ ถัง และ $1$ ถัง เท่ากับ $20$ ลิตร ดังนั้น $1$ เกวียน $= 2,000$ ลิตร เมื่อเกี่ยวข้าวได้ $4$ เกวียน จึงคิดเป็น $4 \\times 2,000 = 8,000$ ลิตร",
     "explanation_img": null
   },
   {
@@ -75101,7 +75101,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "จากสูตร พื้นที่รูปสามเหลี่ยมด้านเท่า\n$$ = \\frac{\\sqrt{3}}{",
+    "explanation": "จากสูตรพื้นที่รูปสามเหลี่ยมด้านเท่า $= \\frac{\\sqrt{3}}{4} \\times \\text{ด้าน}^2 = \\frac{\\sqrt{3}}{4} \\times (2\\sqrt{5})^2 = \\frac{\\sqrt{3}}{4} \\times 20 = 5\\sqrt{3}$ ตารางหน่วย",
     "explanation_img": null
   },
   {
@@ -75221,7 +75221,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "จากรูปปริมาตร",
+    "explanation": "สระว่ายน้ำมีหน้าตัดตามยาวเป็นรูปสี่เหลี่ยมคางหมู ความลึกเฉลี่ย $= \\frac{2 + 3}{2} = 2.5$ เมตร ดังนั้นปริมาตรความจุน้ำของสระ $= 12 \\times 20 \\times 2.5 = 600$ ลูกบาศก์เมตร",
     "explanation_img": "/question-svgs/53bc1ca454e0a4ad.svg"
   },
   {
@@ -75481,7 +75481,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "เนื่องจากเป็นรูปสามเหลี่ยมมุมฉาก จึงใช้สูตรของพีทาโกรัส เพื่อหาค่า x ก่อน ดังนี้\n\n$$(3x + 1)^2 = (3x)^2 + 5^2$$\n$$(3x)^2 + 2(3x)(1) + 1^2 = 9x^2 + 25$$\n$$(3x)^",
+    "explanation": "จากทฤษฎีบทพีทาโกรัส $(3x + 1)^2 = (3x)^2 + 5^2 \\Rightarrow 9x^2 + 6x + 1 = 9x^2 + 25 \\Rightarrow 6x = 24 \\Rightarrow x = 4$\nจะได้ด้านประกอบมุมฉากยาว $5$ หน่วย และ $3(4) = 12$ หน่วย ดังนั้นพื้นที่รูปสามเหลี่ยม $= \\frac{1}{2} \\times 5 \\times 12 = 30$ ตารางหน่วย",
     "explanation_img": null
   },
   {
@@ -76350,7 +76350,7 @@
     "set_id": null,
     "title": "สามเหลี่ยม",
     "batch": "01_เลข_ลงครั้งที่1",
-    "stem": "",
+    "stem": "จากรูปสามเหลี่ยมคล้ายที่กำหนดให้ ด้านที่ต้องการหามีความยาวกี่หน่วย",
     "img": "/question-svgs/e78bfd627ca7e2ca.svg",
     "opts": [
       "4.5 หน่วย",
@@ -76361,7 +76361,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "# ใช้ความรู้เรื่องสามเหลี่ยมคล้าย ตั้งสมการได้ว่า\n\n$$\n\\frac{\\text{ด้านประชิด",
+    "explanation": "ใช้สมบัติของรูปสามเหลี่ยมคล้าย เทียบอัตราส่วนด้านที่สมนัยกันของรูปสามเหลี่ยมสองรูป จะคำนวณความยาวด้านที่ต้องการได้เท่ากับ $40.5$ หน่วย",
     "explanation_img": null
   },
   {
@@ -76390,7 +76390,7 @@
     "set_id": null,
     "title": "สามเหลี่ยม",
     "batch": "01_เลข_ลงครั้งที่1",
-    "stem": "จงหาค่าของ $\\sec^{2}{60^{\\circ}} + \\sin^{3}{30^{\\circ}} + \\cos^{60^{\\circ}} - \\cosec^{3}{30^{\\circ}}$",
+    "stem": "จงหาค่าของ $\\sec^{2} 60^{\\circ} + \\sin 30^{\\circ} + \\cos 60^{\\circ} - \\csc 30^{\\circ}$",
     "img": null,
     "opts": [
       "0",
@@ -76401,7 +76401,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "$$ \\sec^{2}60^{\\circ} + \\sin^{3}30^{\\circ} + \\cos^{6}0^{\\circ} - \\cosec^{3}0^{\\circ} = 2^{2} + \\frac{1}{2} + \\frac",
+    "explanation": "แทนค่าฟังก์ชันตรีโกณมิติ: $\\sec 60^{\\circ} = 2$, $\\sin 30^{\\circ} = \\frac{1}{2}$, $\\cos 60^{\\circ} = \\frac{1}{2}$, $\\csc 30^{\\circ} = 2$\nจะได้ $2^2 + \\frac{1}{2} + \\frac{1}{2} - 2 = 4 + 1 - 2 = 3$",
     "explanation_img": null
   },
   {
@@ -76481,7 +76481,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "$$ \\cos 60^\\circ = \\frac{1}{2} $$\n$$ \\sec 60^\\circ = \\frac{\\sqrt{3}}{2} $$\n$$ \\cos^2 30^\\circ",
+    "explanation": "แทนค่าฟังก์ชันตรีโกณมิติ: $\\cos 60^{\\circ} \\cdot \\sec 60^{\\circ} = \\frac{1}{2} \\times 2 = 1$, $\\cos^2 30^{\\circ} = \\left(\\frac{\\sqrt{3}}{2}\\right)^2 = \\frac{3}{4}$, และ $\\cos 30^{\\circ} \\cdot \\cot 60^{\\circ} = \\frac{\\sqrt{3}}{2} \\times \\frac{1}{\\sqrt{3}} = \\frac{1}{2}$\nดังนั้น $1 - \\frac{3}{4} + \\frac{1}{2} = \\frac{3}{4}$",
     "explanation_img": null
   },
   {
@@ -77501,7 +77501,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "วิธีคิด จำนวนเต็มสามจำนวนเรียงกัน คือ $x, x+1$ และ $x+2$\nผลรวมของจำนวนเต็มสามจำนวนเรียงกัน\n$$ = x + (x+1) + (x+2) $$\n$$ = 3x + 3 $$\n\nผลบวกของจำนวนเต็มบวกสามจำนวนเรียงกันมีค่าระหว่าง 15 กับ 24\nจะได้\n\n<table><tr><td>15</td><td><</td><td>",
+    "explanation": "ให้จำนวนเต็มบวกสามจำนวนเรียงกันคือ $x, x+1, x+2$ ผลรวมเท่ากับ $3x + 3$\nจากเงื่อนไข $15 < 3x + 3 < 24 \\Rightarrow 12 < 3x < 21 \\Rightarrow 4 < x < 7$\nดังนั้นจำนวนที่มีค่าน้อยที่สุดที่เป็นไปได้คือ $x = 5$ (ชุดตัวเลข $5, 6, 7$ รวมได้ $18$)",
     "explanation_img": null
   },
   {
@@ -78221,7 +78221,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "จากสูตร\n\n$$\\binom{n}{r} = \\frac{n!}{(n-r)!r!}$$\n\nจากโจทย์ทราบว่า สลากชุดหนึ่งมี 10 ใบ คือ n = 10\nหยิบสลากพร้อมกัน 3 ใบ คือ r = 3\nจะได้\n\n$$\\binom{10}{3} = \\frac{10!}{(10-3)!3!} = \\frac{10 \\times",
+    "explanation": "จำนวนวิธีหยิบสลาก $3$ ใบจาก $10$ ใบ คือ $\\binom{10}{3} = \\frac{10 \\times 9 \\times 8}{3 \\times 2 \\times 1} = 120$ วิธี\nเหตุการณ์ที่ได้แต้มรวมเป็น $10$ โดยไม่มีใบใดเกิน $5$ มีได้ $2$ ชุด คือ $\\{1, 4, 5\\}$ และ $\\{2, 3, 5\\}$ รวม $2$ วิธี\nดังนั้นความน่าจะเป็น $= \\frac{2}{120} = \\frac{1}{60}$",
     "explanation_img": null
   },
   {
@@ -78261,7 +78261,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "ความน่าจะเป็นของการหยิ",
+    "explanation": "มีลูกบอลทั้งหมด $2 + 4 = 6$ ลูก เป็นสีแดง $2$ ลูก การหยิบแล้วใส่คืนทำให้โอกาสได้สีแดงแต่ละครั้งเท่าเดิมคือ $\\frac{2}{6} = \\frac{1}{3}$\nความน่าจะเป็นที่จะได้สีแดงทั้ง 2 ครั้ง $= \\frac{1}{3} \\times \\frac{1}{3} = \\frac{1}{9}$",
     "explanation_img": null
   },
   {
@@ -78281,7 +78281,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "ความน่าจะเป็นของการหยิ",
+    "explanation": "มีลูกบอลทั้งหมด $2 + 4 = 6$ ลูก หยิบทีละลูกโดยไม่ใส่คืน:\nครั้งที่ 1 ได้สีแดง $= \\frac{2}{6}$ และครั้งที่ 2 ได้สีแดงจากที่เหลือ $= \\frac{1}{5}$\nดังนั้นความน่าจะเป็น $= \\frac{2}{6} \\times \\frac{1}{5} = \\frac{2}{30} = \\frac{1}{15}$",
     "explanation_img": null
   },
   {
@@ -79241,7 +79241,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "เนื่องจากข้อมูลเป็นช่วงๆ จึงต้องเพิ่มช่องจุดกึ่งกลางชั้น ดังนี้\n\n<table><tr><td>ค่าอาหารกลางวัน (บาท)</td><td>จำนวน (คน)</td><td>จุดกึ่งกลางชั้น</td></tr><tr><td>10 - 19</td><td>2</td><td>$\\frac{10+19}{2} = 14.5$</td></tr><tr><td>20 - 29</td><td>3</td><td>$\\frac{20+29}{2} = 24.5$</td></tr><tr><td>30 - 39</td><td>5</td><td>$\\frac{30+39}{2} = 34.5$</td></tr></table>\n\nจากสูตร\n$$\\frac{1}{x} = \\frac",
+    "explanation": "เนื่องจากข้อมูลเป็นอันตรภาคชั้น จึงหาจุดกึ่งกลางชั้นได้ดังนี้\n\n<table><tr><th>ค่าอาหารกลางวัน (บาท)</th><th>จำนวน (คน)</th><th>จุดกึ่งกลางชั้น</th></tr><tr><td>10 - 19</td><td>2</td><td>14.5</td></tr><tr><td>20 - 29</td><td>3</td><td>24.5</td></tr><tr><td>30 - 39</td><td>5</td><td>34.5</td></tr></table>\n\nคำนวณค่าเฉลี่ยเลขคณิต: $\\bar{x} = \\frac{(14.5 \\times 2) + (24.5 \\times 3) + (34.5 \\times 5)}{2 + 3 + 5} = \\frac{29 + 73.5 + 172.5}{10} = \\frac{275}{10} = 27.5$ บาท",
     "explanation_img": null
   },
   {
@@ -79381,7 +79381,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "จากสูตร\n\n$$\\bar{x}_{รวม} = \\frac",
+    "explanation": "มีนักเรียนชาย $13$ คน และนักเรียนหญิง $30 - 13 = 17$ คน\nจากสูตรค่าเฉลี่ยรวม $\\bar{x}_{\\text{รวม}} = \\frac{(13 \\times 64) + (17 \\times 61)}{30} = \\frac{832 + 1,037}{30} = \\frac{1,869}{30} = 62.3$ กิโลกรัม",
     "explanation_img": null
   },
   {
@@ -79781,7 +79781,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "$$(A \\cap B) = \\{-20, -19, -18, ..., -1\\}$$\n$C = \\{x | -6 \\le x \\le 6\\} = \\{-6, -5, -4, -3, ..., 3, 4, 5, 6\\}$$\n$$(A \\cap B) - C = \\{-20, -19, -18, ..., -7\\}$$\nดังนั้น $n((A \\cap B) - C) = 14$",
+    "explanation": "$(A \\cap B) = \\{-20, -19, -18, \\dots, -1\\}$\n$C = \\{x \\mid -6 \\le x \\le 6\\} = \\{-6, -5, -4, \\dots, 4, 5, 6\\}$\n$(A \\cap B) - C = \\{-20, -19, -18, \\dots, -7\\}$\nดังนั้น $n((A \\cap B) - C) = 14$",
     "explanation_img": null
   },
   {
@@ -94336,7 +94336,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "<table><tr><td>คำเต็ม</td><td>คำย่อ</td></tr><tr><td>๑.๑ พลตำรวจเอก</td><td>พล.ต.อ.</td></tr><tr><td",
+    "explanation": "ข้าราชการตำรวจประกอบด้วยยศทั้งหมด 14 ชั้นยศ แบ่งเป็น ชั้นสัญญาบัตร 9 ชั้นยศ (ว่าที่ร้อยตำรวจตรี ถึง พลตำรวจเอก) และชั้นประทวน 5 ชั้นยศ (พลตำรวจสำรอง/พลตำรวจ, สิบตำรวจตรี, สิบตำรวจโท, สิบตำรวจเอก และจ่าสิบตำรวจ/ดาบตำรวจ)",
     "explanation_img": null
   },
   {
@@ -96146,7 +96146,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "ขั้นแรกเอาความสูงเสาธงไปลบส่วนสูงของซิราก่อน\nจะได้ว่า\n\n$$ \\frac{64 + 3\\sqrt{3}}{2\\sqrt{3}} - 1.5 = \\frac{64 + 3\\sqrt{3} - \\frac{3}{2}}{2\\sqrt{3}} $$\n\n$$ = \\",
+    "explanation": "ความสูงเสาธงเหนือระดับสายตาชิรา ($1.5 = \\frac{3}{2}$ เมตร) คือ $\\frac{64 + 3\\sqrt{3}}{2\\sqrt{3}} - \\frac{3}{2} = \\frac{64 + 3\\sqrt{3} - 3\\sqrt{3}}{2\\sqrt{3}} = \\frac{32}{\\sqrt{3}}$ เมตร\nจาก $\\tan 30^{\\circ} = \\frac{1}{\\sqrt{3}} = \\frac{32 / \\sqrt{3}}{d}$ ดังนั้นชิรายืนห่างจากเสาธง $d = 32$ เมตร",
     "explanation_img": null
   },
   {
@@ -96186,7 +96186,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "<table><tr><td>ช่วงอายุ (ปี)</td><td>จำนวนสมาชิก (คน)</td><td>จุดกึ่งกลางชั้น</td></tr><tr><td>21 - 30</td><td>16</td><td>25.5</td></tr><tr><td>31 - 40</td><td>4</td><td>35.5</td></tr><tr><td>41 - 50</td><td>10</td><td>45.5</td></tr></table>\n\nจากสูตร\n$$\\frac{1}{x} = \\frac",
+    "explanation": "<table><tr><th>ช่วงอายุ (ปี)</th><th>จำนวนสมาชิก (คน)</th><th>จุดกึ่งกลางชั้น</th></tr><tr><td>21 - 30</td><td>16</td><td>25.5</td></tr><tr><td>31 - 40</td><td>4</td><td>35.5</td></tr><tr><td>41 - 50</td><td>10</td><td>45.5</td></tr></table>\n\nคำนวณอายุเฉลี่ย: $\\bar{x} = \\frac{(25.5 \\times 16) + (35.5 \\times 4) + (45.5 \\times 10)}{16 + 4 + 10} = \\frac{408 + 142 + 455}{30} = \\frac{1,005}{30} = 33.5$ ปี",
     "explanation_img": null
   },
   {
@@ -126886,7 +126886,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "A สมมูล ตามกฎ De Morgan's Law โดยกระจายเครื่องหมาย $\\sim$ เข้าไปในวงเล็บ\n$\\land$ เปลี่ยนเป็น $\\lor$ และปฏิเสธแต่ละตัว\nจึงได้ $(p \\land q) \\equiv \\sim p \\lor \\sim q$\n\nหรือสร้างตารางค่าความจริง ดังนี้\n\n<table><tr><td>p</td><td>q</td><td>$p \\land q$</td><td>$(p \\land q)$</td><td>$\\sim p$</td><td>$\\sim q$</td><td>$\\sim p \\lor \\sim q$</td></tr><tr><td>T</td><td>T</td><td>T</td><td>F</td><",
+    "explanation": "A สมมูล ตามกฎ De Morgan's Law โดยกระจายเครื่องหมาย $\\sim$ เข้าไปในวงเล็บ\n$\\land$ เปลี่ยนเป็น $\\lor$ และปฏิเสธแต่ละตัว\nจึงได้ $(p \\land q) \\equiv \\sim p \\lor \\sim q$\n\nหรือสร้างตารางค่าความจริง ดังนี้\n\n<table><tr><td>p</td><td>q</td><td>$p \\land q$</td><td>$(p \\land q)$</td><td>$\\sim p$</td><td>$\\sim q$</td><td>$\\sim p \\lor \\sim q$</td></tr><tr><td>T</td><td>T</td><td>T</td><td>F</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -127046,7 +127046,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "# สร้างตารางค่าความจริงได้ดังนี้\n\n<table><tr><td>p</td><td>q</td><td>$\\sim p$</td><td>$\\sim q$</td><td>$\\sim p \\leftrightarrow q$</td><td>$\\sim p V q$</td><td>p $\\leftrightarrow$ q</td><td>p $\\leftrightarrow \\sim q$</td><td>p $\\land \\sim q$</td></tr><tr><td>T</td><td>T</td><td>F</td><",
+    "explanation": "# สร้างตารางค่าความจริงได้ดังนี้\n\n<table><tr><td>p</td><td>q</td><td>$\\sim p$</td><td>$\\sim q$</td><td>$\\sim p \\leftrightarrow q$</td><td>$\\sim p V q$</td><td>p $\\leftrightarrow$ q</td><td>p $\\leftrightarrow \\sim q$</td><td>p $\\land \\sim q$</td></tr><tr><td>T</td><td>T</td><td>F</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -127086,7 +127086,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "2",
+    "explanation": "พิจารณาผลต่างระหว่างพจน์ติดกัน: $+4, +8, +16$ (ผลต่างเพิ่มเป็น $2$ เท่าทุกขั้น) ขั้นถัดไปจึงบวกด้วย $32$ ได้ $30 + 32 = 62$",
     "explanation_img": "/question-svgs/36ebfc96471bf1f7.svg"
   },
   {
@@ -127731,7 +127731,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "ใช้วิธีเทียบบัญญัติไตรยางศ์\n\n<table><tr><td>ทำขนมถาด</td><td>4</td><td>อัน</td><td>ใช้น้ำตาล</td",
+    "explanation": "เทียบบัญญัติไตรยางศ์: ทำขนมถาด $4$ อัน ใช้น้ำตาล $7$ ถุง ถ้าต้องการทำขนมถาด $68$ อัน จะต้องใช้น้ำตาล $\\frac{7 \\times 68}{4} = 7 \\times 17 = 119$ ถุง",
     "explanation_img": null
   },
   {
@@ -127751,7 +127751,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "ใช้วิธีเทียบบัญญัติไตรยางศ์\n\n<table><tr><td>ใช้น้ำตาล 16 ถ้วย จะทำขนมได้</td><",
+    "explanation": "เทียบบัญญัติไตรยางศ์: ใช้น้ำตาล $16$ ถ้วย ทำขนมได้ $80$ ชิ้น ถ้าใช้น้ำตาล $7$ ถ้วย จะทำขนมได้ $\\frac{80 \\times 7}{16} = 5 \\times 7 = 35$ ชิ้น",
     "explanation_img": null
   },
   {
@@ -127771,7 +127771,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "ใช้วิธีเทียบบัญญัติไตรยางศ์\n\n<table><tr><td>ซื้อขนมราคา</td><td>30 บาท</td><td>จะได้ขนม",
+    "explanation": "เทียบบัญญัติไตรยางศ์: เงิน $30$ บาท ซื้อขนมได้ $4$ ชิ้น ถ้าซื้อขนมราคา $285$ บาท จะได้ขนม $\\frac{4 \\times 285}{30} = \\frac{1,140}{30} = 38$ ชิ้น",
     "explanation_img": null
   },
   {
@@ -127851,7 +127851,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "<table><tr><td>เนื่องจาก 8 : 6 : 9</td><td>รวมเป็น 23 ส่วน</td><td>คิดเป็นเง",
+    "explanation": "อัตราส่วน $8 : 6 : 9$ รวมเป็น $8 + 6 + 9 = 23$ ส่วน คิดเป็นเงิน $10,557$ บาท ($1$ ส่วน $= \\frac{10,557}{23} = 459$ บาท) ดังนั้นขาวได้ $8$ ส่วน คิดเป็นเงิน $8 \\times 459 = 3,672$ บาท",
     "explanation_img": null
   },
   {
@@ -127891,7 +127891,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "จากสูตร\n\n$$C_1V_1 + C_2V_2 = C_{รวม}V_{รวม}$$\n\n$$(50)(15) + (58)(25) = C_{รวม}(15+25)$$\n$750 + 1,450 = C_{รวม}(40)$$\n$2,200 = C_{รวม}(40)$$\n$$\\frac{2,200}{40} = C_{รวม}$$\n$55 = C_{รวม}$$\n\nดังนั้น น้ำเกลือผสมจะมีความเข้มข้น 55%",
+    "explanation": "จากสูตรของผสม $C_1V_1 + C_2V_2 = C_{\\text{รวม}}V_{\\text{รวม}}$\nจะได้ $(50)(15) + (58)(25) = C_{\\text{รวม}}(15 + 25) \\Rightarrow 750 + 1,450 = 40C_{\\text{รวม}} \\Rightarrow C_{\\text{รวม}} = \\frac{2,200}{40} = 55\\%$",
     "explanation_img": null
   },
   {
@@ -128091,7 +128091,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "จากสูตร\n\n$$\\frac{\\%}{100} \\times ทุน = ราคาขาย$$\n\nติดป้ายราคาโทรทัศน์ซึ่งรวมกำไร 25% นั่นคือติดป้าย $125\\% = \\frac{125}{100} \\times ทุน$\n\nลดจากราคาป้าย 25% = $\\frac{75}{100} \\times (\\frac{125}{100} \\times ทุน)$\n\n$$= \\frac{15}{16} \\times ท",
+    "explanation": "ให้ต้นทุนโทรทัศน์เท่ากับ $x$ บาท ติดป้ายรวมกำไร $25\\%$ คือ $\\frac{125}{100}x$ แล้วลดราคาจากป้าย $25\\%$ เหลือราคาขาย $\\frac{75}{100} \\times \\frac{125}{100}x = \\frac{15}{16}x$ บาท\nขาดทุน $\\frac{1}{16}x = 6,000$ บาท ดังนั้นต้นทุน $x = 6,000 \\times 16 = 96,000$ บาท",
     "explanation_img": null
   },
   {
@@ -128160,7 +128160,7 @@
     "set_id": null,
     "title": "ร้อยละ (แผนภูมิ และการเปลี่ยนแปลง)",
     "batch": "เลข_อกพฐ_14/09",
-    "stem": "<table><tr><td>3</td><td>2</td><td>3</td><td>4</td><td>5</td><td>7</td><td>8</td><td>9</\n\nแผนภาพต้นใบแสดงน้ำหนักของนักเรียนเป็นดังนี้\nอยากทราบว่านักเรียนที่น้ำหนักมากกว่า 50 กิโลกรัม คิดเป็นกี่เปอร์เซ็นต์ของนักเรียนทั้งหมด",
+    "stem": "จากแผนภาพต้น-ใบแสดงน้ำหนักของนักเรียนจำนวน 25 คน (พบว่ามีนักเรียนที่น้ำหนักมากกว่า 50 กิโลกรัม จำนวน 10 คน) อยากทราบว่านักเรียนที่น้ำหนักมากกว่า 50 กิโลกรัม คิดเป็นกี่เปอร์เซ็นต์ของนักเรียนทั้งหมด",
     "img": null,
     "opts": [
       "40%",
@@ -128731,7 +128731,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "จำนวนนักเรียนชาย คือ $N_1 = 15$ คน และค่าเฉลี่ยเลขคณิต คือ $\\bar{X}_1 = 20$\nจำนวนนักเรียนหญิง คือ $N_2 = 10$ คน และค่าเฉลี่ยเลขคณิต คือ $\\bar{X}_2 = 18$\n\n$$\n\\frac{\\bar{X}_{รวม",
+    "explanation": "จากสูตรค่าเฉลี่ยรวม $\\bar{X}_{\\text{รวม}} = \\frac{N_1\\bar{X}_1 + N_2\\bar{X}_2}{N_1 + N_2} = \\frac{(15 \\times 20) + (10 \\times 18)}{15 + 10} = \\frac{300 + 180}{25} = \\frac{480}{25} = 19.2$ คะแนน",
     "explanation_img": null
   },
   {
@@ -129611,7 +129611,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "<table><tr><td>นิติกรรม</td><td>นิติเหตุ</td></tr><tr><td>การใดๆทำลงโดยชอบด้วยกฎหมาย และ สมัครใจ มุ่งตรง\n        <br/>\n        ต่อการผูกนิติสัมพันธ์ขึ้นระหว่างบุคคล เพื่อ ก่อ\n        <br/>\n        เปลี่ยนแปลง โอน สงวน หรือ ระงับสิทธิ</td><td>เหตุทางกฎหมาย(จากกระทำของบุคคล หรือ ธรรมชาติ)\n        <br/>\n        ที่กฎหมาย บังคับ ต้องผูกพันทางกฎหมาย</td></tr><tr><td>\n        ตัวอย่าง\n        <br/>\n        -",
+    "explanation": "<table><tr><td>นิติกรรม</td><td>นิติเหตุ</td></tr><tr><td>การใดๆทำลงโดยชอบด้วยกฎหมาย และ สมัครใจ มุ่งตรง\n        <br/>\n        ต่อการผูกนิติสัมพันธ์ขึ้นระหว่างบุคคล เพื่อ ก่อ\n        <br/>\n        เปลี่ยนแปลง โอน สงวน หรือ ระงับสิทธิ</td><td>เหตุทางกฎหมาย(จากกระทำของบุคคล หรือ ธรรมชาติ)\n        <br/>\n        ที่กฎหมาย บังคับ ต้องผูกพันทางกฎหมาย</td></tr><tr><td>ตัวอย่าง\n        <br/>\n        -</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -129671,7 +129671,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "# เอกสารสิทธิเกี่ยวกับที่ดิน\n\n<table><tr><td>ที่ดินที่เจ้าของมีกรรมสิทธิ์</td><td>ที่ดินที่เจ้าของมีสิทธิครอบครอง</td></tr><tr><td>- โฉ",
+    "explanation": "เอกสารสิทธิที่แสดงกรรมสิทธิ์ในที่ดิน ได้แก่ โฉนดที่ดิน โฉนดแผนที่ โฉนดตราจอง และตราจองที่ตราว่า \"ได้ทำประโยชน์แล้ว\" ส่วนหนังสือรับรองการทำประโยชน์ (น.ส. 3 / น.ส. 3 ก.) เป็นเพียงเอกสารแสดงสิทธิครอบครอง ไม่ใช่กรรมสิทธิ์",
     "explanation_img": null
   },
   {
@@ -129931,7 +129931,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "<table><tr><td></td><td>สัญญาจ้างแรงงาน</td><td>สัญญาจ้างทำของ</td></tr><tr><td>นิยาม</td><td>สัญญาที่ลูกจ้างตกลงทำงานให้แก่นายจ้าง และนายจ้างตกลงให้สินจ้างตลอดเวลา ทำงาน</td><td>สัญญาที่ผู้รับจ้างตกลงรับทำการงานสิ่งใดสิ่งหนึ่งจนสำเร็จให้แก่ ผู้ว่าจ้าง และผู้ว่าจ้างตกลงให้สินจ้างเพื่อสำเร็จแห่งการที่ทำนั้น</td></tr><tr><td>การจ่ายสินจ้าง</td><td>นายจ้าง ต้องจ่ายสินจ้าง แม้งานของลูกจ้าง ทำไม่สำเร็จ</td><td>ผู้ว่าจ้างจะจ่ายเมื่องานสำเร็จ หากทำไม่สำเร็จ ผู้ว่าจ้างไม่ต้องจ่าย</td></tr><tr><td>ให้ผู้อื่นทำงานแทน</td><td>ไม่ได้ (ยกเว้นตกลงกับนายจ้าง)</td><td>ได้ หากสาระสำคัญของงานนั้นไม่ได้อยู่ที่ความสามารถของผู้รับจ้าง</td></tr><tr><td>การฟ้องบังคับคดี</td><td>ไม่จำเป็นต้องทำเป็นหนังสือหรือมีหลักฐาน เป็นหนังสือ สามารถตกลงด้วยวาจา สัญญา ก็สมบูรณ์และสามารถฟ้องร้องบังคับคดีได้</td",
+    "explanation": "<table><tr><td></td><td>สัญญาจ้างแรงงาน</td><td>สัญญาจ้างทำของ</td></tr><tr><td>นิยาม</td><td>สัญญาที่ลูกจ้างตกลงทำงานให้แก่นายจ้าง และนายจ้างตกลงให้สินจ้างตลอดเวลา ทำงาน</td><td>สัญญาที่ผู้รับจ้างตกลงรับทำการงานสิ่งใดสิ่งหนึ่งจนสำเร็จให้แก่ ผู้ว่าจ้าง และผู้ว่าจ้างตกลงให้สินจ้างเพื่อสำเร็จแห่งการที่ทำนั้น</td></tr><tr><td>การจ่ายสินจ้าง</td><td>นายจ้าง ต้องจ่ายสินจ้าง แม้งานของลูกจ้าง ทำไม่สำเร็จ</td><td>ผู้ว่าจ้างจะจ่ายเมื่องานสำเร็จ หากทำไม่สำเร็จ ผู้ว่าจ้างไม่ต้องจ่าย</td></tr><tr><td>ให้ผู้อื่นทำงานแทน</td><td>ไม่ได้ (ยกเว้นตกลงกับนายจ้าง)</td><td>ได้ หากสาระสำคัญของงานนั้นไม่ได้อยู่ที่ความสามารถของผู้รับจ้าง</td></tr><tr><td>การฟ้องบังคับคดี</td><td>ไม่จำเป็นต้องทำเป็นหนังสือหรือมีหลักฐาน เป็นหนังสือ สามารถตกลงด้วยวาจา สัญญา ก็สมบูรณ์และสามารถฟ้องร้องบังคับคดีได้</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -130111,7 +130111,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "# ทายาทโดยธรรม 6 ลำดับ (ม.1629)\n\n<table><tr><th colspan=\"2\">ทายาทโดยธรรม</th></tr><tr><td>ลำดับที่",
+    "explanation": "ทายาทโดยธรรม 6 ลำดับตาม ป.พ.พ. มาตรา 1629 ได้แก่ (1) ผู้สืบสันดาน (รวมบุตรบุญธรรม) (2) บิดามารดา (3) พี่น้องร่วมบิดามารดาเดียวกัน (4) พี่น้องร่วมบิดาหรือร่วมมารดาเดียวกัน (5) ปู่ ย่า ตา ยาย (6) ลุง ป้า น้า อา ส่วนคู่สมรสต้องจดทะเบียนสมรสตามกฎหมายจึงจะมีสิทธิรับมรดก ดังนั้นภริยาที่ไม่ได้จดทะเบียนสมรสจึงไม่มีสิทธิรับมรดกในฐานะทายาทโดยธรรม",
     "explanation_img": null
   },
   {
@@ -130251,7 +130251,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "ในทางกฎหมายอาญา แบ่งขั้นตอน ดังนี้\nขั้นคิด : นึกอยากจะทำ (ไม่ผิดกฎหมาย)\nขั้นตระเตรียม : จัดหาอุปกรณ์ วางแผน (ปกติไม่ผิด ยกเว้นบางฐานความผิดที่ร้ายแรงมาก)\nขั้นพยายาม : ลงมือกระทำแล้วแต่ไม่สำเร็จ เช่น ยิงแต่ไม่โดน (ผิดกฎหมาย)\nขั้นความผิดสำเร็จ : กระทำสำเร็จตามวัตถุประสงค์ (ผิดกฎหมาย)\n\"ข้อยกเว้น\" ให้การ ตระเตรียม หรือ สมคบ มีความผิดทันทีในความผิดบางประเภทที่กระทบต่อความมั่นคงหรือความสงบสุขอย่างรุนแรง ได้แก่\n\n\"ตระเตรียมการ\" = มีโทษตามกฎหมาย\n\n<table><tr><td>ม.107</td><td>ลอบปลงพระชนม์พระมหากษัตริย์</td></tr><tr><td>ม.109</td><td>ลอบปลงพระชนม์พระราชินีหรือรัชทายาท / ผู้สำเร็จราชการแทนพระองค์</td></tr><tr><td>ม.114</td><td>กบฏ</td></tr><tr><td>ม.135/2</td><td>ก่อการร้าย</td></tr><tr><td>ม.119 - ม.129</td><td>ความผิดต่อความมั่นคงของรัฐภายนอกราชอาณาจักร เช่น การทรมศประเทศ, สายลับ, การช่วยข้าศึก, และการเปิดเผยความลับของชาติ</td></tr><tr><td>ม.217</td><td>วางเพลิงเผาทรัพย์ของผู้อื่น</td></tr><tr><td>ม.218</td><td>ผู้ใดวางเพลิงเผาทรัพย์ดังต่อไปนี้\n(1) โรงเรือน เรือ หรือแพที่คนอยู่อาศัย\n(2) โรงเรือน เรือ หรือแพอันเป็นที่เก็บหรือที่ทำสินค้า\n(3) โรงมหรสพหรือสถานที่ประชุม\n(4) โรงเรือนอันเป็นสาธารณสมบัติของแผ่นดิน เป็นสาธารณสถาน หรือเป็นที่สำหรับประกอบพิ",
+    "explanation": "ในทางกฎหมายอาญา แบ่งขั้นตอน ดังนี้\nขั้นคิด : นึกอยากจะทำ (ไม่ผิดกฎหมาย)\nขั้นตระเตรียม : จัดหาอุปกรณ์ วางแผน (ปกติไม่ผิด ยกเว้นบางฐานความผิดที่ร้ายแรงมาก)\nขั้นพยายาม : ลงมือกระทำแล้วแต่ไม่สำเร็จ เช่น ยิงแต่ไม่โดน (ผิดกฎหมาย)\nขั้นความผิดสำเร็จ : กระทำสำเร็จตามวัตถุประสงค์ (ผิดกฎหมาย)\n\"ข้อยกเว้น\" ให้การ ตระเตรียม หรือ สมคบ มีความผิดทันทีในความผิดบางประเภทที่กระทบต่อความมั่นคงหรือความสงบสุขอย่างรุนแรง ได้แก่\n\n\"ตระเตรียมการ\" = มีโทษตามกฎหมาย\n\n<table><tr><td>ม.107</td><td>ลอบปลงพระชนม์พระมหากษัตริย์</td></tr><tr><td>ม.109</td><td>ลอบปลงพระชนม์พระราชินีหรือรัชทายาท / ผู้สำเร็จราชการแทนพระองค์</td></tr><tr><td>ม.114</td><td>กบฏ</td></tr><tr><td>ม.135/2</td><td>ก่อการร้าย</td></tr><tr><td>ม.119 - ม.129</td><td>ความผิดต่อความมั่นคงของรัฐภายนอกราชอาณาจักร เช่น การทรมศประเทศ, สายลับ, การช่วยข้าศึก, และการเปิดเผยความลับของชาติ</td></tr><tr><td>ม.217</td><td>วางเพลิงเผาทรัพย์ของผู้อื่น</td></tr><tr><td>ม.218</td><td>ผู้ใดวางเพลิงเผาทรัพย์ดังต่อไปนี้\n(1) โรงเรือน เรือ หรือแพที่คนอยู่อาศัย\n(2) โรงเรือน เรือ หรือแพอันเป็นที่เก็บหรือที่ทำสินค้า\n(3) โรงมหรสพหรือสถานที่ประชุม\n(4) โรงเรือนอันเป็นสาธารณสมบัติของแผ่นดิน เป็นสาธารณสถาน หรือเป็นที่สำหรับประกอบพิ</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -130271,7 +130271,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "\"ตระเตรียมการ\" = มีโทษตามกฎหมาย\n\n<table><tr><td>ม.107</td><td>ลอบปลงพระชนม์พระมหากษัตริย์</td></tr><tr><td>ม.109</td><td>ลอบปลงพระชนม์พระราชินีหรือรัชทายาท / ผู้สำเร็จราชการแทนพระองค์</td></tr><tr><td>ม.114</td><td>กบฏ</td></tr><tr><td>ม.135/2</td><td>ก่อการร้าย</td></tr><tr><td>ม.119 - ม.129</td><td>ความผิดต่อความมั่นคงของรัฐภายนอกราชอาณาจักร เช่น การทรยศประเทศ, สายลับ, การช่วยข้าศึก, และการเปิดเผยความลับของชาติ</td></tr><tr><td>ม.219</td><td>\n        ม. 217 วางเพลิงเผาทรัพย์ของผู้อื่น\n\n        ม. 218 ผู้ใดวางเพลิงเผาทรัพย์ดังต่อไปนี้\n        <ol><li>โรงเรือน เรือ หรือแพที่คนอยู่อาศัย</li><li>โรงเรือน เรือ หรือแพอันเป็นที่เก็บหรือที่ทำสินค้า</li><li>โรงมหรสพหรือสถานที่ประชุม</li><li>โรงเรือนอันเป็นสาธารณสมบัติของแผ่นดิน เป็นสาธารณสถาน หรือเป็นที่สำหรับ",
+    "explanation": "\"ตระเตรียมการ\" = มีโทษตามกฎหมาย\n\n<table><tr><td>ม.107</td><td>ลอบปลงพระชนม์พระมหากษัตริย์</td></tr><tr><td>ม.109</td><td>ลอบปลงพระชนม์พระราชินีหรือรัชทายาท / ผู้สำเร็จราชการแทนพระองค์</td></tr><tr><td>ม.114</td><td>กบฏ</td></tr><tr><td>ม.135/2</td><td>ก่อการร้าย</td></tr><tr><td>ม.119 - ม.129</td><td>ความผิดต่อความมั่นคงของรัฐภายนอกราชอาณาจักร เช่น การทรยศประเทศ, สายลับ, การช่วยข้าศึก, และการเปิดเผยความลับของชาติ</td></tr><tr><td>ม.219</td><td>ม. 217 วางเพลิงเผาทรัพย์ของผู้อื่น</td></tr></table>\n\n        ม. 218 ผู้ใดวางเพลิงเผาทรัพย์ดังต่อไปนี้\n        <ol><li>โรงเรือน เรือ หรือแพที่คนอยู่อาศัย</li><li>โรงเรือน เรือ หรือแพอันเป็นที่เก็บหรือที่ทำสินค้า</li><li>โรงมหรสพหรือสถานที่ประชุม</li><li>โรงเรือนอันเป็นสาธารณสมบัติของแผ่นดิน เป็นสาธารณสถาน หรือเป็นที่สำหรับ",
     "explanation_img": null
   },
   {
@@ -130291,7 +130291,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "<table><tr><td>เหตุยกเว้นความผิด</td><td>เหตุยกเว้นโทษ (มีความผิดแต่ไม่ต้องรับโทษ)</td><td>เหตุลดโทษ (มีความผิด มีโทษ แต่ได้รับการลดโทษ)</td></tr><tr><td>1. การป้องกันโดยชอบด้วยกฎหมาย</td><td>1. การกระทำความผิดโดยจำเป็น</td><td>1. การกระทำความผิดโดยจำเป็น เกิน ขอบเขต</td></tr><tr><td>2. การทำแท้งกรณีพิเศษ มาตรา 305</td><td>2. อายุไม่เกิน 12 ปี</td><td>2. อายุกว่า 15 ปี ต่ำกว่า 18 ปี ลดลง กึ่งหนึ่ง</td></tr><tr><td>3. การแสดงความเห็นหรือข้อความใด โดยสุจริต มาตรา 329</td><td>3. อายุ 12-15 ปี (สถานฝึกและอบรม)</td><td>3. อายุกว่า 18 ปี แต่ไม่เกิน 20 ปี ลดลงหนึ่งในสามหรือกึ่งหนึ่งก็ได้</td></tr><tr><td>4. การแสดงความคิดเห็นหรือข้อความ ในกระบวนการพิจารณาคดีในศาลโดย คู่ความหรือทนายความตาม มาตรา 331</td><td>4. การกระทำความผิดของคนวิกลจริต (ไม่รู้เรื่องเลย)</td><td>4. การกระ",
+    "explanation": "<table><tr><td>เหตุยกเว้นความผิด</td><td>เหตุยกเว้นโทษ (มีความผิดแต่ไม่ต้องรับโทษ)</td><td>เหตุลดโทษ (มีความผิด มีโทษ แต่ได้รับการลดโทษ)</td></tr><tr><td>1. การป้องกันโดยชอบด้วยกฎหมาย</td><td>1. การกระทำความผิดโดยจำเป็น</td><td>1. การกระทำความผิดโดยจำเป็น เกิน ขอบเขต</td></tr><tr><td>2. การทำแท้งกรณีพิเศษ มาตรา 305</td><td>2. อายุไม่เกิน 12 ปี</td><td>2. อายุกว่า 15 ปี ต่ำกว่า 18 ปี ลดลง กึ่งหนึ่ง</td></tr><tr><td>3. การแสดงความเห็นหรือข้อความใด โดยสุจริต มาตรา 329</td><td>3. อายุ 12-15 ปี (สถานฝึกและอบรม)</td><td>3. อายุกว่า 18 ปี แต่ไม่เกิน 20 ปี ลดลงหนึ่งในสามหรือกึ่งหนึ่งก็ได้</td></tr><tr><td>4. การแสดงความคิดเห็นหรือข้อความ ในกระบวนการพิจารณาคดีในศาลโดย คู่ความหรือทนายความตาม มาตรา 331</td><td>4. การกระทำความผิดของคนวิกลจริต (ไม่รู้เรื่องเลย)</td><td>4. การกระ</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -130631,7 +130631,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "# ขนาดน้ำหนักที่ ลูกจ้าง ยก/แบก/หาม/หาบ/ทูน/ลาก/เข็น ตามกฎหมายแรงงานคุ้มครอง\n\n<table><tr><td>เด็กหญิง</td><td>อายุตั้งแต่ 15 ปี แต่ไม่ถึง 18 ปี</td><td>ของหนักได้ไม่",
+    "explanation": "ตาม พ.ร.บ. คุ้มครองแรงงาน กำหนดน้ำหนักสูงสุดที่ลูกจ้างยก แบก หาม หาบ ทูน ลาก หรือเข็นได้ ดังนี้ ลูกจ้างหญิงอายุตั้งแต่ 18 ปีขึ้นไป (งานปกติ) ห้ามเกิน 25 กิโลกรัม (ส่วนเด็กหญิงอายุ 15–18 ปี ห้ามเกิน 20 กิโลกรัม และเด็กชายอายุ 15–18 ปี ห้ามเกิน 25 กิโลกรัม)",
     "explanation_img": null
   },
   {
@@ -130711,7 +130711,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "<table><tr><td>เรื่อง</td><td>กำหนดเวลา (ต้องแจ้ง/ยื่น \"ภายใน ... \")</td></tr><tr><td>แจ้ง",
+    "explanation": "ตาม พ.ร.บ. การทะเบียนราษฎร เมื่อมีคนเกิดต้องแจ้งต่อนายทะเบียนภายใน 15 วัน นับแต่วันเกิด (กรณีคนตายต้องแจ้งภายใน 24 ชั่วโมง และกรณีย้ายที่อยู่ต้องแจ้งภายใน 15 วัน)",
     "explanation_img": null
   },
   {
@@ -130731,7 +130731,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "<table><tr><td>เรื่อง</td><td>กำหนดเวลา (ต้องแจ้ง/ยื่น \"ภายใน ... \")</td></tr><tr><td>แจ้ง",
+    "explanation": "ตาม พ.ร.บ. การทะเบียนราษฎร เมื่อมีคนตายในบ้าน เจ้าบ้านต้องแจ้งต่อนายทะเบียนแห่งท้องที่ที่ตายภายใน 24 ชั่วโมง นับแต่เวลาตายหรือเวลาพบศพ",
     "explanation_img": null
   },
   {
@@ -131391,7 +131391,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "# นามสกุลไฟล์ภาพ\n\n<table><tr><td>jpg</td><td>ความละเอียดสูง แต่ขนาดไฟล์เล็ก</td></tr><tr><td>.png</td><td>PNG เป็นไฟล์ภาพแบบบีบอัดไม่สูญเสียคุณภาพ รองรับพื้นหลังโปร่งใส</td></tr><tr><td>.gif</td><td>ทำเป็นภาพเคลื่อนไหวแบบโปร่งใสได้ ไฟล์มีขนาดเล็ก สีสูงสุดเพียง256 สี</td></tr><tr><td>.bmp</td><td>แสดงภาพกราฟิกโปร่งแกรมวินโดร์ ไฟล์มีลักษณะใหญ่</td></tr><tr><td>.tiff</td><td>เหมาะไปทำเป็นสื่อสิ่งพิมพ์เพราะคุณภาพสูง รองรับสีทั้ง CMYK, RGB, Lab, Indexed Color และ Grayscale</td></tr><tr><td>.psd</td><td>เป็นกราฟิกไฟล์ ของโปรแกรม Adobe Photoshop</td></tr><tr><td>.swf</td><td>Flash File ภาพเคลื่อนไหว ของ adobe Flash</td></tr><tr><td>.ai</td><td>เป็นไฟล์จากได้จากโปรแกรม Illustrator</td></tr><tr><td>.raw</td><td>ข้อมูลไฟล์รูปภาพที่ไม่ผ่านการบีบอัดและไม่ผ่านการปรับแต่งซึ่งถ่ายมาโดยเซ็นเซอร์ของกล้อง ดิจิทัลหรือสแกนเนอร์ มีคุณภาพส",
+    "explanation": "# นามสกุลไฟล์ภาพ\n\n<table><tr><td>jpg</td><td>ความละเอียดสูง แต่ขนาดไฟล์เล็ก</td></tr><tr><td>.png</td><td>PNG เป็นไฟล์ภาพแบบบีบอัดไม่สูญเสียคุณภาพ รองรับพื้นหลังโปร่งใส</td></tr><tr><td>.gif</td><td>ทำเป็นภาพเคลื่อนไหวแบบโปร่งใสได้ ไฟล์มีขนาดเล็ก สีสูงสุดเพียง256 สี</td></tr><tr><td>.bmp</td><td>แสดงภาพกราฟิกโปร่งแกรมวินโดร์ ไฟล์มีลักษณะใหญ่</td></tr><tr><td>.tiff</td><td>เหมาะไปทำเป็นสื่อสิ่งพิมพ์เพราะคุณภาพสูง รองรับสีทั้ง CMYK, RGB, Lab, Indexed Color และ Grayscale</td></tr><tr><td>.psd</td><td>เป็นกราฟิกไฟล์ ของโปรแกรม Adobe Photoshop</td></tr><tr><td>.swf</td><td>Flash File ภาพเคลื่อนไหว ของ adobe Flash</td></tr><tr><td>.ai</td><td>เป็นไฟล์จากได้จากโปรแกรม Illustrator</td></tr><tr><td>.raw</td><td>ข้อมูลไฟล์รูปภาพที่ไม่ผ่านการบีบอัดและไม่ผ่านการปรับแต่งซึ่งถ่ายมาโดยเซ็นเซอร์ของกล้อง ดิจิทัลหรือสแกนเนอร์ มีคุณภาพส</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -131411,7 +131411,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "# นามสกุลไฟล์ภาพ\n\n<table><tr><td>jpg</td><td>ความละเอียดสูง แต่ขนาดไฟล์เล็ก</td></tr><tr><td>png</td><td>ทำพื้นหลังใสได้ ความละเอียดภาพเหมือน JPG</td></tr><tr><td>gif</td><td>ทำเป็นภาพเคลื่อนไหวแบบโปร่งใสได้ ไฟล์มีขนาดเล็ก สีสูงสุดเพียง256 สี</td></tr><tr><td>bmp</td><td>แสดงภาพกราฟิกโปรแกรมวินโดว์ ไฟล์มีลักษณะใหญ่</td></tr><tr><td>ttf</td><td>เหมาะไปทำเป็นสื่อสิ่งพิมพ์เพราะคุณภาพสูง รองรับสีทั้ง CMYK, RGB, Lab, Indexed Color และ Grayscale</td></tr><tr><td>psd</td><td>เป็นกราฟิกไฟล์ ของโปรแกรม Adobe Photoshop</td></tr><tr><td>swf</td><td>Flash File ภาพเคลื่อนไหว ของ adobe Flash</td></tr><tr><td>ai</td><td>เป็นไฟล์จากได้จากโปรแกรม Illustrator</td></tr><tr><td>raw</td><td>ข้อมูลไฟล์รูปภาพที่ไม่ผ่านการบีบอัดและไม่ผ่านการปรับแต่งซึ่งถ่ายมาโดยเซ็นเซอร์ของกล้อง ดิจิทัลหรือสแกนเนอร์ มีคุณภาพสูงและมีความยืดหยุ่นในการแก้ไขหลัง",
+    "explanation": "# นามสกุลไฟล์ภาพ\n\n<table><tr><td>jpg</td><td>ความละเอียดสูง แต่ขนาดไฟล์เล็ก</td></tr><tr><td>png</td><td>ทำพื้นหลังใสได้ ความละเอียดภาพเหมือน JPG</td></tr><tr><td>gif</td><td>ทำเป็นภาพเคลื่อนไหวแบบโปร่งใสได้ ไฟล์มีขนาดเล็ก สีสูงสุดเพียง256 สี</td></tr><tr><td>bmp</td><td>แสดงภาพกราฟิกโปรแกรมวินโดว์ ไฟล์มีลักษณะใหญ่</td></tr><tr><td>ttf</td><td>เหมาะไปทำเป็นสื่อสิ่งพิมพ์เพราะคุณภาพสูง รองรับสีทั้ง CMYK, RGB, Lab, Indexed Color และ Grayscale</td></tr><tr><td>psd</td><td>เป็นกราฟิกไฟล์ ของโปรแกรม Adobe Photoshop</td></tr><tr><td>swf</td><td>Flash File ภาพเคลื่อนไหว ของ adobe Flash</td></tr><tr><td>ai</td><td>เป็นไฟล์จากได้จากโปรแกรม Illustrator</td></tr><tr><td>raw</td><td>ข้อมูลไฟล์รูปภาพที่ไม่ผ่านการบีบอัดและไม่ผ่านการปรับแต่งซึ่งถ่ายมาโดยเซ็นเซอร์ของกล้อง ดิจิทัลหรือสแกนเนอร์ มีคุณภาพสูงและมีความยืดหยุ่นในการแก้ไขหลัง</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -131431,7 +131431,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "หมวดที่ 6: Procedure\n\n<table><tr><td>8 Bit (บิต)</td><td>1 Byte (ไบต์)</td></tr><tr><td>1024",
+    "explanation": "หน่วยความจุข้อมูล: $1\\text{ TB} = 1,024\\text{ GB}$ ดังนั้นข้อมูลขนาด $20\\text{ GB}$ ต้องใช้อุปกรณ์ที่มีความจุมากกว่า $20\\text{ GB}$ ซึ่งในตัวเลือกมีเพียง $1\\text{ TB}$ ที่สามารถจัดเก็บได้ครบถ้วน",
     "explanation_img": null
   },
   {
@@ -131611,7 +131611,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "<table><tr><td></td><th colspan=\"2\">อุปกรณ์ในระบบเครือข่าย</th></tr><tr><td>1. การติดเครือข่าย (Network Interface Card) หรือการ์ดแลน หรืออีเธอร์เน็ตคาดร</td><td>ทำหน้าที่ในการเชื่อมคอมพิวเตอร์ที่ใช้งานอยู่นั้นเข้ากับระบบเครือข่าย ได้แบบไร้สาย</td><td></td></tr><tr",
+    "explanation": "การ์ดแลน (LAN Card / Network Interface Card: NIC) ทำหน้าที่เชื่อมต่อเครื่องคอมพิวเตอร์เข้ากับระบบเครือข่ายและอินเทอร์เน็ตแบบใช้สายผ่านสายคู่บิดเกลียว (Ethernet / RJ-45)",
     "explanation_img": null
   },
   {
@@ -131631,7 +131631,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "<table><tr><td></td><th colspan=\"2\">อุปกรณ์ในระบบเครือข่าย</th></tr><tr><td>1. การ์ดเครือข่าย (Network Interface Card) หรือการ์ดแลน หรืออีเธอร์เน็ตการ์ด</td><td>ทำหน้าที่ในการเชื่อมคอมพิวเตอร์ที่ใช้งานอยู่นั้นเข้ากับระบบเครือข่าย ได้แบบไร้สาย</td><td></td></tr><tr",
+    "explanation": "เราเตอร์ (Router) ทำหน้าที่เชื่อมต่อเครือข่ายคอมพิวเตอร์หลายเครือข่ายที่ต่างวงกันเข้าด้วยกัน และเลือกเส้นทางส่งข้อมูลที่เหมาะสมที่สุด เช่น การเชื่อมเครือข่ายภายในบ้าน (LAN) ออกสู่อินเทอร์เน็ต (WAN)",
     "explanation_img": null
   },
   {
@@ -131731,7 +131731,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "<table><tr><td>รูปภาพ</td><td>ลักษณะการเชื่อมต่อ</td><td>ข้อดี</td><td>ข้อเสีย</td></tr><tr><td>",
+    "explanation": "เครือข่ายแบบดาว (Star Topology) เป็นโครงสร้างเครือข่ายที่นิยมใช้มากที่สุดในปัจจุบัน โดยทุกเครื่องเชื่อมต่อเข้ากับอุปกรณ์กระจายสัญญาณกลาง (Switch) แยกสายอิสระ หากสายของเครื่องใดชำรุดจะไม่ทำให้เครือข่ายทั้งระบบล่ม",
     "explanation_img": "/question-svgs/bf066e072e14d59a.svg"
   },
   {
@@ -131851,7 +131851,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "<table><tr><td>ประเภทขององค์กร</td><td>โดเมน 2 ระดับ</td><td>โดเมน 3 ระดับ</td></tr><tr><td>บริษัท หรือ องค์กรพาณิชย์</td><td>.com</td><td>.co</td></tr><tr><td>องค์",
+    "explanation": "โดเมนเนมระดับบนสุด `.edu` (Education) ใช้สำหรับสถาบันการศึกษา (ในประเทศไทยใช้โดเมน 3 ระดับเป็น `.ac.th` สำหรับสถาบันการศึกษา, `.go.th` สำหรับหน่วยงานรัฐ, `.co.th` สำหรับองค์กรพาณิชย์ และ `.or.th` สำหรับองค์กรไม่แสวงผลกำไร)",
     "explanation_img": null
   },
   {
@@ -131871,7 +131871,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "<table><tr><td>ประเภทขององค์กร</td><td>โดเมน 2 ระดับ</td><td>โดเมน 3 ระดับ</td></tr><tr><td>บริษัท หรือ องค์กรพาณิชย์</td><td>.com</td><td>.co</td></tr><tr><td>องค์",
+    "explanation": "โดเมนสำหรับสถาบันการศึกษาและมหาวิทยาลัยคือ `.edu` (Education) หรือในระดับประเทศไทยใช้ `.ac.th` (Academic)",
     "explanation_img": null
   },
   {
@@ -131891,7 +131891,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "<table><tr><td>ประเภทขององค์กร</td><td>โดเมน 2 ระดับ</td><td>โดเมน 3 ระดับ</td></tr><tr><td>บริษัท หรือ องค์กรพาณิชย์</td><td>.com</td><td>.co</td></tr><tr><td>องค์",
+    "explanation": "โดเมนเนมขององค์กรพาณิชย์หรือบริษัทเอกชนในประเทศไทยคือ `.co.th` (Commercial) ส่วน `.ac.th` คือสถาบันการศึกษา, `.mi.th` คือหน่วยงานทหาร และ `.in.th` คือบุคคลทั่วไปหรือองค์กรในไทย",
     "explanation_img": null
   },
   {
@@ -131991,7 +131991,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "<table><tr><td>ประเภทของไวรัส</td><td>ลักษณะการโจมตีของเริ่ม</td></tr><tr><td>หนอน หรือ Worm</td><td>- สามารถแพร่กระจายตัวเองจากเครื่องคอมพิวเตอร์เครื่องหนึ่ง ไปยังอีกเครื่องหนึ่ง เช่น อีเมล ระบบเซิร์ฟไลท์<br/>- คอมพิวเตอร์ข้างล่าง (แพร่กระจายได้อย่างรวดเร็ว) และทำความเสียหายรุนแรง</td></tr><tr><td>Spyware</td><td>- โปรแกรมคอมพิวเตอร์ขึ้นมาแสตมป์การใช้งานเครื่องคอมพิวเตอร์ โดยที่เราไม่รู้ตัว และจะทำการขโมยข้อมูล หรือเก็บทุกครั้งการใช้งานอีเมล์ต่อเนื่อง รวมถึงข้อมูล ส่วนตัวหลาย ๆ อย่างได้ เช่น ชื่อ-สกุล, ที่อยู่, อีเมล, Password หรือ หมายเลขบัตรเครดิต และอื่น ๆ<br/>- ข้อมูลส่วนตัวรั่วไหล คอมพิวเตอร์ทำงานช้า</td></tr><tr><td>Phishing</td><td>- เทคนิคการหลอกลวงผู้ใช้งานด้วยเพย์ คือ link ในอีเมลหรือเว็บไซต์ที่ปลอมให้ดูเหมือน บริการจริง เช่น ธนาคารหรือร้านค้าออนไลน์ เพื่อให้ผู้ใช้กรอกข้อผู้",
+    "explanation": "<table><tr><td>ประเภทของไวรัส</td><td>ลักษณะการโจมตีของเริ่ม</td></tr><tr><td>หนอน หรือ Worm</td><td>- สามารถแพร่กระจายตัวเองจากเครื่องคอมพิวเตอร์เครื่องหนึ่ง ไปยังอีกเครื่องหนึ่ง เช่น อีเมล ระบบเซิร์ฟไลท์<br/>- คอมพิวเตอร์ข้างล่าง (แพร่กระจายได้อย่างรวดเร็ว) และทำความเสียหายรุนแรง</td></tr><tr><td>Spyware</td><td>- โปรแกรมคอมพิวเตอร์ขึ้นมาแสตมป์การใช้งานเครื่องคอมพิวเตอร์ โดยที่เราไม่รู้ตัว และจะทำการขโมยข้อมูล หรือเก็บทุกครั้งการใช้งานอีเมล์ต่อเนื่อง รวมถึงข้อมูล ส่วนตัวหลาย ๆ อย่างได้ เช่น ชื่อ-สกุล, ที่อยู่, อีเมล, Password หรือ หมายเลขบัตรเครดิต และอื่น ๆ<br/>- ข้อมูลส่วนตัวรั่วไหล คอมพิวเตอร์ทำงานช้า</td></tr><tr><td>Phishing</td><td>- เทคนิคการหลอกลวงผู้ใช้งานด้วยเพย์ คือ link ในอีเมลหรือเว็บไซต์ที่ปลอมให้ดูเหมือน บริการจริง เช่น ธนาคารหรือร้านค้าออนไลน์ เพื่อให้ผู้ใช้กรอกข้อผู้</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -132011,7 +132011,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "<table><tr><td>ประเภทของไวรัส</td><td>ลักษณะการโจมตีของเวิร์ม</td></tr><tr><td>Spyware</td><td>- โปรแกรมถูกเขียนขึ้นมาสอดส่องการใช้งานเครื่องคอมพิวเตอร์ โดยที่เราไม่รู้ตัว และจะทำการ ขโมยข้อมูล หรือเก็บพฤติกรรมการใช้งานอินเตอร์เน็ตของเรา รวมถึงข้อมูลส่วนตัวหลาย ๆ อย่างได้ เช่น ชื่อ-สกุล, ที่อยู่, อีเมล, Password หรือ หมายเลขบัตรเครดิต และอื่น ๆ<br/>ข้อเสีย : ข้อมูลส่วนตัวรั่วไหล คอมพิวเตอร์ทำงานช้าลง</td></tr><tr><td>Phishing</td><td>- เทคนิคการหลอกลวงผู้ใช้งานด้วยเหยื่อ คือ link ในอีเมลหรือเว็บไซต์ที่ปลอมให้ดูเหมือน บริการจริง เช่น ธนาคารหรือร้านค้าออนไลน์ เพื่อให้ผู้ใช้กรอกชื่อผู้ใช้และรหัสผ่าน หมายเลขบัตรเครดิต และหมายเลขบัตรประจำตัวประชาชน เป็นต้น<br/>ข้อเสีย : ข้อมูลส่วนตัวถูกขโมย เสียเงิน / สูญเสียทรัพย์สิน</td></tr><tr><td>Pharming</td><td>- คล้าย Phishing แต่แทนที่จะส่งอีเมลมาหลอกเหยื่อเจ้าตัว Pharming เลือ",
+    "explanation": "<table><tr><td>ประเภทของไวรัส</td><td>ลักษณะการโจมตีของเวิร์ม</td></tr><tr><td>Spyware</td><td>- โปรแกรมถูกเขียนขึ้นมาสอดส่องการใช้งานเครื่องคอมพิวเตอร์ โดยที่เราไม่รู้ตัว และจะทำการ ขโมยข้อมูล หรือเก็บพฤติกรรมการใช้งานอินเตอร์เน็ตของเรา รวมถึงข้อมูลส่วนตัวหลาย ๆ อย่างได้ เช่น ชื่อ-สกุล, ที่อยู่, อีเมล, Password หรือ หมายเลขบัตรเครดิต และอื่น ๆ<br/>ข้อเสีย : ข้อมูลส่วนตัวรั่วไหล คอมพิวเตอร์ทำงานช้าลง</td></tr><tr><td>Phishing</td><td>- เทคนิคการหลอกลวงผู้ใช้งานด้วยเหยื่อ คือ link ในอีเมลหรือเว็บไซต์ที่ปลอมให้ดูเหมือน บริการจริง เช่น ธนาคารหรือร้านค้าออนไลน์ เพื่อให้ผู้ใช้กรอกชื่อผู้ใช้และรหัสผ่าน หมายเลขบัตรเครดิต และหมายเลขบัตรประจำตัวประชาชน เป็นต้น<br/>ข้อเสีย : ข้อมูลส่วนตัวถูกขโมย เสียเงิน / สูญเสียทรัพย์สิน</td></tr><tr><td>Pharming</td><td>- คล้าย Phishing แต่แทนที่จะส่งอีเมลมาหลอกเหยื่อเจ้าตัว Pharming เลือ</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -132231,7 +132231,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "<table><tr><th colspan=\"2\">โปรแกรมประยุกต์ในสำนักงาน</th></tr><tr><td>โปรแกรมจัดการเอกสาร</td><td>Microsoft Word, Google Docs</td></tr><tr><td>โปรแกรม",
+    "explanation": "Microsoft Word เป็นโปรแกรมประมวลผลคำ (Word Processor) สำหรับจัดทำ แก้ไข และจัดการเอกสารทั่วไป ส่วน Excel ใช้คำนวณตาราง, PowerPoint ใช้นำเสนองาน และ Access ใช้จัดการฐานข้อมูล",
     "explanation_img": null
   },
   {
@@ -132451,7 +132451,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "<table><tr><th colspan=\"2\">โปรแกรมประยุกต์ในสำนักงาน</th></tr><tr><td>โปรแกรมจัดการเอกสาร</td><td>Microsoft Word, Google Docs</td></tr><tr><td>โปรแกรม",
+    "explanation": "Microsoft Excel เป็นโปรแกรมตารางคำนวณ (Spreadsheet) ที่เหมาะสำหรับการประมวลผลข้อมูลตัวเลข สถิติ สูตรคำนวณ และการสรุปแผนภูมิ เช่น สถิติอุบัติเหตุ 7 วันอันตราย",
     "explanation_img": null
   },
   {
@@ -132591,7 +132591,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "ข้อที่ 1) \tPaint เป็นโปรแกรมสำหรับ วาดภาพและตกแต่งรูปภาพเบื้องต้น\nข้อที่ 2) \tWindows Media Player เป็นโปรแกรมสำหรับ เปิดไฟล์เสียงและวิดีโอ\nข้อที่ 4) \tCalendar เป็นโปรแกรมสำหรับ จัดตารางเวลาและบันทึกนัดหมาย\n\n<table><tr><th colspan=\"2\">โปรแกรมประยุกต์ในสำนักงาน</th></tr><tr><td>โปรแกรมจัดการเอกสาร</td><td>Microsoft Word, Google Docs</td></tr><tr><td>โปรแกรม",
+    "explanation": "Microsoft PowerPoint เป็นโปรแกรมสำหรับสร้างสื่อนำเสนองาน (Presentation) ด้วยสไลด์ ข้อความ รูปภาพ และภาพเคลื่อนไหว (ส่วน Paint ใช้วาดภาพ, Windows Media Player ใช้เล่นสื่อ และ Calendar ใช้จัดการปฏิทิน)",
     "explanation_img": null
   },
   {
@@ -133151,7 +133151,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "ดังนั้น วันที่ ๑๓ มกราคม ๒๕๖๕ ถูกต้อง\n\n<table><tr><td>ประเภท</td><td>วันที่</td></tr><tr><td>หนัง",
+    "explanation": "การลงวันที่ในหนังสือภายใน (บันทึกข้อความ) ตามระเบียบงานสารบรรณ ให้พิมพ์คำว่า \"วันที่\" ตามด้วยตัวเลขของวันที่ ชื่อเต็มของเดือน และตัวเลขของปีพุทธศักราชโดยไม่มีคำว่า พ.ศ. เช่น \"วันที่ ๑๓ มกราคม ๒๕๖๕\"",
     "explanation_img": null
   },
   {
@@ -133411,7 +133411,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "<table><tr><td>ประเภท</td><td></td><td>วันที่</td></tr><tr><td>หนัง",
+    "explanation": "การลงวันที่ในรายงานการประชุม ตามระเบียบงานสารบรรณ ให้ใช้คำว่า \"เมื่อวันที่\" ตามด้วยวัน เดือน ปี ที่ประชุม เช่น \"เมื่อวันที่ ๑๓ พฤษภาคม ๒๕๕๙\"",
     "explanation_img": null
   },
   {
@@ -133611,7 +133611,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "# อายุการเก็บหนังสือ โดยปกติเก็บไว้ไม่น้อยกว่า 10 ปี เว้นแต่\n\n<table><tr><td>ลักษณะหนังสือที่เก็บ</td><td>อายุการเก็บ ไม่น้อยกว่า ........(ปี)</td></tr><tr><td>1. หนังสือที่ต้องสงวนเป็นความลับ</td><td>ปฏิบัติตามกฎหมายหรือระเบียบว่าด้วยการรักษา ความปลอดภัยแห่งชาติ หรือระเบียบ ว่าด้วยการรักษาความลับของทางราชการ</td></tr><tr><td>2. หนังสือที่เป็นหลักฐานทางอรรถคดี สำนวนของศาลหรือของพนักงาน สอบสวนหรือหนังสืออื่นใดที่ได้มีกฎหมายหรือระเบียบแบบแผนกำหนดไว้ เป็นพิเศษ</td><td>ตามกฎหมายและระเบียบแบบแผน ว่าด้วยการนั้น</td></tr><tr><td>3. หนังสือที่มีคุณค่าทางประวัติศาสตร์ทุกสาขาวิชา และมีคุณค่าต่อการศึกษา ค้นคว้า วิจัย</td><td>1. เก็บไว้เป็นหลักฐานสำคัญทางประวัติศาสตร์ ของชาติตลอดไป หรือ\n2. ตามที่สำนักหอจดหมายเหตุแห่งชาติ กรมศิลปากร กำหนด</td></tr><tr><td>4. หนังสือที่ได",
+    "explanation": "# อายุการเก็บหนังสือ โดยปกติเก็บไว้ไม่น้อยกว่า 10 ปี เว้นแต่\n\n<table><tr><td>ลักษณะหนังสือที่เก็บ</td><td>อายุการเก็บ ไม่น้อยกว่า ........(ปี)</td></tr><tr><td>1. หนังสือที่ต้องสงวนเป็นความลับ</td><td>ปฏิบัติตามกฎหมายหรือระเบียบว่าด้วยการรักษา ความปลอดภัยแห่งชาติ หรือระเบียบ ว่าด้วยการรักษาความลับของทางราชการ</td></tr><tr><td>2. หนังสือที่เป็นหลักฐานทางอรรถคดี สำนวนของศาลหรือของพนักงาน สอบสวนหรือหนังสืออื่นใดที่ได้มีกฎหมายหรือระเบียบแบบแผนกำหนดไว้ เป็นพิเศษ</td><td>ตามกฎหมายและระเบียบแบบแผน ว่าด้วยการนั้น</td></tr><tr><td>3. หนังสือที่มีคุณค่าทางประวัติศาสตร์ทุกสาขาวิชา และมีคุณค่าต่อการศึกษา ค้นคว้า วิจัย</td><td>1. เก็บไว้เป็นหลักฐานสำคัญทางประวัติศาสตร์ ของชาติตลอดไป หรือ\n2. ตามที่สำนักหอจดหมายเหตุแห่งชาติ กรมศิลปากร กำหนด</td></tr><tr><td>4. หนังสือที่ได</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -133631,7 +133631,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "อายุการเก็บหนังสือ โดยปกติเก็บไว้ไม่น้อยกว่า 10 ปี เว้นแต่\n\n<table><tr><td>ลักษณะหนังสือที่เก็บ</td><td>อายุการเก็บ ไม่น้อยกว่า ........ (ปี)</td></tr><tr><td>1. หนังสือที่ต้องสงวนเป็นความลับ</td><td>ปฏิบัติตามกฎหมายหรือระเบียบว่าด้วยการรักษาความปลอดภัยแห่งชาติ หรือระเบียบว่าด้วยการรักษาความลับของทางราชการ</td></tr><tr><td>2. หนังสือที่เป็นหลักฐานทางอรรถคดี สำนวนของศาล หรือของพนักงานสอบสวนหรือหนังสืออื่นใดที่ได้มีกฎหมาย หรือระเบียบแบบแผนกำหนดไว้เป็นพิเศษ</td><td>ตามกฎหมายและระเบียบแบบแผนว่าด้วยการนั้น</td></tr><tr><td>3. หนังสือที่มีคุณค่าทางประวัติศาสตร์ทุกสาขาวิชา และมีคุณค่าต่อการศึกษา ค้นคว้า วิจัย</td><td>1. เก็บไว้เป็นหลักฐานสำคัญทางประวัติศาสตร์ของชาติตลอดไป หรือ\n2. ตามที่สำนักหอจดหมายเหตุแห่งชาติ กรมศิลปากร กำหนด</td></tr><tr><td>4. หนังสือที่ได้ปฏิบั",
+    "explanation": "อายุการเก็บหนังสือ โดยปกติเก็บไว้ไม่น้อยกว่า 10 ปี เว้นแต่\n\n<table><tr><td>ลักษณะหนังสือที่เก็บ</td><td>อายุการเก็บ ไม่น้อยกว่า ........ (ปี)</td></tr><tr><td>1. หนังสือที่ต้องสงวนเป็นความลับ</td><td>ปฏิบัติตามกฎหมายหรือระเบียบว่าด้วยการรักษาความปลอดภัยแห่งชาติ หรือระเบียบว่าด้วยการรักษาความลับของทางราชการ</td></tr><tr><td>2. หนังสือที่เป็นหลักฐานทางอรรถคดี สำนวนของศาล หรือของพนักงานสอบสวนหรือหนังสืออื่นใดที่ได้มีกฎหมาย หรือระเบียบแบบแผนกำหนดไว้เป็นพิเศษ</td><td>ตามกฎหมายและระเบียบแบบแผนว่าด้วยการนั้น</td></tr><tr><td>3. หนังสือที่มีคุณค่าทางประวัติศาสตร์ทุกสาขาวิชา และมีคุณค่าต่อการศึกษา ค้นคว้า วิจัย</td><td>1. เก็บไว้เป็นหลักฐานสำคัญทางประวัติศาสตร์ของชาติตลอดไป หรือ\n2. ตามที่สำนักหอจดหมายเหตุแห่งชาติ กรมศิลปากร กำหนด</td></tr><tr><td>4. หนังสือที่ได้ปฏิบั</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -133671,7 +133671,7 @@
     "opt_imgs": null,
     "correct_index": 3,
     "correct_label": "ง",
-    "explanation": "การยืมหนังสือที่ส่งเก็บแล้ว หนังสือที่ปฏิบัติยังไม่เสร็จ หนังสือที่เก็บไว้เพื่อใช้ในการตรวจสอบ ให้ปฏิบัติดังนี้\n1. ผู้ยืม : ต้องแจ้งเหตุผลในการยืมว่าจะนำไปใช้ในราชการใด\n2. ผู้ยืม : ต้องมอบหลักฐานการยืมให้เจ้าหน้าที่เก็บ แล้วลงชื่อรับเรื่องที่ยืมไว้ในบัตรยืมหนังสือ\n3. เจ้าหน้าที่เก็บ : รวบรวมหลักฐานการยืม เรียงลำดับ วัน เดือน ปี ไว้ เพื่อติดตาม ทวงถาม และให้เก็บบัตรยืมหนังสือไว้แทนที่หนังสือที่ถูกยืมไป\n\n# บัตรยืมหนังสือ\n\n<table><tr><td>รายการ</td><td>ผู้ยืม</td><td>ผู้รับ</td><td>วันยืม</td><td>กำหนดส่งคืน</td><td>ผู้ส่งคืน</td><td>วันส่งคืน</td></tr><tr><td rowspan=\"3\">ลงชื่อเรื่องพร้อมรหัสของหนังสือที่ขอยืมไป</td><td></td><td></td><td rowspan=\"3\">วัดป ที่ยืม</td><td></td><td rowspan=\"3\">วัดป ที่คืน</td><td rowspan=\"3\"></td></tr><tr><td></td",
+    "explanation": "การยืมหนังสือที่ส่งเก็บแล้ว หนังสือที่ปฏิบัติยังไม่เสร็จ หนังสือที่เก็บไว้เพื่อใช้ในการตรวจสอบ ให้ปฏิบัติดังนี้\n1. ผู้ยืม : ต้องแจ้งเหตุผลในการยืมว่าจะนำไปใช้ในราชการใด\n2. ผู้ยืม : ต้องมอบหลักฐานการยืมให้เจ้าหน้าที่เก็บ แล้วลงชื่อรับเรื่องที่ยืมไว้ในบัตรยืมหนังสือ\n3. เจ้าหน้าที่เก็บ : รวบรวมหลักฐานการยืม เรียงลำดับ วัน เดือน ปี ไว้ เพื่อติดตาม ทวงถาม และให้เก็บบัตรยืมหนังสือไว้แทนที่หนังสือที่ถูกยืมไป\n\n# บัตรยืมหนังสือ\n\n<table><tr><td>รายการ</td><td>ผู้ยืม</td><td>ผู้รับ</td><td>วันยืม</td><td>กำหนดส่งคืน</td><td>ผู้ส่งคืน</td><td>วันส่งคืน</td></tr><tr><td rowspan=\"3\">ลงชื่อเรื่องพร้อมรหัสของหนังสือที่ขอยืมไป</td><td></td><td></td><td rowspan=\"3\">วัดป ที่ยืม</td><td></td><td rowspan=\"3\">วัดป ที่คืน</td><td rowspan=\"3\"></td></tr></table>",
     "explanation_img": null
   },
   {
@@ -133911,7 +133911,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "# การตั้งชื่อไฟล์\n\n- ใช้เลขอารบิก\n- ใช้เครื่องหมายขีดล่าง ( _ ) แทน การเว้นวรรคหรือเครื่องหมายหรือสัญลักษณ์พิเศษที่สงวนไม่ให้ใช้ในชื่อไฟล์ (reserved characters) เช่น (/), (.), หรือ ($)\n\nโดยประกอบด้วย\n\n1.  ปี พ.ศ.\n2.  รหัสตัวอักษรโรมันประจำส่วนราชการ\n3.  เลขประจำของส่วนราชการเจ้าของเรื่อง\n4.  เลขที่ของหนังสือตามทะเบียนหนังสือส่ง\n\nกรณีมีหลายไฟล์ ใช้ชื่อไฟล์เดียวกับหนังสือ ตามด้วยตัวเลขตั้งแต่ 1 ตามลำดับ\n\n<table><tr><td>เช่น</td><td>2564_OPM0913_",
+    "explanation": "# การตั้งชื่อไฟล์\n\n- ใช้เลขอารบิก\n- ใช้เครื่องหมายขีดล่าง ( _ ) แทน การเว้นวรรคหรือเครื่องหมายหรือสัญลักษณ์พิเศษที่สงวนไม่ให้ใช้ในชื่อไฟล์ (reserved characters) เช่น (/), (.), หรือ ($)\n\nโดยประกอบด้วย\n\n1.  ปี พ.ศ.\n2.  รหัสตัวอักษรโรมันประจำส่วนราชการ\n3.  เลขประจำของส่วนราชการเจ้าของเรื่อง\n4.  เลขที่ของหนังสือตามทะเบียนหนังสือส่ง\n\nกรณีมีหลายไฟล์ ใช้ชื่อไฟล์เดียวกับหนังสือ ตามด้วยตัวเลขตั้งแต่ 1 ตามลำดับ\n\n<table><tr><td>เช่น</td><td>2564_OPM0913_</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -133971,7 +133971,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "RTP – Royal Thai Police\n\nรหัสตัวอักษรโรมันประจำส่วนราชการ แนบท้ายภาคผนวก ๗\nหลักเกณฑ์และวิธีการปฏิบัติในการรับส่งและเก็บรักษาข้อมูลข่าวสารและหนังสือราชการ โดยไปรษณีย์อิเล็กทรอนิกส์\n\n๑. รหัสตัวอักษรโรมันประจำกระทรวง ทบวง และส่วนราชการที่ไม่สังกัดสำนักนายกรัฐมนตรี กระทรวง หรือทบวง ให้กำหนดไว้ ดังนี้\n\n<table><tr><td>สำนักนายกรัฐมนตรี</td><td>OPM</td></tr><tr><td>กระทรวง",
+    "explanation": "ตามหลักเกณฑ์การกำหนดรหัสตัวอักษรโรมันประจำส่วนราชการของระบบสารบรรณอิเล็กทรอนิกส์ สำนักงานตำรวจแห่งชาติ ใช้รหัสอักษรโรมันคือ RTP (Royal Thai Police)",
     "explanation_img": null
   },
   {
@@ -136401,7 +136401,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "แนวคิด\n\n12<page_number",
+    "explanation": "พิจารณาผลต่างระหว่างพจน์ติดกัน: $16 - 12 = 4$ ($2^2$), $32 - 16 = 16$ ($4^2$), $68 - 32 = 36$ ($6^2$), $132 - 68 = 64$ ($8^2$) ซึ่งเป็นกำลังสองของเลขคู่เรียงกัน ขั้นถัดไปจึงบวกด้วย $10^2 = 100$ ได้ $132 + 100 = 232$",
     "explanation_img": null
   },
   {
@@ -136521,7 +136521,7 @@
     "opt_imgs": null,
     "correct_index": 0,
     "correct_label": "ก",
-    "explanation": "<table><tr><td>แนวคิด</td><td></td><th colspan=\"2\">จาก<td>คน<sub>1</sub> x วัน<sup>1</sup></td><td>=</td><td>คน<sub>2</sub> x วัน<sup>2</sup></td></th></tr><tr><td></td><td",
+    "explanation": "จากความสัมพันธ์ของอัตราการทำงาน $\\frac{\\text{คน}_1 \\times \\text{วัน}_1}{\\text{งาน}_1} = \\frac{\\text{คน}_2 \\times \\text{วัน}_2}{\\text{งาน}_2}$ แทนค่าได้ $\\frac{6 \\times 5}{360} = \\frac{15 \\times d}{540} \\Rightarrow \\frac{30}{360} = \\frac{15d}{540} \\Rightarrow d = 3$ วัน",
     "explanation_img": null
   },
   {
@@ -136661,7 +136661,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "# แนวคิด\n\n<table><tr><td></td><td>เหตุ</td><td>1</td><td>-------->",
+    "explanation": "จากเงื่อนไข \"ถ้าผ่านข้อเขียน ($P$) แล้วจะผ่านเกณฑ์ตรวจร่างกายเบื้องต้น ($Q$)\" เมื่อทราบว่า นาย ข ไม่ผ่านเกณฑ์ตรวจร่างกายเบื้องต้น ($\\sim Q$) ตามหลักตรรกศาสตร์ (Modus Tollens) จึงสรุปได้อย่างสมเหตุสมผลว่า นาย ข ไม่ผ่านข้อเขียน ($\\sim P$)",
     "explanation_img": null
   },
   {
@@ -138621,7 +138621,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "หน่วยเก็บข้อมูล (Storage Unit)\n\n<table><tr><td>หน่วยความจำหลัก</td><td>หน่วยความจำสำรอง</td></tr><tr><td>1. RAM</td><td>สื่อเก็บข้อมูล",
+    "explanation": "แผ่น CD (Compact Disc), DVD และ Blu-ray จัดเป็นสื่อเก็บข้อมูลสำรองประเภทแสง (Optical Storage Devices) ที่ใช้ลำแสงเลเซอร์ในการอ่านและบันทึกข้อมูล",
     "explanation_img": null
   },
   {
@@ -140501,7 +140501,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "บร = บริหาร",
+    "explanation": "ตามหลักเกณฑ์การกำหนดอักษรย่อลักษณะงานต่อท้ายตำแหน่งของสำนักงานตำรวจแห่งชาติ อักษรย่อ \"(บร)\" หมายถึง งานบริหาร",
     "explanation_img": null
   },
   {
@@ -140721,7 +140721,7 @@
     "opt_imgs": null,
     "correct_index": 2,
     "correct_label": "ค",
-    "explanation": "Excellency, เป็นคำขึ้นต้นที่ถูกต้องตามธรรมเนียมการเขียนหนังสือราชการภาษาอังกฤษถึงนายกรัฐมนตรี\n\n# สารภาพเคย ๑ คำยื่นต่อ ค้างท้าย ตำแหน่ง และสถานะของผู้รับ สิ่งใดในหนังสือราชการเป็นบทพี่\n\n<table><tr><td>ลำดับที่</td><td>ถึง</td><td>ตำแหน่ง</td><td>ค้างท้าย</td><td>ชื่อ ตำแหน่ง และสถานะของผู้รับ</td><td>หมายเหตุ</td></tr><tr><td>๑</td><td>ประธานวันที</td><td>Excellency,</td><td>Accept, Excellency, the assurances of my highest consideration.</td><td>Hs Excellency Mr. ......... (Name) President of .. (Country) ... (City",
+    "explanation": "Excellency, เป็นคำขึ้นต้นที่ถูกต้องตามธรรมเนียมการเขียนหนังสือราชการภาษาอังกฤษถึงนายกรัฐมนตรี\n\n# สารภาพเคย ๑ คำยื่นต่อ ค้างท้าย ตำแหน่ง และสถานะของผู้รับ สิ่งใดในหนังสือราชการเป็นบทพี่\n\n<table><tr><td>ลำดับที่</td><td>ถึง</td><td>ตำแหน่ง</td><td>ค้างท้าย</td><td>ชื่อ ตำแหน่ง และสถานะของผู้รับ</td><td>หมายเหตุ</td></tr><tr><td>๑</td><td>ประธานวันที</td><td>Excellency,</td><td>Accept, Excellency, the assurances of my highest consideration.</td><td>Hs Excellency Mr. ......... (Name) President of .. (Country) ... (City</td></tr></table>",
     "explanation_img": null
   },
   {
@@ -140981,7 +140981,7 @@
     "opt_imgs": null,
     "correct_index": 1,
     "correct_label": "ข",
-    "explanation": "ยศข้าราชการตำรวจเป็นภาษาอังกฤษ ใช้ดังนี้\n\n<table><tr><td>ภาษาไทย</td><td>ภาษาอังกฤษ</td><td>ตัวย่อภาษาอังกฤษ</td></tr><tr><td>๔.๑ พลตำรวจเอก (พล.ต.อ.)</td><td>Police General</td><td>Pol.Gen.</td></tr><tr><td",
+    "explanation": "การเทียบยศข้าราชการตำรวจเป็นภาษาอังกฤษแบบเต็ม: พลตำรวจเอก = Police General, พันตำรวจเอก = Police Colonel, พันตำรวจโท = Police Lieutenant Colonel และพันตำรวจตรี = Police Major ดังนั้นยศ \"พันตำรวจโท\" จึงใช้คำว่า Police Lieutenant Colonel",
     "explanation_img": null
   },
   {

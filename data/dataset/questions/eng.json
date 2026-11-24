@@ -8525,7 +8525,7 @@
     "set_id": null,
     "title": "Reading",
     "batch": "03_ภาษาอังกฤษ_ลงครั้งที่1",
-    "stem": "<table><tr><td></td><td>hair salon</td><th colspan=\"2\">Central Park<td>book shop</td></th></tr><tr><td></td><td",
+    "stem": "<table><tr><td></td><td>hair salon</td><th colspan=\"2\">Central Park</th><td>book shop</td></tr><tr><td></td></tr></table>",
     "img": null,
     "opts": [
       "Travel agency",
@@ -8665,7 +8665,7 @@
     "set_id": null,
     "title": "Reading",
     "batch": "03_ภาษาอังกฤษ_ลงครั้งที่1",
-    "stem": "<table><tr><td>Internet Cafe</td></tr><tr><td>computer store</td></tr><tr><td>MARTIN STREET</td></tr><tr><\n\nWhich place is not located on Market street?",
+    "stem": "<table><tr><td>Internet Cafe</td></tr><tr><td>computer store</td></tr><tr><td>MARTIN STREET</td></tr></table>\n\nWhich place is not located on Market street?",
     "img": null,
     "opts": [
       "Police station",
@@ -20545,7 +20545,7 @@
     "set_id": null,
     "title": "Reading",
     "batch": "03_ภาษาอังกฤษ_ลงครั้งที่1",
-    "stem": "<table><tr><td>bank</td><td>book store</td></tr><tr><td>Sukhumvit Rd.</td><td></td></tr><tr><td>shopping mall</td><td>Sansook Rd.</td></tr><tr><td></td\n\nWhich place is across from the hospital?",
+    "stem": "<table><tr><td>bank</td><td>book store</td></tr><tr><td>Sukhumvit Rd.</td><td></td></tr><tr><td>shopping mall</td><td>Sansook Rd.</td></tr></table>\n\nWhich place is across from the hospital?",
     "img": null,
     "opts": [
       "The bank",

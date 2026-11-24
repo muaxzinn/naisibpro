@@ -22,36 +22,62 @@ export function WorkspaceModeProvider({ children }: { children: React.ReactNode 
   const [workspaceMode, setWorkspaceModeState] = useState<WorkspaceMode>('practice');
 
   useEffect(() => {
+    let hasLocal = false;
     try {
       const saved = window.localStorage.getItem(STORAGE_KEY);
       if (saved === 'real-exam' || saved === 'practice') {
         setWorkspaceModeState(saved);
+        hasLocal = true;
       }
     } catch {
       // ignore storage access errors
     }
+    if (!hasLocal) {
+      fetch('/api/profile', { cache: 'no-store' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          const remoteMode = d?.profile?.examSettings?.workspaceMode;
+          if (remoteMode === 'real-exam' || remoteMode === 'practice') {
+            setWorkspaceModeState(remoteMode);
+            try {
+              window.localStorage.setItem(STORAGE_KEY, remoteMode);
+            } catch {
+              // ignore
+            }
+          }
+        })
+        .catch(() => {});
+    }
   }, []);
 
-  const setWorkspaceMode = useCallback((next: WorkspaceMode) => {
-    setWorkspaceModeState(next);
+  const persistWorkspaceMode = useCallback((next: WorkspaceMode) => {
     try {
       window.localStorage.setItem(STORAGE_KEY, next);
     } catch {
       // ignore
     }
+    fetch('/api/profile', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ examSettings: { workspaceMode: next } }),
+    }).catch(() => {});
   }, []);
+
+  const setWorkspaceMode = useCallback(
+    (next: WorkspaceMode) => {
+      setWorkspaceModeState(next);
+      persistWorkspaceMode(next);
+    },
+    [persistWorkspaceMode]
+  );
 
   const toggleWorkspaceMode = useCallback(() => {
     setWorkspaceModeState((prev) => {
       const next: WorkspaceMode = prev === 'practice' ? 'real-exam' : 'practice';
-      try {
-        window.localStorage.setItem(STORAGE_KEY, next);
-      } catch {
-        // ignore
-      }
+      persistWorkspaceMode(next);
       return next;
     });
-  }, []);
+  }, [persistWorkspaceMode]);
 
   return (
     <WorkspaceModeContext.Provider

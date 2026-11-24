@@ -153,12 +153,25 @@ export function readLatexArg(
 
 export function normalizeLatexDelimiters(text: string): string {
   if (!text) return '';
-  return text
+  let cleaned = text
+    .replace(/<page_number[^>\n<]*>?/gi, '')
     .replace(/\\\[([\s\S]*?)\\\]/g, (_m, inner: string) => `$$${inner.trim()}$$`)
     .replace(/\\\(([\s\S]*?)\\\)/g, (_m, inner: string) => {
       const trimmed = inner.trim();
       return trimmed ? `$${trimmed}$` : '';
     });
+
+  // Auto-close unclosed <table ...> blocks defensively so raw tags never leak to UI
+  const openTables = (cleaned.match(/<table\b/gi) || []).length;
+  const closeTables = (cleaned.match(/<\/table>/gi) || []).length;
+  if (openTables > closeTables) {
+    cleaned = cleaned.replace(/<[a-zA-Z/][^>\n<]*$/g, '') + '</td></tr></table>';
+  }
+  const dblDollarCount = (cleaned.match(/\$\$/g) || []).length;
+  if (dblDollarCount % 2 !== 0) {
+    cleaned = `${cleaned}$$`;
+  }
+  return cleaned;
 }
 
 export interface ParsedCell {

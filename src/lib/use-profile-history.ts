@@ -3,8 +3,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { SubjectKey } from './constants';
 import {
+  DEFAULT_EXAM_SETTINGS,
   getCompletedIdSets,
   getRealExamStatusSets,
+  sanitizeExamSettings,
+  type ExamUserSettings,
   type ResetCompletedFilter,
 } from './question-pool';
 
@@ -15,9 +18,10 @@ export interface ProfileHistoryState {
   realExamMistakeIds: number[];
   bookmarks: number[];
   excludeCompleted: boolean;
+  examSettings: ExamUserSettings;
 }
 
-const PROFILE_CACHE_KEY = 'gp:profile-cache:v4';
+const PROFILE_CACHE_KEY = 'gp:profile-cache:v5';
 let cachedProfileState: ProfileHistoryState | null = null;
 
 function sanitizeProfileState(raw: Partial<ProfileHistoryState>): ProfileHistoryState {
@@ -33,6 +37,7 @@ function sanitizeProfileState(raw: Partial<ProfileHistoryState>): ProfileHistory
     bookmarks: Array.isArray(raw.bookmarks) ? raw.bookmarks.map(Number) : [],
     excludeCompleted:
       typeof raw.excludeCompleted === 'boolean' ? raw.excludeCompleted : true,
+    examSettings: sanitizeExamSettings(raw.examSettings, DEFAULT_EXAM_SETTINGS),
   };
 }
 
@@ -103,6 +108,13 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
         ? cachedProfileState!.excludeCompleted
         : true
   );
+  const [examSettings, setExamSettings] = useState<ExamUserSettings>(() =>
+    initial?.examSettings
+      ? sanitizeExamSettings(initial.examSettings)
+      : hasMemoryCache
+        ? cachedProfileState!.examSettings
+        : { ...DEFAULT_EXAM_SETTINGS }
+  );
   const [loading, setLoading] = useState<boolean>(() => !hasMemoryCache && !initial);
   const [saving, setSaving] = useState(false);
 
@@ -114,6 +126,7 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
     setRealExamMistakeIds(normalized.realExamMistakeIds);
     setBookmarks(normalized.bookmarks);
     setExcludeCompleted(normalized.excludeCompleted);
+    setExamSettings(normalized.examSettings);
     primeProfileHistoryCache(normalized);
   }, []);
 
@@ -142,6 +155,7 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
         setRealExamMistakeIds(local.realExamMistakeIds);
         setBookmarks(local.bookmarks);
         setExcludeCompleted(local.excludeCompleted);
+        setExamSettings(local.examSettings);
         setLoading(false);
       }
     }
@@ -298,6 +312,36 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
     [resetCompleted]
   );
 
+  const updateExamSettings = useCallback(
+    async (partial: Partial<ExamUserSettings>) => {
+      setExamSettings((prev) => {
+        const merged = sanitizeExamSettings(
+          { ...prev, ...partial, updatedAt: new Date().toISOString() },
+          prev
+        );
+        primeProfileHistoryCache({ examSettings: merged });
+        return merged;
+      });
+      setSaving(true);
+      try {
+        const res = await fetch('/api/profile', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ examSettings: partial }),
+        });
+        if (res.ok) {
+          const d = await res.json();
+          if (d?.profile) applyAndCache(d.profile);
+        }
+      } catch {
+        // optimistic local cache preserved
+      } finally {
+        setSaving(false);
+      }
+    },
+    [applyAndCache]
+  );
+
   return {
     correctIds,
     mistakeIds,
@@ -312,10 +356,12 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
     realAttemptedSet,
     bookmarkSet,
     excludeCompleted,
+    examSettings,
     loading,
     saving,
     reload,
     toggleExcludeCompleted,
+    updateExamSettings,
     toggleBookmark,
     clearBookmarks,
     resetCompleted,

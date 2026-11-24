@@ -6,8 +6,10 @@ import {
   readRuntimeState,
   resetCompletedHistory,
   resetRealExamHistory,
+  sanitizeExamSettings,
   writeRuntimeState,
   type CompletedPoolMode,
+  type ExamUserSettings,
   type RuntimeState,
 } from '@/lib/server-db';
 import type { SubjectKey } from '@/lib/constants';
@@ -33,6 +35,20 @@ export async function PATCH(req: NextRequest) {
   }
   if (typeof body.excludeCompleted === 'boolean') {
     runtime.profile.excludeCompleted = body.excludeCompleted;
+  }
+  if (body.examSettings && typeof body.examSettings === 'object') {
+    const incoming = body.examSettings as Partial<ExamUserSettings>;
+    runtime.profile.examSettings = sanitizeExamSettings(
+      {
+        ...(runtime.profile.examSettings || {}),
+        ...incoming,
+        updatedAt: new Date().toISOString(),
+      },
+      sanitizeExamSettings(runtime.profile.examSettings)
+    );
+    if (incoming.selectedTrack) {
+      runtime.profile.track = runtime.profile.examSettings.selectedTrack;
+    }
   }
   if (body.toggleBookmarkId !== undefined) {
     const bid = Number(body.toggleBookmarkId);
@@ -102,10 +118,20 @@ export async function PATCH(req: NextRequest) {
         correctIds: Array.isArray(imp.profile.correctIds)
           ? imp.profile.correctIds.map(Number)
           : runtime.profile.correctIds || [],
+        realExamCorrectIds: Array.isArray(imp.profile.realExamCorrectIds)
+          ? imp.profile.realExamCorrectIds.map(Number)
+          : runtime.profile.realExamCorrectIds || [],
+        realExamMistakeIds: Array.isArray(imp.profile.realExamMistakeIds)
+          ? imp.profile.realExamMistakeIds.map(Number)
+          : runtime.profile.realExamMistakeIds || [],
         excludeCompleted:
           typeof imp.profile.excludeCompleted === 'boolean'
             ? imp.profile.excludeCompleted
             : runtime.profile.excludeCompleted ?? true,
+        examSettings: sanitizeExamSettings(
+          imp.profile.examSettings,
+          sanitizeExamSettings(runtime.profile.examSettings)
+        ),
       };
     }
     if (Array.isArray(imp.attempts)) {

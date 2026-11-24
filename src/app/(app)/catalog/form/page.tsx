@@ -16,15 +16,27 @@ export default function CatalogFormPage() {
     ...(runtime.customSets || []).filter((s) => s.kind === 'form'),
   ];
 
-  // Compact subject -> sorted IDs payload (~38 KB instead of ~250 KB)
+  // Compact subject -> [topicTitle, sortedIds[]] payload (~36 KB, preserves exact sub-topic buckets!)
   const allQuestions = getAllQuestionsMerged();
-  const subjectQuestionIds = {} as Record<SubjectKey, number[]>;
+  const topicMaps = new Map<SubjectKey, Map<string, number[]>>();
   for (const s of SUBJECTS) {
-    subjectQuestionIds[s.key] = [];
+    topicMaps.set(s.key, new Map());
   }
   for (const q of allQuestions) {
     if (REAL_EXAM_ID_SET.has(q.id) || HIDDEN_SUBJECT_KEYS.has(q.subject_key)) continue;
-    subjectQuestionIds[q.subject_key]?.push(q.id);
+    const m = topicMaps.get(q.subject_key);
+    if (!m) continue;
+    const topicLabel = q.title || 'อื่นๆ';
+    const arr = m.get(topicLabel);
+    if (arr) arr.push(q.id);
+    else m.set(topicLabel, [q.id]);
+  }
+  const subjectTopicGroups = {} as Record<SubjectKey, Array<[string, number[]]>>;
+  for (const s of SUBJECTS) {
+    const entries = Array.from(topicMaps.get(s.key)?.entries() || []).map(
+      ([label, ids]): [string, number[]] => [label, ids.sort((a, b) => a - b)]
+    );
+    subjectTopicGroups[s.key] = entries;
   }
   void ACTIVE_SUBJECTS;
 
@@ -92,9 +104,10 @@ export default function CatalogFormPage() {
         <CatalogFormClient
           sets={sets}
           attempts={runtime.attempts}
-          subjectQuestionIds={subjectQuestionIds}
+          subjectTopicGroups={subjectTopicGroups}
           fixedSetIds={fixedSetIds}
           realExamSets={realExamSets}
+          initialExamSettings={runtime.profile.examSettings}
         />
       </main>
     </div>

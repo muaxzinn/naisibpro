@@ -28,9 +28,12 @@ const {
   applyRealExamOutcomes,
   buildDynamicFormPacks,
   buildExamFromSource,
+  DEFAULT_EXAM_SETTINGS,
   getCompletedIdSets,
   getRealExamStatusSets,
+  OFFICIAL_EXAM_SUBJECT_ORDER,
   resetRealExamHistory,
+  sanitizeExamSettings,
 } = await import('../src/lib/question-pool.ts');
 const { REAL_EXAM_ALL_IDS, REAL_EXAM_ID_SET, REAL_EXAM_SETS } = await import(
   '../src/lib/real-exam-sets.ts'
@@ -38,7 +41,9 @@ const { REAL_EXAM_ALL_IDS, REAL_EXAM_ID_SET, REAL_EXAM_SETS } = await import(
 const { buildSyllabusTree, computePriorityScore } = await import(
   '../src/lib/syllabus-taxonomy.ts'
 );
-const { isImageUrlString } = await import('../src/lib/rich-text-parser.ts');
+const { isImageUrlString, normalizeLatexDelimiters } = await import(
+  '../src/lib/rich-text-parser.ts'
+);
 
 test('constants: SUBJECTS, TRACKS weights, topic normalization & navigation active states', () => {
   assert.equal(SUBJECTS.length, 7);
@@ -448,7 +453,7 @@ test('question-pool: dynamic 150-repack (fill vs strict) & review vault builders
     }
   }
   if (fillPacks.remainderSet) {
-    assert.ok(fillPacks.remainderSet.total > 0 && fillPacks.remainderSet.total < 150);
+    assert.ok(fillPacks.remainderSet.total > 0);
     for (const id of fillPacks.remainderSet.ids) {
       assert.equal(REAL_EXAM_ID_SET.has(id), false, 'Real-exam ID leaked into remainder');
       assert.equal(seenFill.has(id), false);
@@ -709,4 +714,172 @@ test('syllabus-taxonomy: 7-group COURSE_SYLLABUS mapping conservation & priority
   const lowUrgency = computePriorityScore(85, 2, 15);
   assert.ok(highUrgency > lowUrgency);
   assert.equal(computePriorityScore(100, 0, 40), 0);
+});
+
+test('ocr-audit: zero <page_number, unclosed <table>, unclosed $$, or legacy GuruPolice across all 7,038 questions', () => {
+  const store = getStore();
+  for (const q of store.questions) {
+    const fields: Array<[string, string]> = [
+      ['stem', q.stem || ''],
+      ['explanation', q.explanation || ''],
+      ...(q.opts || []).map((o, idx): [string, string] => [`opt[${idx}]`, o || '']),
+    ];
+    for (const [label, val] of fields) {
+      assert.equal(
+        /page_number|<page/i.test(val),
+        false,
+        `Question #${q.id} (${label}) still contains OCR <page_number artifact: ${val}`
+      );
+      assert.equal(
+        /gurupolice/i.test(val),
+        false,
+        `Question #${q.id} (${label}) still contains legacy GuruPolice string`
+      );
+      const openTables = (val.match(/<table\b/gi) || []).length;
+      const closeTables = (val.match(/<\/table>/gi) || []).length;
+      assert.equal(
+        openTables,
+        closeTables,
+        `Question #${q.id} (${label}) has unbalanced <table> tags (${openTables} vs ${closeTables})`
+      );
+      const dblDollars = (val.match(/\$\$/g) || []).length;
+      assert.equal(
+        dblDollars % 2,
+        0,
+        `Question #${q.id} (${label}) has unclosed $$ math block`
+      );
+    }
+  }
+
+  for (const fixedId of [8883, 8889, 8892, 13515]) {
+    const q = store.questionsById.get(fixedId);
+    assert.ok(q && (q.explanation || '').length >= 40, `Expected full explanation on #${fixedId}`);
+  }
+
+  // Defensive parser test for future user-added content
+  const sanitized = normalizeLatexDelimiters('17<page_number\n<table><tr><td>A');
+  assert.equal(sanitized.includes('page_number'), false);
+  assert.equal(sanitized.endsWith('</table>'), true);
+});
+
+test('sub-topic mixing & examSettings: strict <= 2-3 cap per sub-topic across repack, fixed sets, random & subject sets', () => {
+  const store = getStore();
+  const rankMap = new Map(OFFICIAL_EXAM_SUBJECT_ORDER.map((sk, idx) => [sk, idx]));
+
+  const assertMaxTopicAndOrder = (
+    ids: number[],
+    maxAllowed: number,
+    label: string,
+    checkSubjectOrder = true
+  ) => {
+    const counts = new Map<string, number>();
+    let prevRank = -1;
+    let prevSubjTopic = '';
+    for (const id of ids) {
+      const q = store.questionsById.get(id)!;
+      assert.ok(q, `${label}: missing question #${id}`);
+      assert.equal(REAL_EXAM_ID_SET.has(id), false, `${label}: real-exam ID #${id} leaked`);
+      assert.equal(HIDDEN_SUBJECT_KEYS.has(q.subject_key), false, `${label}: hidden subject leaked`);
+
+      const key = `${q.subject_key}::${normalizeTopicTitleKey(q.title || 'อื่นๆ')}`;
+      const nextCount = (counts.get(key) || 0) + 1;
+      counts.set(key, nextCount);
+      assert.ok(
+        nextCount <= maxAllowed,
+        `${label}: sub-topic ${key} appeared ${nextCount} times (exceeds max ${maxAllowed})`
+      );
+
+      if (checkSubjectOrder) {
+        const r = rankMap.get(q.subject_key) ?? 99;
+        assert.ok(
+          r >= prevRank,
+          `${label}: subject order violated (${q.subject_key} after rank ${prevRank})`
+        );
+        prevRank = r;
+      }
+
+      // Ensure no 2 consecutive questions share the exact same sub-topic when >1 sub-topic exists
+      assert.notEqual(
+        key,
+        prevSubjTopic,
+        `${label}: consecutive duplicate sub-topic ${key} at question #${id}`
+      );
+      prevSubjTopic = key;
+    }
+  };
+
+  // 1. Dynamic repack with maxPerTopic = 3 (27 full sets) & maxPerTopic = 2 (20 full sets)
+  const packsCap3 = buildDynamicFormPacks(store.questions, new Set(), {
+    packMode: 'fill',
+    maxPerTopic: 3,
+    trackName: TRACKS[0].name,
+  });
+  assert.ok(packsCap3.fullSets.length >= 25);
+  for (const pack of packsCap3.fullSets) {
+    assert.equal(pack.ids.length, 150);
+    assertMaxTopicAndOrder(pack.ids, 3, `repack-cap3-set-${pack.setIndex}`);
+  }
+
+  const packsCap2 = buildDynamicFormPacks(store.questions, new Set(), {
+    packMode: 'fill',
+    maxPerTopic: 2,
+    trackName: TRACKS[0].name,
+  });
+  assert.ok(packsCap2.fullSets.length >= 18);
+  for (const pack of packsCap2.fullSets) {
+    assert.equal(pack.ids.length, 150);
+    assertMaxTopicAndOrder(pack.ids, 2, `repack-cap2-set-${pack.setIndex}`);
+  }
+
+  // 2. Fixed standard sets 201..215 and 101..106
+  for (let sid = 201; sid <= 215; sid++) {
+    const ids = store.setsMap.get(String(sid)) || [];
+    assert.equal(ids.length, 150);
+    assertMaxTopicAndOrder(ids, 3, `fixed-set-${sid}`);
+  }
+  for (let sid = 101; sid <= 106; sid++) {
+    const ids = store.setsMap.get(String(sid)) || [];
+    assert.equal(ids.length, 20);
+    assertMaxTopicAndOrder(ids, 3, `fixed-subject-set-${sid}`, false);
+  }
+
+  // 3. Random mock exam & sequential subject sets honor profile.examSettings.maxPerTopic
+  const customSettings = sanitizeExamSettings(
+    { maxPerTopic: 2, packMode: 'fill', viewMode: 'repack', workspaceMode: 'real-exam' },
+    DEFAULT_EXAM_SETTINGS
+  );
+  assert.equal(customSettings.maxPerTopic, 2);
+  assert.equal(customSettings.workspaceMode, 'real-exam');
+  assert.equal(sanitizeExamSettings(null).maxPerTopic, 3);
+
+  const sourceCap2 = {
+    allQuestions: store.questions,
+    findById: (id: number) => store.questionsById.get(id),
+    fixedIdsForSet: (sid: string) => store.setsMap.get(sid),
+    setMetaForSet: (sid: string) => store.examSets.find((s) => String(s.id) === sid),
+    profile: {
+      correctIds: [],
+      mistakeIds: [],
+      bookmarks: [],
+      excludeCompleted: true,
+      examSettings: customSettings,
+    },
+  };
+
+  const randCap2 = buildExamFromSource(sourceCap2, 'random-0');
+  assert.equal(randCap2.items.length, 150);
+  assertMaxTopicAndOrder(
+    randCap2.items.map((q) => q.id),
+    2,
+    'random-0-cap2'
+  );
+
+  const mathSubjSet1 = buildExamFromSource(sourceCap2, 'subject-math', { setIndex: 1, count: 20 });
+  assert.equal(mathSubjSet1.items.length, 20);
+  assertMaxTopicAndOrder(
+    mathSubjSet1.items.map((q) => q.id),
+    2,
+    'subject-math-set1-cap2',
+    false
+  );
 });
