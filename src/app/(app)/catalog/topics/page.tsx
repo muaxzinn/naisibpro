@@ -3,17 +3,20 @@ import Link from 'next/link';
 import { ArrowLeft, BookOpenCheck, Layers } from 'lucide-react';
 import { SiteHeader } from '@/components/SiteHeader';
 import { CatalogTopicsClient } from '@/components/CatalogTopicsClient';
+import { ACTIVE_SUBJECTS, HIDDEN_SUBJECT_KEYS } from '@/lib/constants';
+import { REAL_EXAM_ID_SET } from '@/lib/real-exam-sets';
 import { buildSubTopicsCatalog } from '@/lib/topic-catalog';
-import { getAllQuestionsMerged, getStore, readRuntimeState } from '@/lib/server-db';
+import { getAllQuestionsMerged } from '@/lib/server-db';
 
 export default function CatalogTopicsPage() {
-  const store = getStore();
-  const runtime = readRuntimeState();
-  const hasCustom = Boolean(runtime.customQuestions?.length);
-  const allQuestions = hasCustom ? getAllQuestionsMerged() : store.questions;
-  const { topicsBySubject, subjectTotals, totalTopicCards } = hasCustom
-    ? buildSubTopicsCatalog(allQuestions)
-    : store.subTopicsCatalog;
+  const allActive = getAllQuestionsMerged().filter(
+    (q) => !HIDDEN_SUBJECT_KEYS.has(q.subject_key)
+  );
+  const practiceQuestions = allActive.filter((q) => !REAL_EXAM_ID_SET.has(q.id));
+  const realExamQuestions = allActive.filter((q) => REAL_EXAM_ID_SET.has(q.id));
+
+  const practiceCat = buildSubTopicsCatalog(practiceQuestions);
+  const realExamCat = buildSubTopicsCatalog(realExamQuestions);
 
   return (
     <div className="min-h-screen bg-bg text-ink pb-24 md:pb-12">
@@ -33,7 +36,7 @@ export default function CatalogTopicsPage() {
               <span>คลังข้อสอบแยกตามหัวข้อย่อย</span>
             </h1>
             <p className="mt-1 text-sm text-muted tabular-nums">
-              เลือกฝึกเฉพาะบทในทั้ง 7 วิชา · {totalTopicCards} หัวข้อย่อย · {allQuestions.length.toLocaleString('en-US')} ข้อ
+              เลือกฝึกเฉพาะบทในทั้ง {ACTIVE_SUBJECTS.length} วิชา · สลับระหว่างคลังฝึกปกติและสนามจริงได้จากแถบด้านบน
             </p>
           </div>
 
@@ -42,13 +45,15 @@ export default function CatalogTopicsPage() {
             className="inline-flex items-center gap-1.5 rounded-btn border border-line bg-panel px-3.5 py-2 text-xs font-medium text-ink transition-colors hover:border-brand/50 hover:text-brand"
           >
             <Layers className="h-4 w-4 text-teal-ink" />
-            <span>ไปหน้าแยกรายวิชา 7 วิชา</span>
+            <span>ไปหน้าแยกรายวิชา {ACTIVE_SUBJECTS.length} วิชา</span>
           </Link>
         </div>
 
         <CatalogTopicsClient
-          topicsBySubject={topicsBySubject}
-          subjectTotals={subjectTotals}
+          topicsBySubject={practiceCat.topicsBySubject}
+          subjectTotals={practiceCat.subjectTotals}
+          realExamTopicsBySubject={realExamCat.topicsBySubject}
+          realExamSubjectTotals={realExamCat.subjectTotals}
         />
       </main>
     </div>

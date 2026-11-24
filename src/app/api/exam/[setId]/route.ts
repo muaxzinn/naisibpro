@@ -22,6 +22,10 @@ export async function GET(
   const rawPool = searchParams.get('pool');
   const pool: CompletedPoolMode | undefined =
     rawPool === 'correct' || rawPool === 'wrong' || rawPool === 'all' ? rawPool : undefined;
+  const rawPackMode = searchParams.get('packMode');
+  const packMode = rawPackMode === 'strict' ? 'strict' : rawPackMode === 'fill' ? 'fill' : undefined;
+  const rawQid = searchParams.get('qid');
+  const qid = rawQid ? Number(rawQid) : undefined;
 
   const result = buildExamForSetId(setId, {
     trackName,
@@ -32,6 +36,8 @@ export async function GET(
     setIndex,
     excludeCompleted,
     pool,
+    packMode,
+    qid,
   });
 
   return NextResponse.json({

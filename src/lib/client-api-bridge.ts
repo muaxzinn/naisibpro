@@ -2,6 +2,7 @@
 
 import {
   CHOICE_LABELS,
+  HIDDEN_SUBJECT_KEYS,
   resolveTopicSelection,
   SUBJECT_MAP,
   SUBJECTS,
@@ -10,11 +11,13 @@ import {
 } from './constants';
 import {
   applyQuestionOutcomes,
+  applyRealExamOutcomes,
   backfillProfileHistoryFromAttempts,
   buildExamFromSource,
   computeSubjectBreakdown,
   getCompletedIdSets,
   resetCompletedHistory,
+  resetRealExamHistory,
   shufflePool,
   toRunnerQuestion,
   type BuildExamOptions,
@@ -104,6 +107,8 @@ function getDefaultRuntimeState(defaultLeaderboard?: RuntimeState['leaderboard']
       bookmarks: [],
       mistakeIds: [],
       correctIds: [],
+      realExamCorrectIds: [],
+      realExamMistakeIds: [],
       excludeCompleted: true,
       streakDays: 1,
       lastActiveDate: null,
@@ -269,6 +274,12 @@ function readRuntimeStateFromMeta(
     bookmarks: Array.isArray(rawProf.bookmarks) ? rawProf.bookmarks.map(Number) : [],
     mistakeIds: Array.isArray(rawProf.mistakeIds) ? rawProf.mistakeIds.map(Number) : [],
     correctIds: Array.isArray(rawProf.correctIds) ? rawProf.correctIds.map(Number) : [],
+    realExamCorrectIds: Array.isArray(rawProf.realExamCorrectIds)
+      ? rawProf.realExamCorrectIds.map(Number)
+      : [],
+    realExamMistakeIds: Array.isArray(rawProf.realExamMistakeIds)
+      ? rawProf.realExamMistakeIds.map(Number)
+      : [],
     excludeCompleted:
       typeof rawProf.excludeCompleted === 'boolean' ? rawProf.excludeCompleted : true,
     streakDays: typeof rawProf.streakDays === 'number' ? rawProf.streakDays : 1,
@@ -388,11 +399,14 @@ function detectSingleSubjectForExam(
     return (SUBJECTS.find((s) => s.key === rawKey) || SUBJECTS[0]).key;
   }
 
-  if (setId === 'completed-subject') {
+  if (setId === 'completed-subject' || setId === 'review-subject') {
     return (hasValidSubjParam ? subjParam : 'math') as SubjectKey;
   }
 
-  if ((setId === 'topic' || setId === 'completed-topic') && hasValidSubjParam) {
+  if (
+    (setId === 'topic' || setId === 'completed-topic' || setId === 'review-topic') &&
+    hasValidSubjParam
+  ) {
     return subjParam as SubjectKey;
   }
 
@@ -493,6 +507,21 @@ async function handleApiRequest(
           }));
         applyQuestionOutcomes(runtime.profile, sanitized);
       }
+      if (Array.isArray(body.realExamOutcomes)) {
+        const sanitized = body.realExamOutcomes
+          .filter(
+            (item: unknown): item is { id: number; correct: boolean } =>
+              Boolean(item && typeof item === 'object' && 'id' in item)
+          )
+          .map((item: { id: unknown; correct: unknown }) => ({
+            id: Number(item.id),
+            correct: Boolean(item.correct),
+          }));
+        applyRealExamOutcomes(runtime.profile, sanitized);
+      }
+      if (body.resetRealExam) {
+        resetRealExamHistory(runtime.profile);
+      }
       if (body.clearMistakes) {
         runtime.profile.mistakeIds = [];
       }
@@ -589,6 +618,11 @@ async function handleApiRequest(
     const rawPool = searchParams.get('pool');
     const pool: CompletedPoolMode | undefined =
       rawPool === 'correct' || rawPool === 'wrong' || rawPool === 'all' ? rawPool : undefined;
+    const rawPackMode = searchParams.get('packMode');
+    const packMode =
+      rawPackMode === 'strict' ? 'strict' : rawPackMode === 'fill' ? 'fill' : undefined;
+    const rawQid = searchParams.get('qid');
+    const qid = rawQid ? Number(rawQid) : undefined;
 
     const runtimePreview = await ensureRuntimeFast(metaStore, nativeFetch);
     const singleSubject = detectSingleSubjectForExam(
@@ -611,6 +645,8 @@ async function handleApiRequest(
       setIndex,
       excludeCompleted,
       pool,
+      packMode,
+      qid,
     });
     return jsonResponse({
       setId,
@@ -795,7 +831,11 @@ async function handleApiRequest(
       runtime.attempts = [attempt, ...runtime.attempts];
       runtime.examProgress = null;
 
-      applyQuestionOutcomes(runtime.profile, outcomes);
+      if (setId.startsWith('real-')) {
+        applyRealExamOutcomes(runtime.profile, outcomes);
+      } else {
+        applyQuestionOutcomes(runtime.profile, outcomes);
+      }
 
       if (bookmarkedIds.length > 0) {
         const bSet = new Set(runtime.profile.bookmarks || []);
@@ -822,8 +862,17 @@ async function handleApiRequest(
       const batch = searchParams.get('batch') || '';
       const query = (searchParams.get('q') || '').trim().toLowerCase();
       const hasImage = searchParams.get('hasImage') === '1';
+      const rawIds = searchParams.get('ids') || '';
+      const idFilterSet = rawIds
+        ? new Set(
+            rawIds
+              .split(',')
+              .map((s) => Number(s.trim()))
+              .filter((n) => Number.isFinite(n) && n > 0)
+          )
+        : null;
       const page = Math.max(1, Number(searchParams.get('page') || 1));
-      const limit = Math.min(100, Math.max(1, Number(searchParams.get('limit') || 24)));
+      const limit = Math.min(200, Math.max(1, Number(searchParams.get('limit') || 24)));
 
       const runtimePreview = await ensureRuntimeFast(metaStore, nativeFetch);
       const validSubject = Object.prototype.hasOwnProperty.call(SUBJECT_MAP, subject)
@@ -836,7 +885,11 @@ async function handleApiRequest(
       const runtime = readRuntimeStateFromMeta(metaStore, store.questionsById);
 
       let filtered = getAllQuestionsMergedClient(store, runtime);
+      if (idFilterSet) filtered = filtered.filter((q) => idFilterSet.has(q.id));
       if (subject) filtered = filtered.filter((q) => q.subject_key === subject);
+      else if (!idFilterSet) {
+        filtered = filtered.filter((q) => !HIDDEN_SUBJECT_KEYS.has(q.subject_key));
+      }
       if (topic) {
         const matcher = resolveTopicSelection(topic);
         filtered = filtered.filter((q) => matcher.matches(q.title));

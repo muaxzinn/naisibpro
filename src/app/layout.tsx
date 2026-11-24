@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Prompt, Sarabun, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeAndBrandProvider } from '@/components/ThemeAndBrandProvider';
+import { WorkspaceModeProvider } from '@/components/WorkspaceModeProvider';
 
 const prompt = Prompt({
   subsets: ['thai', 'latin'],
@@ -81,7 +82,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen bg-bg font-sans text-ink antialiased selection:bg-brand/20 selection:text-ink">
-        <ThemeAndBrandProvider>{children}</ThemeAndBrandProvider>
+        <ThemeAndBrandProvider>
+          <WorkspaceModeProvider>{children}</WorkspaceModeProvider>
+        </ThemeAndBrandProvider>
       </body>
     </html>
   );

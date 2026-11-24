@@ -6,7 +6,7 @@ import {
   readRuntimeState,
   writeRuntimeState,
 } from '@/lib/server-db';
-import { CHOICE_LABELS, resolveTopicSelection, type SubjectKey } from '@/lib/constants';
+import { CHOICE_LABELS, HIDDEN_SUBJECT_KEYS, resolveTopicSelection, type SubjectKey } from '@/lib/constants';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,14 +17,29 @@ export async function GET(req: NextRequest) {
   const batch = searchParams.get('batch') || '';
   const query = (searchParams.get('q') || '').trim().toLowerCase();
   const hasImage = searchParams.get('hasImage') === '1';
+  const rawIds = searchParams.get('ids') || '';
+  const idFilterSet = rawIds
+    ? new Set(
+        rawIds
+          .split(',')
+          .map((s) => Number(s.trim()))
+          .filter((n) => Number.isFinite(n) && n > 0)
+      )
+    : null;
   const page = Math.max(1, Number(searchParams.get('page') || 1));
-  const limit = Math.min(100, Math.max(1, Number(searchParams.get('limit') || 24)));
+  const limit = Math.min(200, Math.max(1, Number(searchParams.get('limit') || 24)));
 
   const store = getStore();
   let filtered = getAllQuestionsMerged();
 
+  if (idFilterSet) {
+    filtered = filtered.filter((q) => idFilterSet.has(q.id));
+  }
+
   if (subject) {
     filtered = filtered.filter((q) => q.subject_key === subject);
+  } else if (!idFilterSet) {
+    filtered = filtered.filter((q) => !HIDDEN_SUBJECT_KEYS.has(q.subject_key));
   }
   if (topic) {
     const matcher = resolveTopicSelection(topic);

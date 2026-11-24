@@ -2,21 +2,35 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { SubjectKey } from './constants';
-import { getCompletedIdSets, type ResetCompletedFilter } from './question-pool';
+import {
+  getCompletedIdSets,
+  getRealExamStatusSets,
+  type ResetCompletedFilter,
+} from './question-pool';
 
 export interface ProfileHistoryState {
   correctIds: number[];
   mistakeIds: number[];
+  realExamCorrectIds: number[];
+  realExamMistakeIds: number[];
+  bookmarks: number[];
   excludeCompleted: boolean;
 }
 
-const PROFILE_CACHE_KEY = 'gp:profile-cache:v2';
+const PROFILE_CACHE_KEY = 'gp:profile-cache:v4';
 let cachedProfileState: ProfileHistoryState | null = null;
 
 function sanitizeProfileState(raw: Partial<ProfileHistoryState>): ProfileHistoryState {
   return {
     correctIds: Array.isArray(raw.correctIds) ? raw.correctIds.map(Number) : [],
     mistakeIds: Array.isArray(raw.mistakeIds) ? raw.mistakeIds.map(Number) : [],
+    realExamCorrectIds: Array.isArray(raw.realExamCorrectIds)
+      ? raw.realExamCorrectIds.map(Number)
+      : [],
+    realExamMistakeIds: Array.isArray(raw.realExamMistakeIds)
+      ? raw.realExamMistakeIds.map(Number)
+      : [],
+    bookmarks: Array.isArray(raw.bookmarks) ? raw.bookmarks.map(Number) : [],
     excludeCompleted:
       typeof raw.excludeCompleted === 'boolean' ? raw.excludeCompleted : true,
   };
@@ -38,10 +52,13 @@ function readLocalProfileCache(): ProfileHistoryState | null {
 
 export function primeProfileHistoryCache(profile: Partial<ProfileHistoryState>): void {
   if (typeof window === 'undefined') return;
-  const normalized = sanitizeProfileState(profile);
-  cachedProfileState = normalized;
+  const merged = sanitizeProfileState({
+    ...(cachedProfileState || {}),
+    ...profile,
+  });
+  cachedProfileState = merged;
   try {
-    window.localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify(normalized));
+    window.localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify(merged));
   } catch {
     // ignore storage quota errors
   }
@@ -66,6 +83,19 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
   const [mistakeIds, setMistakeIds] = useState<number[]>(
     () => initial?.mistakeIds || (hasMemoryCache ? cachedProfileState!.mistakeIds : [])
   );
+  const [realExamCorrectIds, setRealExamCorrectIds] = useState<number[]>(
+    () =>
+      initial?.realExamCorrectIds ||
+      (hasMemoryCache ? cachedProfileState!.realExamCorrectIds : [])
+  );
+  const [realExamMistakeIds, setRealExamMistakeIds] = useState<number[]>(
+    () =>
+      initial?.realExamMistakeIds ||
+      (hasMemoryCache ? cachedProfileState!.realExamMistakeIds : [])
+  );
+  const [bookmarks, setBookmarks] = useState<number[]>(
+    () => initial?.bookmarks || (hasMemoryCache ? cachedProfileState!.bookmarks : [])
+  );
   const [excludeCompleted, setExcludeCompleted] = useState<boolean>(() =>
     initial?.excludeCompleted !== undefined
       ? initial.excludeCompleted
@@ -80,6 +110,9 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
     const normalized = sanitizeProfileState(prof);
     setCorrectIds(normalized.correctIds);
     setMistakeIds(normalized.mistakeIds);
+    setRealExamCorrectIds(normalized.realExamCorrectIds);
+    setRealExamMistakeIds(normalized.realExamMistakeIds);
+    setBookmarks(normalized.bookmarks);
     setExcludeCompleted(normalized.excludeCompleted);
     primeProfileHistoryCache(normalized);
   }, []);
@@ -105,6 +138,9 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
       if (local) {
         setCorrectIds(local.correctIds);
         setMistakeIds(local.mistakeIds);
+        setRealExamCorrectIds(local.realExamCorrectIds);
+        setRealExamMistakeIds(local.realExamMistakeIds);
+        setBookmarks(local.bookmarks);
         setExcludeCompleted(local.excludeCompleted);
         setLoading(false);
       }
@@ -114,7 +150,11 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
       void reload();
     };
     window.addEventListener('gp:runtime-updated', onUpdated);
-    return () => window.removeEventListener('gp:runtime-updated', onUpdated);
+    window.addEventListener('pageshow', onUpdated);
+    return () => {
+      window.removeEventListener('gp:runtime-updated', onUpdated);
+      window.removeEventListener('pageshow', onUpdated);
+    };
   }, [reload]);
 
   const { correctSet, mistakeSet, allCompletedSet } = useMemo(
@@ -122,14 +162,17 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
     [correctIds, mistakeIds]
   );
 
+  const { realCorrectSet, realMistakeSet, realAttemptedSet } = useMemo(
+    () => getRealExamStatusSets({ realExamCorrectIds, realExamMistakeIds }),
+    [realExamCorrectIds, realExamMistakeIds]
+  );
+
+  const bookmarkSet = useMemo(() => new Set(bookmarks), [bookmarks]);
+
   const toggleExcludeCompleted = useCallback(
     async (next: boolean) => {
       setExcludeCompleted(next);
-      primeProfileHistoryCache({
-        correctIds,
-        mistakeIds,
-        excludeCompleted: next,
-      });
+      primeProfileHistoryCache({ excludeCompleted: next });
       setSaving(true);
       try {
         const res = await fetch('/api/profile', {
@@ -149,8 +192,52 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
         setSaving(false);
       }
     },
-    [applyAndCache, correctIds, mistakeIds]
+    [applyAndCache]
   );
+
+  // Functional updater prevents stale-closure race conditions on rapid clicks
+  const toggleBookmark = useCallback(
+    async (qid: number) => {
+      setBookmarks((prev) => {
+        const next = prev.includes(qid)
+          ? prev.filter((id) => id !== qid)
+          : [...prev, qid];
+        primeProfileHistoryCache({ bookmarks: next });
+        return next;
+      });
+      try {
+        const res = await fetch('/api/profile', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ toggleBookmarkId: qid }),
+        });
+        if (res.ok) {
+          const d = await res.json();
+          if (d?.profile) applyAndCache(d.profile);
+        }
+      } catch {
+        // optimistic state preserved
+      }
+    },
+    [applyAndCache]
+  );
+
+  const clearBookmarks = useCallback(async () => {
+    setSaving(true);
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clearBookmarks: true }),
+      });
+      if (res.ok) {
+        const d = await res.json();
+        if (d?.profile) applyAndCache(d.profile);
+      }
+    } finally {
+      setSaving(false);
+    }
+  }, [applyAndCache]);
 
   const resetCompleted = useCallback(
     async (filter: ResetCompletedFilter) => {
@@ -175,6 +262,23 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
     [applyAndCache]
   );
 
+  const resetRealExam = useCallback(async () => {
+    setSaving(true);
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resetRealExam: true }),
+      });
+      if (res.ok) {
+        const d = await res.json();
+        if (d?.profile) applyAndCache(d.profile);
+      }
+    } finally {
+      setSaving(false);
+    }
+  }, [applyAndCache]);
+
   const resetForSubject = useCallback(
     (subject: SubjectKey, pool: 'all' | 'correct' | 'wrong' = 'all') =>
       resetCompleted({ scope: 'subject', subject, pool }),
@@ -190,15 +294,25 @@ export function useProfileHistory(initial?: Partial<ProfileHistoryState>) {
   return {
     correctIds,
     mistakeIds,
+    realExamCorrectIds,
+    realExamMistakeIds,
+    bookmarks,
     correctSet,
     mistakeSet,
     allCompletedSet,
+    realCorrectSet,
+    realMistakeSet,
+    realAttemptedSet,
+    bookmarkSet,
     excludeCompleted,
     loading,
     saving,
     reload,
     toggleExcludeCompleted,
+    toggleBookmark,
+    clearBookmarks,
     resetCompleted,
+    resetRealExam,
     resetForSubject,
     resetForTopic,
   };

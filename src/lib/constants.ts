@@ -25,6 +25,17 @@ export const SUBJECT_MAP: Record<SubjectKey, SubjectMeta> = Object.fromEntries(
   SUBJECTS.map((s) => [s.key, s])
 ) as Record<SubjectKey, SubjectMeta>;
 
+// Reversible subject visibility toggle: keep 'soc' data intact in dataset, hide from active UI/pools for now.
+export const HIDDEN_SUBJECT_KEYS: ReadonlySet<SubjectKey> = new Set<SubjectKey>(['soc']);
+
+export const ACTIVE_SUBJECTS: SubjectMeta[] = SUBJECTS.filter(
+  (s) => !HIDDEN_SUBJECT_KEYS.has(s.key)
+);
+
+export function isSubjectHidden(key: SubjectKey): boolean {
+  return HIDDEN_SUBJECT_KEYS.has(key);
+}
+
 export interface TrackMeta {
   id: number;
   name: string;
@@ -41,8 +52,8 @@ export const TRACKS: TrackMeta[] = [
     id: 0,
     name: 'สายอำนวยการ / พิสูจน์หลักฐาน',
     shortName: 'อำนวยการ / พฐ.',
-    subjects: ['math', 'thai', 'eng', 'com', 'doc', 'law'],
-    weights: { math: 20, thai: 20, doc: 30, com: 40, law: 25, eng: 15, soc: 0 },
+    subjects: ['math', 'thai', 'com', 'doc', 'law', 'eng'],
+    weights: { math: 20, thai: 20, com: 40, doc: 30, law: 25, eng: 15, soc: 0 },
     examDateLabel: '29 พ.ย. 2569',
     examDateIso: '2026-11-29T01:30:00.000Z',
     quotaLabel: '900 อัตรา (อำนวยการ 800 · พฐ. 100)',

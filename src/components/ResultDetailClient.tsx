@@ -26,6 +26,7 @@ import { ImageLightbox, isImageUrlString } from '@/components/ImageLightbox';
 import { RichExamContent } from '@/components/RichExamContent';
 import { AppLoadingScreen } from '@/components/AppLoadingScreen';
 import { computeAttemptXp } from '@/lib/gamification';
+import { useProfileHistory } from '@/lib/use-profile-history';
 
 type ReviewFilter = 'all' | 'wrong' | 'correct' | 'unanswered';
 
@@ -38,6 +39,7 @@ export function ResultDetailClient() {
   const [attempt, setAttempt] = useState<AttemptRecord | null>(null);
   const [questions, setQuestions] = useState<RunnerQuestion[]>([]);
   const [filter, setFilter] = useState<ReviewFilter>('all');
+  const { bookmarkSet, toggleBookmark } = useProfileHistory();
 
   useEffect(() => {
     let active = true;
@@ -436,7 +438,7 @@ export function ResultDetailClient() {
 
           <div className="space-y-5">
             {reviewItems.map(({ q, idx, userAns, isCorrect }) => {
-              const isStar = attempt.bookmarkedIds?.includes(q.id);
+              const isInVault = bookmarkSet.has(q.id);
               return (
                 <article
                   key={q.id + '-' + idx}
@@ -458,11 +460,18 @@ export function ResultDetailClient() {
                         #{q.id} · {SUBJECT_MAP[q.subject]?.shortName || q.subject}
                       </span>
                     </div>
-                    {isStar && (
-                      <span className="inline-flex items-center gap-1 text-xs font-bold text-gold-ink">
-                        <Bookmark className="w-3.5 h-3.5 fill-current" /> ติดดาว
-                      </span>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => void toggleBookmark(q.id)}
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold transition-colors ${
+                        isInVault
+                          ? 'border-gold bg-gold/20 text-gold-ink'
+                          : 'border-line bg-panel text-muted hover:border-gold/50 hover:text-ink'
+                      }`}
+                    >
+                      <Bookmark className={`w-3.5 h-3.5 ${isInVault ? 'fill-current' : ''}`} />
+                      <span>{isInVault ? 'อยู่ในคลังทบทวน' : 'ต้องการทบทวน'}</span>
+                    </button>
                   </div>
 
                   {(() => {

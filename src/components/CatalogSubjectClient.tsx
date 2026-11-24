@@ -16,6 +16,7 @@ import { SUBJECT_MAP, SUBJECTS, type SubjectKey } from '@/lib/constants';
 import { useProfileHistory } from '@/lib/use-profile-history';
 import { SubjectIcon } from '@/components/SubjectIcon';
 import { QuestionPoolSettingsBar } from '@/components/QuestionPoolSettingsBar';
+import { useWorkspaceMode } from '@/components/WorkspaceModeProvider';
 
 export interface SubjectOverviewItem {
   key: SubjectKey;
@@ -27,23 +28,40 @@ export interface SubjectOverviewItem {
 
 interface CatalogSubjectClientProps {
   items: SubjectOverviewItem[];
+  realExamItems?: SubjectOverviewItem[];
 }
 
-export function CatalogSubjectClient({ items }: CatalogSubjectClientProps) {
+export function CatalogSubjectClient({
+  items: practiceItems,
+  realExamItems,
+}: CatalogSubjectClientProps) {
+  const { workspaceMode } = useWorkspaceMode();
+  const isRealMode = workspaceMode === 'real-exam' && Boolean(realExamItems?.length);
+  const items = isRealMode && realExamItems ? realExamItems : practiceItems;
+
   const [activeKey, setActiveKey] = useState<SubjectKey>(items[0]?.key || 'math');
   const [chunkSize, setChunkSize] = useState<20 | 50>(20);
   const [showAllSets, setShowAllSets] = useState(false);
 
   const {
-    correctSet,
-    mistakeSet,
-    allCompletedSet,
+    correctSet: mainCorrectSet,
+    mistakeSet: mainMistakeSet,
+    allCompletedSet: mainCompletedSet,
+    realCorrectSet,
+    realMistakeSet,
+    realAttemptedSet,
     excludeCompleted,
     saving,
     toggleExcludeCompleted,
     resetCompleted,
+    resetRealExam,
     resetForSubject,
   } = useProfileHistory();
+
+  const correctSet = isRealMode ? realCorrectSet : mainCorrectSet;
+  const mistakeSet = isRealMode ? realMistakeSet : mainMistakeSet;
+  const allCompletedSet = isRealMode ? realAttemptedSet : mainCompletedSet;
+  void resetRealExam;
 
   const totalCatalogQuestions = useMemo(
     () => items.reduce((sum, it) => sum + it.count, 0),
@@ -172,7 +190,11 @@ export function CatalogSubjectClient({ items }: CatalogSubjectClientProps) {
               {[20, 50, 100].map((qty) => (
                 <Link
                   key={qty}
-                  href={`/exam/subject-${activeMeta.key}?count=${Math.min(qty, effectiveTotal)}&mode=practice&fresh=1${excludeParam}`}
+                  href={
+                    isRealMode
+                      ? `/exam/real-mix?subject=${activeMeta.key}&count=${Math.min(qty, effectiveTotal)}&mode=practice&fresh=1`
+                      : `/exam/subject-${activeMeta.key}?count=${Math.min(qty, effectiveTotal)}&mode=practice&fresh=1${excludeParam}`
+                  }
                   className="inline-flex items-center gap-1.5 rounded-btn border border-line bg-bg2/50 px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:border-brand/50 hover:text-brand tabular-nums"
                 >
                   <Shuffle className="h-3.5 w-3.5 text-brand" />
@@ -180,7 +202,11 @@ export function CatalogSubjectClient({ items }: CatalogSubjectClientProps) {
                 </Link>
               ))}
               <Link
-                href={`/exam/subject-${activeMeta.key}?count=${Math.min(50, effectiveTotal)}&mode=real&fresh=1${excludeParam}`}
+                href={
+                  isRealMode
+                    ? `/exam/real-mix?subject=${activeMeta.key}&count=${Math.min(50, effectiveTotal)}&mode=real&fresh=1`
+                    : `/exam/subject-${activeMeta.key}?count=${Math.min(50, effectiveTotal)}&mode=real&fresh=1${excludeParam}`
+                }
                 className="inline-flex items-center gap-1.5 rounded-btn bg-brand px-3.5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-dark tabular-nums"
               >
                 <span>สอบจับเวลา {Math.min(50, effectiveTotal)} ข้อ</span>
@@ -290,13 +316,21 @@ export function CatalogSubjectClient({ items }: CatalogSubjectClientProps) {
 
                   <div className="flex items-center gap-2 pt-1">
                     <Link
-                      href={`/exam/subject-${activeMeta.key}?set=${setNum}&count=${chunkSize}&mode=practice&fresh=1${excludeParam}`}
+                      href={
+                        isRealMode
+                          ? `/exam/real-mix?subject=${activeMeta.key}&count=${chunkSize}&mode=practice&fresh=1`
+                          : `/exam/subject-${activeMeta.key}?set=${setNum}&count=${chunkSize}&mode=practice&fresh=1${excludeParam}`
+                      }
                       className="flex-1 rounded-xl border border-line bg-panel py-2 text-center text-xs font-bold text-ink transition-colors hover:border-brand/50 hover:text-brand"
                     >
                       โหมดฝึกซ้อม
                     </Link>
                     <Link
-                      href={`/exam/subject-${activeMeta.key}?set=${setNum}&count=${chunkSize}&mode=real&fresh=1${excludeParam}`}
+                      href={
+                        isRealMode
+                          ? `/exam/real-mix?subject=${activeMeta.key}&count=${chunkSize}&mode=real&fresh=1`
+                          : `/exam/subject-${activeMeta.key}?set=${setNum}&count=${chunkSize}&mode=real&fresh=1${excludeParam}`
+                      }
                       className="flex-1 rounded-xl bg-brand py-2 text-center text-xs font-bold text-white transition-colors hover:bg-brand-dark"
                     >
                       จับเวลาจริง
@@ -343,7 +377,11 @@ export function CatalogSubjectClient({ items }: CatalogSubjectClientProps) {
             {activeData.topics.map((t) => (
               <Link
                 key={t.title}
-                href={`/exam/topic?subject=${activeMeta.key}&topic=${encodeURIComponent(t.title)}&count=30&mode=practice&fresh=1${excludeParam}`}
+                href={
+                  isRealMode
+                    ? `/exam/real-mix?subject=${activeMeta.key}&topic=${encodeURIComponent(t.title)}&mode=practice&fresh=1`
+                    : `/exam/topic?subject=${activeMeta.key}&topic=${encodeURIComponent(t.title)}&count=30&mode=practice&fresh=1${excludeParam}`
+                }
                 className="flex items-center justify-between gap-2 rounded-xl border border-line bg-bg2/60 px-3.5 py-2.5 text-xs transition-colors hover:border-brand/50 hover:text-brand"
               >
                 <div className="flex items-center gap-2 min-w-0">

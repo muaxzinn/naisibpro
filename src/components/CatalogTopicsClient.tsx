@@ -16,23 +16,39 @@ import {
   Shuffle,
   Sparkles,
 } from 'lucide-react';
-import { SUBJECT_MAP, SUBJECTS, type SubjectKey } from '@/lib/constants';
+import { ACTIVE_SUBJECTS, SUBJECT_MAP, type SubjectKey } from '@/lib/constants';
 import type { SubTopicCatalogItem } from '@/lib/topic-catalog';
 import { useProfileHistory } from '@/lib/use-profile-history';
 import { SubjectIcon } from '@/components/SubjectIcon';
 import { QuestionPoolSettingsBar } from '@/components/QuestionPoolSettingsBar';
+import { useWorkspaceMode } from '@/components/WorkspaceModeProvider';
 
 export type { SubTopicCatalogItem };
 
 interface CatalogTopicsClientProps {
   topicsBySubject: Record<SubjectKey, SubTopicCatalogItem[]>;
   subjectTotals: Record<SubjectKey, number>;
+  realExamTopicsBySubject?: Record<SubjectKey, SubTopicCatalogItem[]>;
+  realExamSubjectTotals?: Record<SubjectKey, number>;
 }
 
 export function CatalogTopicsClient({
-  topicsBySubject,
-  subjectTotals,
+  topicsBySubject: practiceTopicsBySubject,
+  subjectTotals: practiceSubjectTotals,
+  realExamTopicsBySubject,
+  realExamSubjectTotals,
 }: CatalogTopicsClientProps) {
+  const { workspaceMode } = useWorkspaceMode();
+  const isRealMode =
+    workspaceMode === 'real-exam' &&
+    Boolean(realExamTopicsBySubject) &&
+    Boolean(realExamSubjectTotals);
+  const topicsBySubject =
+    isRealMode && realExamTopicsBySubject ? realExamTopicsBySubject : practiceTopicsBySubject;
+  const subjectTotals =
+    isRealMode && realExamSubjectTotals ? realExamSubjectTotals : practiceSubjectTotals;
+  const topicRoute = isRealMode ? 'real-mix' : 'topic';
+
   const [selectedSubject, setSelectedSubject] = useState<SubjectKey | null>(null);
   const [selectedTopicCard, setSelectedTopicCard] = useState<SubTopicCatalogItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -41,9 +57,12 @@ export function CatalogTopicsClient({
   const [showAllTopicsFlat, setShowAllTopicsFlat] = useState(false);
 
   const {
-    correctSet,
-    mistakeSet,
-    allCompletedSet,
+    correctSet: mainCorrectSet,
+    mistakeSet: mainMistakeSet,
+    allCompletedSet: mainCompletedSet,
+    realCorrectSet,
+    realMistakeSet,
+    realAttemptedSet,
     excludeCompleted,
     saving,
     toggleExcludeCompleted,
@@ -51,13 +70,17 @@ export function CatalogTopicsClient({
     resetForTopic,
   } = useProfileHistory();
 
+  const correctSet = isRealMode ? realCorrectSet : mainCorrectSet;
+  const mistakeSet = isRealMode ? realMistakeSet : mainMistakeSet;
+  const allCompletedSet = isRealMode ? realAttemptedSet : mainCompletedSet;
+
   const totalCatalogQuestions = useMemo(
-    () => SUBJECTS.reduce((sum, s) => sum + (subjectTotals[s.key] || 0), 0),
+    () => ACTIVE_SUBJECTS.reduce((sum, s) => sum + (subjectTotals[s.key] || 0), 0),
     [subjectTotals]
   );
 
   const allTopics = useMemo(
-    () => SUBJECTS.flatMap((s) => topicsBySubject[s.key] || []),
+    () => ACTIVE_SUBJECTS.flatMap((s) => topicsBySubject[s.key] || []),
     [topicsBySubject]
   );
 
@@ -267,7 +290,7 @@ export function CatalogTopicsClient({
       {/* LEVEL 1: 7 Main Subject Block Cards */}
       {isLevel1 && (
         <section aria-label="การ์ดวิชาหลักทั้ง 7 วิชา" className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
-          {SUBJECTS.map((sub) => {
+          {ACTIVE_SUBJECTS.map((sub) => {
             const subTopics = topicsBySubject[sub.key] || [];
             const doneInSub = subTopics.reduce(
               (acc, t) => acc + t.questionIds.filter((id) => allCompletedSet.has(id)).length,
@@ -362,7 +385,7 @@ export function CatalogTopicsClient({
 
             {/* Quick Subject Switcher */}
             <div className="flex flex-wrap gap-1.5">
-              {SUBJECTS.map((sub) => {
+              {ACTIVE_SUBJECTS.map((sub) => {
                 const active = selectedSubject === sub.key;
                 const count = (topicsBySubject[sub.key] || []).length;
                 return (
@@ -487,7 +510,7 @@ export function CatalogTopicsClient({
                             <span>เปิดบล็อกชุดข้อสอบ ({stats.totalSets})</span>
                           </button>
                           <Link
-                            href={`/exam/topic?subject=${item.subjectKey}&topic=${topicParam}&set=1&count=${chunkSize}&mode=practice&fresh=1${excludeParam}`}
+                            href={`/exam/${topicRoute}?subject=${item.subjectKey}&topic=${topicParam}&set=1&count=${chunkSize}&mode=practice&fresh=1${excludeParam}`}
                             className="inline-flex items-center justify-center gap-1 rounded-btn border border-line bg-bg2/60 px-3 py-2 text-xs font-medium text-ink transition-colors hover:border-brand/50 hover:text-brand"
                           >
                             <Play className="h-3.5 w-3.5 text-brand" />
@@ -502,7 +525,7 @@ export function CatalogTopicsClient({
                           </span>
                           <div className="flex items-center gap-1.5">
                             <Link
-                              href={`/exam/topic?subject=${item.subjectKey}&topic=${topicParam}&set=1&count=${chunkSize}&mode=practice&fresh=1&excludeCompleted=0`}
+                              href={`/exam/${topicRoute}?subject=${item.subjectKey}&topic=${topicParam}&set=1&count=${chunkSize}&mode=practice&fresh=1&excludeCompleted=0`}
                               className="rounded-md border border-line bg-panel px-2.5 py-1 text-xs font-medium text-ink hover:border-brand/50"
                             >
                               ฝึกซ้ำ
@@ -619,14 +642,14 @@ export function CatalogTopicsClient({
                 {stats.activeCount > 0 && (
                   <>
                     <Link
-                      href={`/exam/topic?subject=${item.subjectKey}&topic=${topicParam}&count=20&mode=practice&fresh=1${excludeParam}`}
+                      href={`/exam/${topicRoute}?subject=${item.subjectKey}&topic=${topicParam}&count=20&mode=practice&fresh=1${excludeParam}`}
                       className="inline-flex items-center gap-1.5 rounded-btn border border-line bg-bg2/60 px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:border-brand/50 hover:text-brand"
                     >
                       <Shuffle className="h-3.5 w-3.5 text-brand" />
                       <span>สุ่มฝึก {Math.min(20, stats.activeCount)} ข้อ</span>
                     </Link>
                     <Link
-                      href={`/exam/topic?subject=${item.subjectKey}&topic=${topicParam}&set=1&count=${stats.activeCount}&mode=practice&fresh=1${excludeParam}`}
+                      href={`/exam/${topicRoute}?subject=${item.subjectKey}&topic=${topicParam}&set=1&count=${stats.activeCount}&mode=practice&fresh=1${excludeParam}`}
                       className="inline-flex items-center gap-1.5 rounded-btn border border-line bg-bg2/60 px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:border-teal/60 hover:text-teal-ink"
                     >
                       <Sparkles className="h-3.5 w-3.5 text-teal-ink" />
@@ -661,7 +684,7 @@ export function CatalogTopicsClient({
                     ไปหน้าชุดข้อสอบที่เคยทำแล้ว
                   </Link>
                   <Link
-                    href={`/exam/topic?subject=${item.subjectKey}&topic=${topicParam}&set=1&count=${chunkSize}&mode=practice&fresh=1&excludeCompleted=0`}
+                    href={`/exam/${topicRoute}?subject=${item.subjectKey}&topic=${topicParam}&set=1&count=${chunkSize}&mode=practice&fresh=1&excludeCompleted=0`}
                     className="rounded-btn border border-line bg-panel px-4 py-2 text-xs font-medium text-ink hover:border-brand/50"
                   >
                     ฝึกซ้ำชุดที่ 1
@@ -697,13 +720,13 @@ export function CatalogTopicsClient({
 
                       <div className="grid grid-cols-2 gap-2 pt-1">
                         <Link
-                          href={`/exam/topic?subject=${item.subjectKey}&topic=${topicParam}&set=${setNum}&count=${chunkSize}&mode=practice&fresh=1${excludeParam}`}
+                          href={`/exam/${topicRoute}?subject=${item.subjectKey}&topic=${topicParam}&set=${setNum}&count=${chunkSize}&mode=practice&fresh=1${excludeParam}`}
                           className="rounded-btn border border-line bg-bg2/60 py-2 text-center text-xs font-medium text-ink transition-colors hover:border-brand/50 hover:text-brand"
                         >
                           โหมดฝึกซ้อม
                         </Link>
                         <Link
-                          href={`/exam/topic?subject=${item.subjectKey}&topic=${topicParam}&set=${setNum}&count=${chunkSize}&mode=real&fresh=1${excludeParam}`}
+                          href={`/exam/${topicRoute}?subject=${item.subjectKey}&topic=${topicParam}&set=${setNum}&count=${chunkSize}&mode=real&fresh=1${excludeParam}`}
                           className="rounded-btn bg-brand py-2 text-center text-xs font-semibold text-white transition-colors hover:bg-brand-dark"
                         >
                           จับเวลาจริง

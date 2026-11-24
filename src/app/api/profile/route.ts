@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
   applyQuestionOutcomes,
+  applyRealExamOutcomes,
   getAllQuestionsMerged,
   readRuntimeState,
   resetCompletedHistory,
+  resetRealExamHistory,
   writeRuntimeState,
   type CompletedPoolMode,
   type RuntimeState,
@@ -50,6 +52,21 @@ export async function PATCH(req: NextRequest) {
         correct: Boolean(item.correct),
       }));
     applyQuestionOutcomes(runtime.profile, sanitized);
+  }
+  if (Array.isArray(body.realExamOutcomes)) {
+    const sanitized = body.realExamOutcomes
+      .filter(
+        (item: unknown): item is { id: number; correct: boolean } =>
+          Boolean(item && typeof item === 'object' && 'id' in item)
+      )
+      .map((item: { id: unknown; correct: unknown }) => ({
+        id: Number(item.id),
+        correct: Boolean(item.correct),
+      }));
+    applyRealExamOutcomes(runtime.profile, sanitized);
+  }
+  if (body.resetRealExam) {
+    resetRealExamHistory(runtime.profile);
   }
   if (body.clearMistakes) {
     runtime.profile.mistakeIds = [];

@@ -21,6 +21,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { SubjectIcon } from '@/components/SubjectIcon';
 import { ImageLightbox, isImageUrlString } from '@/components/ImageLightbox';
 import { RichExamContent } from '@/components/RichExamContent';
+import { primeProfileHistoryCache } from '@/lib/use-profile-history';
 import { AppLoadingScreen } from '@/components/AppLoadingScreen';
 import {
   CHOICE_LABELS,
@@ -123,11 +124,19 @@ function QuestionBankInner() {
     setBookmarks((prev) =>
       prev.includes(qid) ? prev.filter((id) => id !== qid) : [...prev, qid]
     );
-    await fetch('/api/profile', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ toggleBookmarkId: qid }),
-    }).catch(() => {});
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ toggleBookmarkId: qid }),
+      });
+      if (res.ok) {
+        const d = await res.json();
+        if (d?.profile) primeProfileHistoryCache(d.profile);
+      }
+    } catch {
+      // ignore network error
+    }
   };
 
   const buildTopicDrillHref = () => {
@@ -429,7 +438,7 @@ function QuestionBankInner() {
                         }`}
                       >
                         <Bookmark className={`h-3.5 w-3.5 ${bookmarked ? 'fill-current' : ''}`} />
-                        <span>{bookmarked ? 'ติดดาวแล้ว' : 'ติดดาว'}</span>
+                        <span>{bookmarked ? 'อยู่ในคลังทบทวน' : 'ต้องการทบทวน'}</span>
                       </button>
 
                       <button

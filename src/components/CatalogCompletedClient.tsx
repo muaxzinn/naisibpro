@@ -19,36 +19,64 @@ import {
   Sparkles,
   XCircle,
 } from 'lucide-react';
-import { SUBJECT_MAP, SUBJECTS, type SubjectKey } from '@/lib/constants';
+import { ACTIVE_SUBJECTS, SUBJECT_MAP, type SubjectKey } from '@/lib/constants';
 import type { CompletedPoolMode } from '@/lib/question-pool';
 import type { SubTopicCatalogItem } from '@/lib/topic-catalog';
 import { useProfileHistory } from '@/lib/use-profile-history';
 import { SubjectIcon } from '@/components/SubjectIcon';
 import { QuestionPoolSettingsBar } from '@/components/QuestionPoolSettingsBar';
+import { useWorkspaceMode } from '@/components/WorkspaceModeProvider';
 
 type StructureMode = 'form150' | 'subject' | 'topic';
 
 interface CatalogCompletedClientProps {
   topicsBySubject: Record<SubjectKey, SubTopicCatalogItem[]>;
   totalCatalogQuestions: number;
+  realExamTopicsBySubject?: Record<SubjectKey, SubTopicCatalogItem[]>;
+  realExamTotalQuestions?: number;
 }
 
 export function CatalogCompletedClient({
-  topicsBySubject,
-  totalCatalogQuestions,
+  topicsBySubject: practiceTopicsBySubject,
+  totalCatalogQuestions: practiceTotalQuestions,
+  realExamTopicsBySubject,
+  realExamTotalQuestions,
 }: CatalogCompletedClientProps) {
+  const { workspaceMode } = useWorkspaceMode();
+  const isRealMode =
+    workspaceMode === 'real-exam' && Boolean(realExamTopicsBySubject);
+  const topicsBySubject =
+    isRealMode && realExamTopicsBySubject ? realExamTopicsBySubject : practiceTopicsBySubject;
+  const totalCatalogQuestions =
+    isRealMode && typeof realExamTotalQuestions === 'number'
+      ? realExamTotalQuestions
+      : practiceTotalQuestions;
+
+  const formRoute = isRealMode ? 'real-completed' : 'completed-form';
+  const subjectRoute = isRealMode ? 'real-completed' : 'completed-subject';
+  const topicRoute = isRealMode ? 'real-completed' : 'completed-topic';
+
   const {
-    correctSet,
-    mistakeSet,
-    allCompletedSet,
+    correctSet: mainCorrectSet,
+    mistakeSet: mainMistakeSet,
+    allCompletedSet: mainCompletedSet,
+    realCorrectSet,
+    realMistakeSet,
+    realAttemptedSet,
     excludeCompleted,
     loading,
     saving,
     toggleExcludeCompleted,
     resetCompleted,
+    resetRealExam,
     resetForSubject,
     resetForTopic,
   } = useProfileHistory();
+
+  const correctSet = isRealMode ? realCorrectSet : mainCorrectSet;
+  const mistakeSet = isRealMode ? realMistakeSet : mainMistakeSet;
+  const allCompletedSet = isRealMode ? realAttemptedSet : mainCompletedSet;
+  void resetRealExam;
 
   const [poolMode, setPoolMode] = useState<CompletedPoolMode>('all');
   const [structureMode, setStructureMode] = useState<StructureMode>('form150');
@@ -73,7 +101,7 @@ export function CatalogCompletedClient({
         : 'รวมที่เคยทำทั้งหมด';
 
   const subjectStats = useMemo(() => {
-    return SUBJECTS.map((sub) => {
+    return ACTIVE_SUBJECTS.map((sub) => {
       const topics = topicsBySubject[sub.key] || [];
       let totalInSubject = 0;
       let matchCount = 0;
@@ -126,7 +154,7 @@ export function CatalogCompletedClient({
       }
     > = [];
 
-    for (const sub of SUBJECTS) {
+    for (const sub of ACTIVE_SUBJECTS) {
       if (topicSubjectFilter !== 'all' && sub.key !== topicSubjectFilter) continue;
       for (const item of topicsBySubject[sub.key] || []) {
         let matchCount = 0;
@@ -422,7 +450,7 @@ export function CatalogCompletedClient({
                 {[50, 100, 150].map((qty) => (
                   <Link
                     key={qty}
-                    href={`/exam/completed-form?pool=${poolMode}&count=${qty}&shuffle=1&mode=practice&fresh=1`}
+                    href={`/exam/${formRoute}?pool=${poolMode}&count=${qty}&shuffle=1&mode=practice&fresh=1`}
                     className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-bg2 px-3 py-2 text-xs font-bold text-ink transition hover:border-brand/50 hover:text-brand"
                   >
                     <Shuffle className="h-3.5 w-3.5 text-brand" />
@@ -439,7 +467,7 @@ export function CatalogCompletedClient({
                 .map((s) => (
                   <Link
                     key={s.meta.key}
-                    href={`/exam/completed-form?pool=${poolMode}&subject=${s.meta.key}&count=150&mode=practice&fresh=1`}
+                    href={`/exam/${formRoute}?pool=${poolMode}&subject=${s.meta.key}&count=150&mode=practice&fresh=1`}
                     className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-bg2/60 px-2.5 py-1 text-xs font-bold text-ink transition hover:border-brand/50 hover:text-brand"
                   >
                     <SubjectIcon subjectKey={s.meta.key} size="sm" />
@@ -478,13 +506,13 @@ export function CatalogCompletedClient({
 
                 <div className="flex flex-wrap gap-2">
                   <Link
-                    href={`/exam/completed-form?pool=${poolMode}&set=${setItem.setNum}&count=150&mode=practice&fresh=1`}
+                    href={`/exam/${formRoute}?pool=${poolMode}&set=${setItem.setNum}&count=150&mode=practice&fresh=1`}
                     className="rounded-xl border border-line bg-bg2 px-3.5 py-2 text-xs font-bold text-ink transition hover:border-brand/50 hover:text-brand"
                   >
                     โหมดฝึกซ้อม
                   </Link>
                   <Link
-                    href={`/exam/completed-form?pool=${poolMode}&set=${setItem.setNum}&count=150&mode=real&fresh=1`}
+                    href={`/exam/${formRoute}?pool=${poolMode}&set=${setItem.setNum}&count=150&mode=real&fresh=1`}
                     className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark"
                   >
                     <Play className="h-3.5 w-3.5" />
@@ -562,7 +590,7 @@ export function CatalogCompletedClient({
                           return (
                             <Link
                               key={setNum}
-                              href={`/exam/completed-subject?pool=${poolMode}&subject=${meta.key}&set=${setNum}&count=${subjectChunkSize}&mode=practice&fresh=1`}
+                              href={`/exam/${subjectRoute}?pool=${poolMode}&subject=${meta.key}&set=${setNum}&count=${subjectChunkSize}&mode=practice&fresh=1`}
                               className="flex items-center justify-between gap-1 rounded-xl border border-line bg-bg2/60 px-2.5 py-1.5 text-[11px] font-bold text-ink transition hover:border-brand/50 hover:text-brand"
                             >
                               <span>ชุดที่ {setNum}</span>
@@ -584,14 +612,14 @@ export function CatalogCompletedClient({
                     <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
                       <div className="flex flex-wrap gap-2">
                         <Link
-                          href={`/exam/completed-subject?pool=${poolMode}&subject=${meta.key}&set=1&count=${subjectChunkSize}&mode=practice&fresh=1`}
+                          href={`/exam/${subjectRoute}?pool=${poolMode}&subject=${meta.key}&set=1&count=${subjectChunkSize}&mode=practice&fresh=1`}
                           className="inline-flex items-center gap-1 rounded-xl bg-brand px-3 py-1.5 text-xs font-extrabold text-white hover:bg-brand-dark"
                         >
                           <Play className="h-3.5 w-3.5" />
                           <span>เริ่มชุดที่ 1</span>
                         </Link>
                         <Link
-                          href={`/exam/completed-subject?pool=${poolMode}&subject=${meta.key}&count=20&shuffle=1&mode=practice&fresh=1`}
+                          href={`/exam/${subjectRoute}?pool=${poolMode}&subject=${meta.key}&count=20&shuffle=1&mode=practice&fresh=1`}
                           className="inline-flex items-center gap-1 rounded-xl border border-line bg-bg2 px-3 py-1.5 text-xs font-bold text-ink hover:border-brand/50 hover:text-brand"
                         >
                           <Shuffle className="h-3.5 w-3.5 text-brand" />
@@ -838,7 +866,7 @@ export function CatalogCompletedClient({
                           </div>
 
                           <Link
-                            href={`/exam/completed-topic?pool=${poolMode}&subject=${item.subjectKey}&topic=${topicParam}&count=${item.matchCount}&set=1&mode=practice&fresh=1`}
+                            href={`/exam/${topicRoute}?pool=${poolMode}&subject=${item.subjectKey}&topic=${topicParam}&count=${item.matchCount}&set=1&mode=practice&fresh=1`}
                             className="inline-flex items-center gap-1.5 rounded-xl border border-line bg-bg2 px-3.5 py-2 text-xs font-bold text-ink hover:border-brand/50 hover:text-brand"
                           >
                             <Sparkles className="h-3.5 w-3.5 text-teal-ink" />
@@ -875,13 +903,13 @@ export function CatalogCompletedClient({
 
                               <div className="grid grid-cols-2 gap-2 pt-1">
                                 <Link
-                                  href={`/exam/completed-topic?pool=${poolMode}&subject=${item.subjectKey}&topic=${topicParam}&set=${setNum}&count=${topicChunkSize}&mode=practice&fresh=1`}
+                                  href={`/exam/${topicRoute}?pool=${poolMode}&subject=${item.subjectKey}&topic=${topicParam}&set=${setNum}&count=${topicChunkSize}&mode=practice&fresh=1`}
                                   className="rounded-xl border border-line bg-bg2 py-2 text-center text-xs font-bold text-ink transition hover:border-brand/50 hover:text-brand"
                                 >
                                   โหมดฝึกซ้อม
                                 </Link>
                                 <Link
-                                  href={`/exam/completed-topic?pool=${poolMode}&subject=${item.subjectKey}&topic=${topicParam}&set=${setNum}&count=${topicChunkSize}&mode=real&fresh=1`}
+                                  href={`/exam/${topicRoute}?pool=${poolMode}&subject=${item.subjectKey}&topic=${topicParam}&set=${setNum}&count=${topicChunkSize}&mode=real&fresh=1`}
                                   className="rounded-xl bg-brand py-2 text-center text-xs font-extrabold text-white transition hover:bg-brand-dark"
                                 >
                                   จับเวลาจริง
@@ -970,14 +998,14 @@ export function CatalogCompletedClient({
                           <div className="flex flex-wrap items-center justify-between gap-2">
                             <div className="flex flex-wrap gap-1.5">
                               <Link
-                                href={`/exam/completed-topic?pool=${poolMode}&subject=${item.subjectKey}&topic=${topicParam}&set=1&count=${topicChunkSize}&mode=practice&fresh=1`}
+                                href={`/exam/${topicRoute}?pool=${poolMode}&subject=${item.subjectKey}&topic=${topicParam}&set=1&count=${topicChunkSize}&mode=practice&fresh=1`}
                                 className="inline-flex items-center gap-1 rounded-xl border border-line bg-bg2 px-3 py-1.5 text-xs font-bold text-ink hover:border-brand/50 hover:text-brand"
                               >
                                 <Play className="h-3.5 w-3.5 text-brand" />
                                 <span>เริ่มชุดที่ 1</span>
                               </Link>
                               <Link
-                                href={`/exam/completed-topic?pool=${poolMode}&subject=${item.subjectKey}&topic=${topicParam}&count=${item.matchCount}&set=1&mode=practice&fresh=1`}
+                                href={`/exam/${topicRoute}?pool=${poolMode}&subject=${item.subjectKey}&topic=${topicParam}&count=${item.matchCount}&set=1&mode=practice&fresh=1`}
                                 className="inline-flex items-center gap-1 rounded-xl border border-line bg-bg2 px-3 py-1.5 text-xs font-bold text-ink hover:border-brand/50 hover:text-brand"
                               >
                                 <Sparkles className="h-3.5 w-3.5 text-teal-ink" />

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
   applyQuestionOutcomes,
+  applyRealExamOutcomes,
   findQuestionById,
   readRuntimeState,
   writeRuntimeState,
@@ -137,8 +138,12 @@ export async function POST(req: NextRequest) {
   runtime.attempts = [attempt, ...runtime.attempts];
   runtime.examProgress = null;
 
-  // Global Question History: record latest correct/wrong outcome for every answered question
-  applyQuestionOutcomes(runtime.profile, outcomes);
+  // Isolated Real-Exam Pool vs Global Question History
+  if (setId.startsWith('real-')) {
+    applyRealExamOutcomes(runtime.profile, outcomes);
+  } else {
+    applyQuestionOutcomes(runtime.profile, outcomes);
+  }
 
   // Persist any newly bookmarked questions
   if (bookmarkedIds.length > 0) {

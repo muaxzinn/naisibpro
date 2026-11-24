@@ -35,6 +35,12 @@ import {
 import { AWAY_TIMEOUT_MINUTES, CHOICE_LABELS, SUBJECT_MAP, SUBJECTS, type SubjectKey } from '@/lib/constants';
 import { safeTruncateThai } from '@/lib/utf8-thai';
 import { invalidateProfileHistoryCache, primeProfileHistoryCache } from '@/lib/use-profile-history';
+import {
+  clearSetDraft,
+  isFixedDraftSupportedSet,
+  readSetDraft,
+  writeSetDraft,
+} from '@/lib/set-draft-progress';
 import type { ExamProgressRecord, RunnerQuestion } from '@/lib/server-db';
 import { SubjectIcon } from '@/components/SubjectIcon';
 import { ImageLightbox, isImageUrlString } from '@/components/ImageLightbox';
@@ -110,8 +116,16 @@ function ExamRunnerInner() {
   const setParam = searchParams.get('set') || '';
   const urlExcludeParam = searchParams.get('excludeCompleted');
   const poolParam = searchParams.get('pool') || '';
+  const packModeParam = searchParams.get('packMode') || '';
+  const qidParam = searchParams.get('qid') || '';
+  const isRealExamSet = setId.startsWith('real-');
   const isCompletedReviewSet =
-    setId.startsWith('completed-') || setId === 'mistakes' || setId === 'bookmarks';
+    setId.startsWith('completed-') ||
+    setId.startsWith('review-') ||
+    setId === 'repack-form' ||
+    isRealExamSet ||
+    setId === 'mistakes' ||
+    setId === 'bookmarks';
   const fresh = searchParams.get('fresh') === '1';
   const autostart = searchParams.get('autostart') === '1';
 
@@ -189,6 +203,8 @@ function ExamRunnerInner() {
         if (shuffle) qs.set('shuffle', shuffle);
         if (setParam) qs.set('set', setParam);
         if (poolParam) qs.set('pool', poolParam);
+        if (packModeParam) qs.set('packMode', packModeParam);
+        if (qidParam) qs.set('qid', qidParam);
         if (urlExcludeParam === '1' || urlExcludeParam === '0') {
           qs.set('excludeCompleted', urlExcludeParam);
         }
@@ -220,7 +236,14 @@ function ExamRunnerInner() {
         const now = Date.now();
         let restored: ExamProgressRecord | null = null;
 
-        if (!fresh && mode !== 'review' && setId !== 'mistakes' && setId !== 'bookmarks') {
+        if (
+          !fresh &&
+          mode !== 'review' &&
+          setId !== 'mistakes' &&
+          setId !== 'bookmarks' &&
+          setId !== 'repack-form' &&
+          !setId.startsWith('review-')
+        ) {
           try {
             const rawLocal = window.localStorage.getItem(LOCAL_PROGRESS_KEY);
             if (rawLocal) {
@@ -231,6 +254,27 @@ function ExamRunnerInner() {
             }
           } catch {
             // ignore storage parse error
+          }
+          if (!restored && isFixedDraftSupportedSet(setId)) {
+            const setDraft = readSetDraft(setId);
+            if (
+              setDraft &&
+              setDraft.questionIds.length === examData.items.length &&
+              setDraft.questionIds.every((id, i) => examData.items[i]?.id === id)
+            ) {
+              restored = {
+                setId,
+                mode: setDraft.mode,
+                list: examData.items.map((q) => ({ id: q.id, subject: q.subject })),
+                answers: setDraft.answers,
+                cur: setDraft.cur,
+                startedAt: new Date(now).toISOString(),
+                endAt: now + examData.durationSec * 1000,
+                updatedAt: now,
+                activeSec: 0,
+                awayAt: null,
+              };
+            }
           }
           if (!restored && progRes && progRes.ok) {
             const pJson = await progRes.json();
@@ -359,6 +403,18 @@ function ExamRunnerInner() {
       };
       try {
         window.localStorage.setItem(LOCAL_PROGRESS_KEY, JSON.stringify(payload));
+        if (isFixedDraftSupportedSet(setId)) {
+          writeSetDraft({
+            setId,
+            mode: mode === 'real' ? 'real' : 'practice',
+            questionIds: exam.items.map((q) => q.id),
+            answers,
+            cur,
+            answeredCount: answers.filter((a) => a !== null && a !== undefined).length,
+            total: exam.items.length,
+            updatedAt: new Date(now).toISOString(),
+          });
+        }
       } catch {
         // ignore quota errors
       }
@@ -404,6 +460,9 @@ function ExamRunnerInner() {
         const data = await res.json();
         try {
           window.localStorage.removeItem(LOCAL_PROGRESS_KEY);
+          if (isFixedDraftSupportedSet(setId)) {
+            clearSetDraft(setId);
+          }
         } catch {
           // ignore
         }
@@ -598,12 +657,13 @@ function ExamRunnerInner() {
       });
 
       if (!toggledOff && revealMode === 'instant') {
+        const outcomePayload = isRealExamSet
+          ? { realExamOutcomes: [{ id: q.id, correct: choiceIdx === q.c }] }
+          : { questionOutcomes: [{ id: q.id, correct: choiceIdx === q.c }] };
         fetch('/api/profile', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            questionOutcomes: [{ id: q.id, correct: choiceIdx === q.c }],
-          }),
+          body: JSON.stringify(outcomePayload),
         })
           .then((r) => (r.ok ? r.json() : null))
           .then((d) => {
@@ -671,21 +731,99 @@ function ExamRunnerInner() {
 
   const toggleBookmark = useCallback(
     async (qid: number) => {
+      const willAdd = !bookmarkedIds.includes(qid);
       setBookmarkedIds((prev) =>
         prev.includes(qid) ? prev.filter((x) => x !== qid) : [...prev, qid]
       );
+      pushToast(
+        willAdd
+          ? `เพิ่มข้อ #${qid} เข้าคลังทบทวนแล้ว`
+          : `นำข้อ #${qid} ออกจากคลังทบทวนแล้ว`
+      );
       try {
-        await fetch('/api/profile', {
+        const res = await fetch('/api/profile', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ toggleBookmarkId: qid }),
         });
+        if (res.ok) {
+          const d = await res.json();
+          if (d?.profile) primeProfileHistoryCache(d.profile);
+        }
       } catch {
         // ignore network hiccup
       }
     },
-    []
+    [bookmarkedIds, pushToast]
   );
+
+  const [exiting, setExiting] = useState(false);
+  const [showExitModal, setShowExitModal] = useState(false);
+
+  const getExitDestination = useCallback(() => {
+    if (setId.startsWith('real-')) return '/catalog/form';
+    if (setId.startsWith('review-') || setId === 'bookmarks') return '/catalog/review';
+    if (setId.startsWith('completed-')) return '/catalog/completed';
+    if (setId.startsWith('subject-')) return '/catalog/subject';
+    if (setId === 'topic') return '/catalog/topics';
+    if (setId === 'repack-form' || /^\d+$/.test(setId)) return '/catalog/form';
+    return '/dashboard';
+  }, [setId]);
+
+  const performExit = useCallback(
+    async (flushOutcomes: boolean) => {
+      if (exiting) return;
+      setExiting(true);
+      setShowExitModal(false);
+      try {
+        saveProgressNow(true);
+        if (flushOutcomes && exam && mode !== 'review') {
+          const outcomes = exam.items
+            .map((q, idx) => {
+              const ans = answers[idx];
+              if (ans === null || ans === undefined) return null;
+              return { id: q.id, correct: ans === q.c };
+            })
+            .filter((x): x is { id: number; correct: boolean } => x !== null);
+
+          if (outcomes.length > 0) {
+            const payload = isRealExamSet
+              ? { realExamOutcomes: outcomes }
+              : { questionOutcomes: outcomes };
+            const res = await fetch('/api/profile', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+            if (res.ok) {
+              const d = await res.json();
+              if (d?.profile) {
+                primeProfileHistoryCache(d.profile);
+              } else {
+                invalidateProfileHistoryCache();
+              }
+            } else {
+              invalidateProfileHistoryCache();
+            }
+          }
+        }
+      } catch {
+        invalidateProfileHistoryCache();
+      } finally {
+        router.push(getExitDestination());
+      }
+    },
+    [exiting, saveProgressNow, exam, mode, answers, isRealExamSet, router, getExitDestination]
+  );
+
+  const handleExitExam = useCallback(() => {
+    if (exiting) return;
+    if (mode !== 'review' && revealMode === 'end' && answeredCount > 0) {
+      setShowExitModal(true);
+      return;
+    }
+    void performExit(true);
+  }, [exiting, mode, revealMode, answeredCount, performExit]);
 
   // Keyboard shortcuts: 1-4, ArrowLeft, ArrowRight, B, F, E
   useEffect(() => {
@@ -934,7 +1072,7 @@ function ExamRunnerInner() {
           [
             ['all', `ทั้งหมด (${exam.total})`],
             ['unanswered', `ยังไม่ตอบ (${exam.total - answeredCount})`],
-            ['bookmarked', `ติดดาว (${exam.items.filter((q) => bookmarkedIds.includes(q.id)).length})`],
+            ['bookmarked', `คลังทบทวน (${exam.items.filter((q) => bookmarkedIds.includes(q.id)).length})`],
           ] as const
         ).map(([key, label]) => (
           <button
@@ -1004,7 +1142,7 @@ function ExamRunnerInner() {
           <span className="w-3 h-3 rounded bg-brand/20 border border-brand/50" /> ตอบแล้ว
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-gold" /> ติดดาว
+          <span className="w-2.5 h-2.5 rounded-full bg-gold" /> คลังทบทวน
         </span>
       </div>
 
@@ -1050,13 +1188,16 @@ function ExamRunnerInner() {
       <header className="sticky top-0 z-30 border-b border-line bg-panel/95 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <Link
-              href="/dashboard"
-              className="w-9 h-9 rounded-xl border border-line bg-bg2 flex items-center justify-center hover:border-brand/50 transition shrink-0"
-              title="กลับแดชบอร์ด"
+            <button
+              type="button"
+              onClick={handleExitExam}
+              disabled={exiting}
+              className="inline-flex h-9 items-center gap-1 rounded-xl border border-line bg-bg2 px-2.5 text-xs font-semibold text-ink hover:border-brand/50 hover:text-brand transition shrink-0 disabled:opacity-60"
+              title="ออกและบันทึกข้อที่ทำแล้วเพื่อจัดระเบียบชุดใหม่"
             >
-              <ChevronLeft className="w-5 h-5" />
-            </Link>
+              <ChevronLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">{exiting ? 'กำลังบันทึก...' : 'ออก'}</span>
+            </button>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-brand/10 text-brand shrink-0">
@@ -1344,11 +1485,11 @@ function ExamRunnerInner() {
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition ${
                     isBookmarked
                       ? 'bg-gold/20 border-gold text-gold-ink'
-                      : 'border-line bg-bg2 text-muted hover:text-ink'
+                      : 'border-line bg-bg2 text-muted hover:text-ink hover:border-gold/50'
                   }`}
                 >
                   <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-current' : ''}`} />
-                  <span>{isBookmarked ? 'ติดดาวแล้ว' : 'ติดดาว'}</span>
+                  <span>{isBookmarked ? 'อยู่ในคลังทบทวน' : 'ต้องการทบทวน'}</span>
                 </button>
                 <button
                   type="button"
@@ -2111,6 +2252,59 @@ function ExamRunnerInner() {
             <div className="flex items-center gap-2 text-xs text-muted">
               <Eye className="w-4 h-4 shrink-0" />
               <span>ระบบบันทึกคำตอบอัตโนมัติทุกการเลือกและทุก 15 วินาที</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Smart Exit Modal for Exam Mode (revealMode === 'end') */}
+      {showExitModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="w-full max-w-md rounded-card border border-line bg-panel p-5 shadow-card space-y-4">
+            <div>
+              <h3 className="text-base font-bold text-ink">
+                ออกจากหน้าสอบ ({answeredCount}/{exam.total} ข้อที่เลือกไว้)
+              </h3>
+              <p className="mt-1 text-xs text-muted leading-relaxed">
+                คุณอยู่ในโหมดเฉลยหลังส่ง เลือกวิธีจัดการคำตอบที่เลือกค้างไว้ก่อนออก:
+              </p>
+            </div>
+            <div className="space-y-2">
+              <button
+                type="button"
+                disabled={exiting}
+                onClick={() => void performExit(false)}
+                className="w-full rounded-xl border border-line bg-bg2 px-4 py-3 text-left transition-colors hover:border-brand/50"
+              >
+                <div className="text-xs font-bold text-ink">
+                  พักไว้ทำต่อภายหลัง (ยังไม่ตัดข้อเข้าประวัติ)
+                </div>
+                <div className="mt-0.5 text-[11px] text-muted">
+                  บันทึกคำตอบค้างไว้กลับมาทำต่อได้ โดยยังไม่ตรวจถูก/ผิดตอนนี้
+                </div>
+              </button>
+              <button
+                type="button"
+                disabled={exiting}
+                onClick={() => void performExit(true)}
+                className="w-full rounded-xl border border-brand/40 bg-brand/10 px-4 py-3 text-left transition-colors hover:bg-brand/15"
+              >
+                <div className="text-xs font-bold text-brand">
+                  บันทึกข้อที่ตอบแล้ว ({answeredCount} ข้อ) และจัดระเบียบชุดใหม่ทันที
+                </div>
+                <div className="mt-0.5 text-[11px] text-muted">
+                  นับผลถูก/ผิดของข้อที่ตอบไปแล้วและอัปเดตชุดข้อสอบทันที
+                </div>
+              </button>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowExitModal(false)}
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold text-muted hover:text-ink"
+              >
+                กลับไปทำต่อ
+              </button>
             </div>
           </div>
         </div>

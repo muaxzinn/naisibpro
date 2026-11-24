@@ -1,13 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
-import { Archive, ArrowRight, BookOpenCheck, Database, FileSpreadsheet, Layers, Shuffle } from 'lucide-react';
+import { Archive, ArrowRight, BarChart3, BookmarkCheck, BookOpenCheck, Database, FileSpreadsheet, Flame, Layers, Shuffle } from 'lucide-react';
 import { SiteHeader } from '@/components/SiteHeader';
-import { TRACKS } from '@/lib/constants';
+import { ACTIVE_SUBJECTS, HIDDEN_SUBJECT_KEYS, TRACKS } from '@/lib/constants';
 import { getAllQuestionsMerged, getStore } from '@/lib/server-db';
 
 export default function CatalogHubPage() {
   const store = getStore();
-  const totalQ = getAllQuestionsMerged().length;
+  const totalQ = getAllQuestionsMerged().filter(
+    (q) => !HIDDEN_SUBJECT_KEYS.has(q.subject_key)
+  ).length;
   const formSets = store.examSets.filter((s) => s.kind === 'form');
 
   return (
@@ -23,6 +25,32 @@ export default function CatalogHubPage() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
+          <Link
+            href="/catalog/real-exam"
+            className="card-hover sm:col-span-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-card border border-accent/40 bg-accent/[0.04] p-5 shadow-card"
+          >
+            <div className="flex items-start gap-3.5">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-white">
+                <Flame className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-accent/15 px-2.5 py-0.5 text-[11px] font-bold text-accent">
+                  แยกขาดจากชุดอื่น 100% · โค้งสุดท้ายก่อนสอบ
+                </div>
+                <h2 className="mt-1.5 text-lg font-bold text-ink">
+                  สนามข้อสอบจริงคัดพิเศษ (4 ชุด · 643 ข้อ · รุ่น 2569)
+                </h2>
+                <p className="mt-0.5 text-[13px] text-muted leading-relaxed">
+                  คัดจากข้อสอบจริงฉบับภาพต้นฉบับ (OCR + SVG) ล็อกแยกต่างหาก พร้อมโหมดซ่อมวนและผสมเติมเต็ม 150 ข้อจนกว่าจะถูก 100%
+                </p>
+              </div>
+            </div>
+            <div className="inline-flex shrink-0 items-center gap-1.5 rounded-btn bg-accent px-4 py-2 text-xs font-semibold text-white">
+              <span>เปิดสนามข้อสอบจริง</span>
+              <ArrowRight className="h-4 w-4" />
+            </div>
+          </Link>
+
           <div className="rounded-card border border-line bg-panel p-5 shadow-card">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand/10 text-brand">
               <Shuffle className="h-5 w-5" />
@@ -72,7 +100,7 @@ export default function CatalogHubPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet/15 text-violet">
                 <Layers className="h-5 w-5" />
               </div>
-              <h2 className="mt-3.5 text-[17px] font-semibold">ข้อสอบแยกรายวิชา (7 วิชา)</h2>
+              <h2 className="mt-3.5 text-[17px] font-semibold">ข้อสอบแยกรายวิชา ({ACTIVE_SUBJECTS.length} วิชา)</h2>
               <p className="mt-1 text-[13px] text-muted leading-relaxed">
                 แบ่งทำชุดย่อย 20 / 50 ข้อเรียงลำดับ หรือสุ่มฝึกเข้มข้นพร้อมเฉลยละเอียด
               </p>
@@ -100,6 +128,48 @@ export default function CatalogHubPage() {
             </div>
             <div className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-brand">
               <span>เลือกหัวข้อย่อย</span>
+              <ArrowRight className="h-4 w-4" />
+            </div>
+          </Link>
+
+          <Link
+            href="/catalog/review"
+            className="card-hover flex flex-col justify-between rounded-card border border-line bg-panel p-5 shadow-card"
+          >
+            <div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold/15 text-gold-ink">
+                <BookmarkCheck className="h-5 w-5" />
+              </div>
+              <h2 className="mt-3.5 text-[17px] font-semibold">
+                คลังทบทวนรายข้อ
+              </h2>
+              <p className="mt-1 text-[13px] text-muted leading-relaxed">
+                รวมข้อที่กด &ldquo;ต้องการทบทวน&rdquo; ฝึกได้ครบทั้งแบบรวม แยกวิชา แยกหัวข้อ และดูแบบรายข้อ
+              </p>
+            </div>
+            <div className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-brand">
+              <span>เปิดคลังทบทวนรายข้อ</span>
+              <ArrowRight className="h-4 w-4" />
+            </div>
+          </Link>
+
+          <Link
+            href="/weakness"
+            className="card-hover flex flex-col justify-between rounded-card border border-line bg-panel p-5 shadow-card"
+          >
+            <div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand/10 text-brand">
+                <BarChart3 className="h-5 w-5" />
+              </div>
+              <h2 className="mt-3.5 text-[17px] font-semibold">
+                สรุปจุดอ่อนรายวิชา &amp; หัวข้อย่อย
+              </h2>
+              <p className="mt-1 text-[13px] text-muted leading-relaxed">
+                ดูสรุปง่ายๆ ว่าไม่ถนัดวิชาไหนและหัวข้อย่อยอะไรบ้าง แยกครบทั้ง {ACTIVE_SUBJECTS.length} วิชา พร้อมปุ่มซ่อมทันที
+              </p>
+            </div>
+            <div className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-brand">
+              <span>เปิดหน้าสรุปจุดอ่อน</span>
               <ArrowRight className="h-4 w-4" />
             </div>
           </Link>

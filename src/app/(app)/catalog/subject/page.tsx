@@ -3,19 +3,25 @@ import Link from 'next/link';
 import { ArrowLeft, Layers } from 'lucide-react';
 import { SiteHeader } from '@/components/SiteHeader';
 import { CatalogSubjectClient, type SubjectOverviewItem } from '@/components/CatalogSubjectClient';
-import { SUBJECTS } from '@/lib/constants';
+import { ACTIVE_SUBJECTS } from '@/lib/constants';
+import { REAL_EXAM_ID_SET } from '@/lib/real-exam-sets';
 import { getAllQuestionsMerged, getStore } from '@/lib/server-db';
 
-export default function CatalogSubjectPage() {
-  const all = getAllQuestionsMerged();
-  const store = getStore();
-
-  const items: SubjectOverviewItem[] = SUBJECTS.map((s) => {
-    const subjectQs = all.filter((q) => q.subject_key === s.key);
+function buildOverviewItems(
+  pool: ReturnType<typeof getAllQuestionsMerged>,
+  storeTopics: ReturnType<typeof getStore>['topics']
+): SubjectOverviewItem[] {
+  return ACTIVE_SUBJECTS.map((s) => {
+    const subjectQs = pool.filter((q) => q.subject_key === s.key);
     const count = subjectQs.length;
-    const topics = store.topics
-      .filter((t) => t.subjectKey === s.key)
-      .map((t) => ({ title: t.title, count: t.count }));
+    const topicCounts = new Map<string, number>();
+    for (const q of subjectQs) {
+      if (!q.title) continue;
+      topicCounts.set(q.title, (topicCounts.get(q.title) || 0) + 1);
+    }
+    const topics = storeTopics
+      .filter((t) => t.subjectKey === s.key && (topicCounts.get(t.title) || 0) > 0)
+      .map((t) => ({ title: t.title, count: topicCounts.get(t.title) || 0 }));
 
     return {
       key: s.key,
@@ -25,6 +31,19 @@ export default function CatalogSubjectPage() {
       topics,
     };
   });
+}
+
+export default function CatalogSubjectPage() {
+  const merged = getAllQuestionsMerged();
+  const store = getStore();
+  const practiceItems = buildOverviewItems(
+    merged.filter((q) => !REAL_EXAM_ID_SET.has(q.id)),
+    store.topics
+  );
+  const realExamItems = buildOverviewItems(
+    merged.filter((q) => REAL_EXAM_ID_SET.has(q.id)),
+    store.topics
+  );
 
   return (
     <div className="min-h-screen bg-bg text-ink pb-24 md:pb-12">
@@ -38,14 +57,14 @@ export default function CatalogSubjectPage() {
 
           <h1 className="mt-2 flex items-center gap-2.5 text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             <Layers className="h-6 w-6 text-brand shrink-0" />
-            <span>ชุดข้อสอบแยกรายวิชา (7 วิชา)</span>
+            <span>ชุดข้อสอบแยกรายวิชา ({ACTIVE_SUBJECTS.length} วิชา)</span>
           </h1>
           <p className="mt-1 text-sm text-muted">
-            ฝึกเป็นชุดย่อยเรียงลำดับ (ชุดละ 20 หรือ 50 ข้อ) หรือสุ่มฝึกเข้มข้นรายวิชา
+            ฝึกเป็นชุดย่อยเรียงลำดับ (ชุดละ 20 หรือ 50 ข้อ) หรือสุ่มฝึกเข้มข้นรายวิชา — สลับโหมดฝึกปกติ/สนามจริงได้จากแถบด้านบน
           </p>
         </div>
 
-        <CatalogSubjectClient items={items} />
+        <CatalogSubjectClient items={practiceItems} realExamItems={realExamItems} />
       </main>
     </div>
   );

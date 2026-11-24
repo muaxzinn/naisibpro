@@ -3,11 +3,14 @@ import path from 'node:path';
 import { SUBJECTS, type SubjectKey } from './constants';
 import {
   applyQuestionOutcomes,
+  applyRealExamOutcomes,
   backfillProfileHistoryFromAttempts,
   buildExamFromSource,
   computeSubjectBreakdown,
   getCompletedIdSets,
+  getRealExamStatusSets,
   resetCompletedHistory,
+  resetRealExamHistory,
   toRunnerQuestion,
   type BuildExamOptions,
   type CompletedPoolMode,
@@ -21,9 +24,12 @@ import { buildSubTopicsCatalog } from './topic-catalog';
 
 export {
   applyQuestionOutcomes,
+  applyRealExamOutcomes,
   computeSubjectBreakdown,
   getCompletedIdSets,
+  getRealExamStatusSets,
   resetCompletedHistory,
+  resetRealExamHistory,
   toRunnerQuestion,
   type BuildExamOptions,
   type CompletedPoolMode,
@@ -131,6 +137,8 @@ export interface UserProfile {
   bookmarks: number[];
   mistakeIds: number[];
   correctIds?: number[];
+  realExamCorrectIds?: number[];
+  realExamMistakeIds?: number[];
   excludeCompleted?: boolean;
   streakDays: number;
   lastActiveDate: string | null;
@@ -349,6 +357,8 @@ function getDefaultRuntimeState(): RuntimeState {
       bookmarks: [],
       mistakeIds: [],
       correctIds: [],
+      realExamCorrectIds: [],
+      realExamMistakeIds: [],
       excludeCompleted: true,
       streakDays: 1,
       lastActiveDate: null,
@@ -424,6 +434,12 @@ export function readRuntimeState(): RuntimeState {
     bookmarks: Array.isArray(rawProf?.bookmarks) ? rawProf.bookmarks.map(Number) : [],
     mistakeIds: Array.isArray(rawProf?.mistakeIds) ? rawProf.mistakeIds.map(Number) : [],
     correctIds: Array.isArray(rawProf?.correctIds) ? rawProf.correctIds.map(Number) : [],
+    realExamCorrectIds: Array.isArray(rawProf?.realExamCorrectIds)
+      ? rawProf.realExamCorrectIds.map(Number)
+      : [],
+    realExamMistakeIds: Array.isArray(rawProf?.realExamMistakeIds)
+      ? rawProf.realExamMistakeIds.map(Number)
+      : [],
     excludeCompleted:
       typeof rawProf?.excludeCompleted === 'boolean' ? rawProf.excludeCompleted : true,
     streakDays: typeof rawProf?.streakDays === 'number' ? rawProf.streakDays : 1,

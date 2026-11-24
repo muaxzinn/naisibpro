@@ -2,14 +2,17 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Archive,
+  BarChart3,
+  BookmarkCheck,
   BookMarked,
   BookOpenCheck,
   Check,
   ChevronDown,
   Database,
+  Flame,
   History,
   Home,
   Layers,
@@ -25,6 +28,7 @@ import {
 } from 'lucide-react';
 import { BRAND_PALETTES, isNavItemActive } from '@/lib/constants';
 import { useThemeAndBrand } from './ThemeAndBrandProvider';
+import { useWorkspaceMode, type WorkspaceMode } from './WorkspaceModeProvider';
 
 export function ThemeAndBrandControls() {
   const { theme, brand, toggleTheme, setBrand } = useThemeAndBrand();
@@ -111,27 +115,29 @@ const PRIMARY_APP_NAV = [
   { href: '/catalog', label: 'ชุดข้อสอบ', icon: BookMarked },
   { href: '/catalog/subject', label: 'แยกรายวิชา', icon: Layers },
   { href: '/catalog/topics', label: 'หัวข้อย่อย', icon: BookOpenCheck },
+  { href: '/weakness', label: 'จุดอ่อน', icon: BarChart3 },
+  { href: '/catalog/review', label: 'คลังทบทวน', icon: BookmarkCheck },
   { href: '/catalog/completed', label: 'ที่ทำแล้ว', icon: Archive },
-  { href: '/bank', label: 'คลังข้อสอบ', icon: Database },
 ];
 
 const SECONDARY_APP_NAV = [
-  { href: '/', label: 'หน้าหลัก', icon: Home },
+  { href: '/bank', label: 'คลังข้อสอบทั้งหมด', icon: Database },
   { href: '/history', label: 'ประวัติการสอบ', icon: History },
   { href: '/reports', label: 'แจ้งปัญหาข้อสอบ', icon: Wrench },
   { href: '/admin', label: 'จัดการระบบ (Admin)', icon: SlidersHorizontal },
+  { href: '/', label: 'หน้าหลัก', icon: Home },
 ];
 
 const APP_NAV = [...PRIMARY_APP_NAV, ...SECONDARY_APP_NAV];
 
 const MOBILE_BOTTOM_NAV = [
   { href: '/dashboard', label: 'แดชบอร์ด', icon: PenLine },
-  { href: '/catalog', label: 'ชุดข้อสอบ', icon: BookMarked },
+  { href: '/catalog/form', label: 'ชุดข้อสอบ', icon: BookMarked },
   { href: '/catalog/subject', label: 'แยกวิชา', icon: Layers },
-  { href: '/catalog/topics', label: 'หัวข้อย่อย', icon: BookOpenCheck },
-  { href: '/catalog/completed', label: 'ที่ทำแล้ว', icon: Archive },
-  { href: '/bank', label: 'คลังข้อสอบ', icon: Database },
-  { href: '/history', label: 'ประวัติ', icon: History },
+  { href: '/catalog/topics', label: 'หัวข้อ', icon: BookOpenCheck },
+  { href: '/weakness', label: 'จุดอ่อน', icon: BarChart3 },
+  { href: '/catalog/review', label: 'ทบทวน', icon: BookmarkCheck },
+  { href: '/catalog/completed', label: 'ทำแล้ว', icon: Archive },
 ];
 
 const PUBLIC_NAV = [
@@ -144,9 +150,20 @@ const PUBLIC_NAV = [
 
 export function SiteHeader({ mode = 'app' }: { mode?: 'public' | 'app' }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { workspaceMode, setWorkspaceMode } = useWorkspaceMode();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
+
+  const handleGlobalModeSwitch = (next: WorkspaceMode) => {
+    setWorkspaceMode(next);
+    if (pathname === '/catalog/real-exam' && next === 'practice') {
+      router.push('/catalog/form');
+    } else if (pathname === '/catalog/form' && next === 'real-exam') {
+      // stays on /catalog/form which renders real-exam mode in-place
+    }
+  };
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -245,7 +262,39 @@ export function SiteHeader({ mode = 'app' }: { mode?: 'public' | 'app' }) {
           </nav>
         )}
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
+          {mode === 'app' && (
+            <div
+              role="group"
+              aria-label="สลับโหมดฝึกปกติและสนามจริง"
+              className="inline-flex shrink-0 items-center rounded-full border border-line bg-bg2 p-0.5 text-xs font-bold whitespace-nowrap"
+            >
+              <button
+                type="button"
+                onClick={() => handleGlobalModeSwitch('practice')}
+                className={`whitespace-nowrap rounded-full px-3 py-1 transition-colors ${
+                  workspaceMode === 'practice'
+                    ? 'bg-brand text-white shadow-xs'
+                    : 'text-muted hover:text-ink'
+                }`}
+              >
+                ฝึกปกติ
+              </button>
+              <button
+                type="button"
+                onClick={() => handleGlobalModeSwitch('real-exam')}
+                className={`inline-flex whitespace-nowrap items-center gap-1 rounded-full px-3 py-1 transition-colors ${
+                  workspaceMode === 'real-exam'
+                    ? 'bg-accent text-white shadow-xs'
+                    : 'text-muted hover:text-ink'
+                }`}
+              >
+                <Flame className="h-3.5 w-3.5 shrink-0" />
+                <span>สนามจริง</span>
+              </button>
+            </div>
+          )}
+
           <ThemeAndBrandControls />
 
           {mode === 'public' && (
@@ -293,6 +342,17 @@ export function SiteHeader({ mode = 'app' }: { mode?: 'public' | 'app' }) {
         </div>
       )}
       </header>
+
+      {mode === 'app' && workspaceMode === 'real-exam' && (
+        <div className="border-b border-accent/25 bg-accent/[0.08] px-4 py-1.5 text-center text-xs font-semibold text-accent">
+          <span className="inline-flex items-center gap-1.5">
+            <Flame className="h-3.5 w-3.5 shrink-0" />
+            <span>
+              กำลังอยู่ในโหมด <strong>สนามจริง</strong> (4 ชุดล็อกแยก · 643 ข้อ · สัดส่วนรุ่น 2569) — ทุกหน้ากำลังแสดงเฉพาะข้อมูลสนามจริง
+            </span>
+          </span>
+        </div>
+      )}
 
       {mode === 'app' && (
         <nav

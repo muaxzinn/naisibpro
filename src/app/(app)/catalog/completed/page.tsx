@@ -3,17 +3,20 @@ import Link from 'next/link';
 import { Archive, ArrowLeft, BookOpenCheck, Layers } from 'lucide-react';
 import { SiteHeader } from '@/components/SiteHeader';
 import { CatalogCompletedClient } from '@/components/CatalogCompletedClient';
+import { HIDDEN_SUBJECT_KEYS } from '@/lib/constants';
+import { REAL_EXAM_ID_SET } from '@/lib/real-exam-sets';
 import { buildSubTopicsCatalog } from '@/lib/topic-catalog';
-import { getAllQuestionsMerged, getStore, readRuntimeState } from '@/lib/server-db';
+import { getAllQuestionsMerged } from '@/lib/server-db';
 
 export default function CatalogCompletedPage() {
-  const store = getStore();
-  const runtime = readRuntimeState();
-  const hasCustom = Boolean(runtime.customQuestions?.length);
-  const allQuestions = hasCustom ? getAllQuestionsMerged() : store.questions;
-  const { topicsBySubject } = hasCustom
-    ? buildSubTopicsCatalog(allQuestions)
-    : store.subTopicsCatalog;
+  const activeQuestions = getAllQuestionsMerged().filter(
+    (q) => !HIDDEN_SUBJECT_KEYS.has(q.subject_key)
+  );
+  const practiceQuestions = activeQuestions.filter((q) => !REAL_EXAM_ID_SET.has(q.id));
+  const realExamQuestions = activeQuestions.filter((q) => REAL_EXAM_ID_SET.has(q.id));
+
+  const practiceCat = buildSubTopicsCatalog(practiceQuestions);
+  const realExamCat = buildSubTopicsCatalog(realExamQuestions);
 
   return (
     <div className="min-h-screen bg-bg text-ink pb-24 md:pb-12">
@@ -33,7 +36,7 @@ export default function CatalogCompletedPage() {
               <span>ชุดข้อสอบที่เคยทำแล้ว</span>
             </h1>
             <p className="mt-1 text-sm text-muted">
-              ทบทวนข้อที่เคยทำในแบบชุดใหญ่ 150 ข้อ แยกรายวิชา 7 วิชา หรือแยกตามหัวข้อย่อย
+              ทบทวนข้อที่เคยทำ แยกรวมทั้งหมด ทำถูกอย่างเดียว หรือทำผิดอย่างเดียว — เปลี่ยนตามโหมดฝึกปกติ/สนามจริงด้านบน
             </p>
           </div>
 
@@ -56,8 +59,10 @@ export default function CatalogCompletedPage() {
         </div>
 
         <CatalogCompletedClient
-          topicsBySubject={topicsBySubject}
-          totalCatalogQuestions={allQuestions.length}
+          topicsBySubject={practiceCat.topicsBySubject}
+          totalCatalogQuestions={practiceQuestions.length}
+          realExamTopicsBySubject={realExamCat.topicsBySubject}
+          realExamTotalQuestions={realExamQuestions.length}
         />
       </main>
     </div>

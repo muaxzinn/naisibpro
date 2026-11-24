@@ -1,4 +1,12 @@
-import { resolveTopicSelection, SUBJECT_MAP, SUBJECTS, TRACKS, type SubjectKey } from './constants';
+import {
+  HIDDEN_SUBJECT_KEYS,
+  resolveTopicSelection,
+  SUBJECT_MAP,
+  SUBJECTS,
+  TRACKS,
+  type SubjectKey,
+} from './constants';
+import { getRealExamSetById, REAL_EXAM_ALL_IDS, REAL_EXAM_ID_SET } from './real-exam-sets';
 
 export interface QuestionRecord {
   id: number;
@@ -52,7 +60,55 @@ export interface PoolQuestionMeta {
 export interface ProfileHistoryFields {
   correctIds?: number[];
   mistakeIds?: number[];
+  realExamCorrectIds?: number[];
+  realExamMistakeIds?: number[];
   excludeCompleted?: boolean;
+}
+
+export function getRealExamStatusSets(profile: ProfileHistoryFields): {
+  realCorrectSet: Set<number>;
+  realMistakeSet: Set<number>;
+  realAttemptedSet: Set<number>;
+} {
+  const realMistakeSet = new Set<number>();
+  for (const id of profile.realExamMistakeIds || []) {
+    const n = Number(id);
+    if (Number.isFinite(n) && REAL_EXAM_ID_SET.has(n)) realMistakeSet.add(n);
+  }
+  const realCorrectSet = new Set<number>();
+  for (const id of profile.realExamCorrectIds || []) {
+    const n = Number(id);
+    if (Number.isFinite(n) && REAL_EXAM_ID_SET.has(n) && !realMistakeSet.has(n)) {
+      realCorrectSet.add(n);
+    }
+  }
+  const realAttemptedSet = new Set<number>([...realCorrectSet, ...realMistakeSet]);
+  return { realCorrectSet, realMistakeSet, realAttemptedSet };
+}
+
+export function applyRealExamOutcomes(
+  profile: ProfileHistoryFields,
+  outcomes: QuestionOutcome[]
+): void {
+  const { realCorrectSet, realMistakeSet } = getRealExamStatusSets(profile);
+  for (const item of outcomes) {
+    const id = Number(item.id);
+    if (!Number.isFinite(id) || !REAL_EXAM_ID_SET.has(id)) continue;
+    if (item.correct) {
+      realCorrectSet.add(id);
+      realMistakeSet.delete(id);
+    } else {
+      realMistakeSet.add(id);
+      realCorrectSet.delete(id);
+    }
+  }
+  profile.realExamCorrectIds = Array.from(realCorrectSet);
+  profile.realExamMistakeIds = Array.from(realMistakeSet);
+}
+
+export function resetRealExamHistory(profile: ProfileHistoryFields): void {
+  profile.realExamCorrectIds = [];
+  profile.realExamMistakeIds = [];
 }
 
 export function computeSubjectBreakdown(
@@ -236,6 +292,174 @@ function withSubjectFilter(
   };
 }
 
+export type DynamicPackMode = 'fill' | 'strict';
+
+export interface DynamicFormPack {
+  setIndex: number; // 1..N for full sets, 0 for remainder
+  ids: number[];
+  total: number;
+  subjectBreakdown: Partial<Record<SubjectKey, number>>;
+  isTrackExact: boolean;
+  isRemainder: boolean;
+}
+
+export interface DynamicFormPackResult {
+  fullSets: DynamicFormPack[];
+  remainderSet: DynamicFormPack | null;
+  completedCount: number;
+  remainingCount: number;
+  trackName: string;
+}
+
+export function buildDynamicFormPacks<T extends { id: number; subject_key: SubjectKey }>(
+  allQuestions: T[],
+  completedSet: Set<number>,
+  options?: {
+    packMode?: DynamicPackMode;
+    trackName?: string;
+    chunkSize?: number;
+  }
+): DynamicFormPackResult {
+  const packMode: DynamicPackMode = options?.packMode === 'strict' ? 'strict' : 'fill';
+  const track =
+    TRACKS.find((t) => t.name === options?.trackName) || TRACKS[0];
+  const totalWeight =
+    Object.values(track.weights).reduce((acc, w) => acc + w, 0) || 150;
+  const chunkSize = options?.chunkSize || totalWeight;
+
+  const nonReserved = allQuestions.filter(
+    (q) => !REAL_EXAM_ID_SET.has(q.id) && !HIDDEN_SUBJECT_KEYS.has(q.subject_key)
+  );
+  const remaining = nonReserved.filter((q) => !completedSet.has(q.id));
+  const completedCount = nonReserved.length - remaining.length;
+
+  const buckets = new Map<SubjectKey, number[]>();
+  for (const s of SUBJECTS) {
+    buckets.set(s.key, []);
+  }
+  for (const q of remaining) {
+    const arr = buckets.get(q.subject_key);
+    if (arr) arr.push(q.id);
+    else buckets.set(q.subject_key, [q.id]);
+  }
+  for (const [, arr] of buckets) {
+    arr.sort((a, b) => a - b);
+  }
+
+  const weightEntries = (Object.keys(track.weights) as SubjectKey[]).filter(
+    (sk) => (track.weights[sk] || 0) > 0
+  );
+  const allSubjectOrder: SubjectKey[] = [
+    ...weightEntries,
+    ...SUBJECTS.map((s) => s.key).filter((sk) => !weightEntries.includes(sk)),
+  ];
+
+  const makePack = (
+    setIndex: number,
+    pairs: Array<{ id: number; subject: SubjectKey }>,
+    isTrackExact: boolean,
+    isRemainder: boolean
+  ): DynamicFormPack => {
+    const subjectBreakdown: Partial<Record<SubjectKey, number>> = {};
+    const ids: number[] = [];
+    for (const p of pairs) {
+      ids.push(p.id);
+      subjectBreakdown[p.subject] = (subjectBreakdown[p.subject] || 0) + 1;
+    }
+    return {
+      setIndex,
+      ids,
+      total: ids.length,
+      subjectBreakdown,
+      isTrackExact,
+      isRemainder,
+    };
+  };
+
+  const fullSets: DynamicFormPack[] = [];
+  const totalRemainingInBuckets = () => {
+    let sum = 0;
+    for (const [, arr] of buckets) sum += arr.length;
+    return sum;
+  };
+
+  while (true) {
+    const canMeetStrict = weightEntries.every(
+      (sk) => (buckets.get(sk)?.length || 0) >= track.weights[sk]
+    );
+
+    if (packMode === 'strict') {
+      if (!canMeetStrict) break;
+      const picked: Array<{ id: number; subject: SubjectKey }> = [];
+      for (const sk of weightEntries) {
+        const arr = buckets.get(sk)!;
+        const take = arr.splice(0, track.weights[sk]);
+        for (const id of take) picked.push({ id, subject: sk });
+      }
+      fullSets.push(makePack(fullSets.length + 1, picked, true, false));
+      continue;
+    }
+
+    // fill mode: build full `chunkSize` (150) packs, prioritizing track weights first
+    if (totalRemainingInBuckets() < chunkSize) break;
+
+    const picked: Array<{ id: number; subject: SubjectKey }> = [];
+    for (const sk of weightEntries) {
+      const arr = buckets.get(sk);
+      if (!arr || arr.length === 0) continue;
+      const want = Math.min(track.weights[sk], arr.length, chunkSize - picked.length);
+      if (want > 0) {
+        const take = arr.splice(0, want);
+        for (const id of take) picked.push({ id, subject: sk });
+      }
+    }
+
+    // Top up to chunkSize from remaining subjects in round-robin chunks
+    let guard = 0;
+    while (picked.length < chunkSize && guard < 1000) {
+      guard++;
+      let progressed = false;
+      for (const sk of allSubjectOrder) {
+        if (picked.length >= chunkSize) break;
+        const arr = buckets.get(sk);
+        if (!arr || arr.length === 0) continue;
+        const id = arr.shift()!;
+        picked.push({ id, subject: sk });
+        progressed = true;
+      }
+      if (!progressed) break;
+    }
+
+    if (picked.length === chunkSize) {
+      fullSets.push(makePack(fullSets.length + 1, picked, canMeetStrict, false));
+    } else {
+      // Put back if somehow short
+      for (const p of picked) {
+        buckets.get(p.subject)?.unshift(p.id);
+      }
+      break;
+    }
+  }
+
+  const leftoverPairs: Array<{ id: number; subject: SubjectKey }> = [];
+  for (const sk of allSubjectOrder) {
+    const arr = buckets.get(sk);
+    if (!arr) continue;
+    for (const id of arr) leftoverPairs.push({ id, subject: sk });
+  }
+
+  const remainderSet =
+    leftoverPairs.length > 0 ? makePack(0, leftoverPairs, false, true) : null;
+
+  return {
+    fullSets,
+    remainderSet,
+    completedCount,
+    remainingCount: remaining.length,
+    trackName: track.name,
+  };
+}
+
 export interface BuildExamOptions {
   trackName?: string;
   count?: number;
@@ -245,6 +469,8 @@ export interface BuildExamOptions {
   setIndex?: number;
   excludeCompleted?: boolean;
   pool?: CompletedPoolMode;
+  packMode?: DynamicPackMode;
+  qid?: number;
 }
 
 export interface ExamBuildSource {
@@ -271,6 +497,148 @@ export function buildExamFromSource(
   const all = source.allQuestions;
   const { correctSet, mistakeSet, allCompletedSet } = getCompletedIdSets(source.profile);
 
+  // 0. Isolated Final-Days Real-Exam Sets (4 fixed sets: 3x150 + Set 4 all sub-topics + mastery mix loop)
+  if (
+    setId === 'real-1' ||
+    setId === 'real-2' ||
+    setId === 'real-3' ||
+    setId === 'real-4' ||
+    setId === 'real-mistakes' ||
+    setId === 'real-mix' ||
+    setId === 'real-completed'
+  ) {
+    const { realCorrectSet, realMistakeSet, realAttemptedSet } = getRealExamStatusSets(
+      source.profile
+    );
+    const officialSubjRank: Record<SubjectKey, number> = {
+      math: 0,
+      thai: 1,
+      com: 2,
+      doc: 3,
+      law: 4,
+      eng: 5,
+      soc: 6,
+    };
+
+    if (setId === 'real-completed') {
+      const poolMode: CompletedPoolMode =
+        options?.pool === 'correct' ? 'correct' : options?.pool === 'wrong' ? 'wrong' : 'all';
+      const targetSet =
+        poolMode === 'correct'
+          ? realCorrectSet
+          : poolMode === 'wrong'
+            ? realMistakeSet
+            : realAttemptedSet;
+      const topicMatcher = options?.topic ? resolveTopicSelection(options.topic) : null;
+      let picked = REAL_EXAM_ALL_IDS.filter((id) => targetSet.has(id))
+        .map((id) => source.findById(id))
+        .filter((q): q is QuestionRecord => Boolean(q));
+      if (topicMatcher) picked = picked.filter((q) => topicMatcher.matches(q.title));
+      picked.sort((a, b) => officialSubjRank[a.subject_key] - officialSubjRank[b.subject_key]);
+      const poolLabel =
+        poolMode === 'correct'
+          ? 'ทำถูกอย่างเดียว'
+          : poolMode === 'wrong'
+            ? 'ทำผิดอย่างเดียว'
+            : 'ที่ทำแล้วทั้งหมด';
+      return withSubjectFilter(
+        options?.shuffleMode ? shufflePool(picked) : picked,
+        `สนามจริง · ข้อสอบ${poolLabel} (${picked.length} ข้อ)`,
+        Math.max(10, picked.length),
+        'overall',
+        options?.subject
+      );
+    }
+
+    if (setId === 'real-mistakes') {
+      const topicMatcher = options?.topic ? resolveTopicSelection(options.topic) : null;
+      const wrongIds = REAL_EXAM_ALL_IDS.filter((id) => realMistakeSet.has(id));
+      let picked = wrongIds
+        .map((id) => source.findById(id))
+        .filter((q): q is QuestionRecord => Boolean(q));
+      if (topicMatcher) {
+        picked = picked.filter((q) => topicMatcher.matches(q.title));
+      }
+      const topicLabel = topicMatcher ? ` · ${topicMatcher.displayTopic}` : '';
+      return withSubjectFilter(
+        options?.shuffleMode ? shufflePool(picked) : picked,
+        `ซ่อมข้อผิด · สนามข้อสอบจริง${topicLabel} (${picked.length} ข้อ)`,
+        Math.max(10, picked.length),
+        'overall',
+        options?.subject
+      );
+    }
+
+    if (setId === 'real-mix') {
+      const topicMatcher = options?.topic ? resolveTopicSelection(options.topic) : null;
+      const candidateIds = topicMatcher
+        ? REAL_EXAM_ALL_IDS.filter((id) => {
+            const q = source.findById(id);
+            return Boolean(q && topicMatcher.matches(q.title));
+          })
+        : [...REAL_EXAM_ALL_IDS];
+
+      const targetSize = Math.max(
+        1,
+        Math.min(150, options?.count || (topicMatcher ? candidateIds.length : 150))
+      );
+      const wrongIds = candidateIds.filter((id) => realMistakeSet.has(id));
+      const unseenIds = candidateIds.filter(
+        (id) => !realMistakeSet.has(id) && !realCorrectSet.has(id)
+      );
+      const correctIds = candidateIds.filter((id) => realCorrectSet.has(id));
+
+      // Priority: wrong first -> unseen -> fill remainder from shuffled correct in the 3 real sets
+      const selectedIds: number[] = [];
+      for (const id of shufflePool(wrongIds)) {
+        if (selectedIds.length >= targetSize) break;
+        selectedIds.push(id);
+      }
+      for (const id of shufflePool(unseenIds)) {
+        if (selectedIds.length >= targetSize) break;
+        selectedIds.push(id);
+      }
+      if (selectedIds.length < targetSize) {
+        for (const id of shufflePool(correctIds)) {
+          if (selectedIds.length >= targetSize) break;
+          selectedIds.push(id);
+        }
+      }
+      const picked = selectedIds
+        .map((id) => source.findById(id))
+        .filter((q): q is QuestionRecord => Boolean(q))
+        .sort((a, b) => officialSubjRank[a.subject_key] - officialSubjRank[b.subject_key]);
+      const priorityCount = Math.min(targetSize, wrongIds.length + unseenIds.length);
+      const title = topicMatcher
+        ? `ฝึกบทเรียน (สนามข้อสอบจริง) · ${topicMatcher.displayTopic} (${picked.length} ข้อ)`
+        : `ชุดผสมซ่อมวน 150 ข้อ · สนามข้อสอบจริง (เน้นข้อผิด/ยังไม่ผ่าน ${priorityCount} ข้อ)`;
+      return withSubjectFilter(
+        picked,
+        title,
+        picked.length >= 150 ? 180 : Math.max(10, picked.length),
+        picked.length >= 150 ? 'groups' : 'overall',
+        options?.subject
+      );
+    }
+
+    const fixedRealSet = getRealExamSetById(setId);
+    let ids = fixedRealSet ? [...fixedRealSet.questionIds] : [];
+    if (options?.pool === 'wrong') {
+      ids = ids.filter((id) => realMistakeSet.has(id));
+    }
+    const picked = ids
+      .map((id) => source.findById(id))
+      .filter((q): q is QuestionRecord => Boolean(q));
+    const titleSuffix = options?.pool === 'wrong' ? ' · เฉพาะข้อที่ผิด' : '';
+    return withSubjectFilter(
+      picked,
+      `${fixedRealSet?.title || `ชุดข้อสอบจริง #${setId}`}${titleSuffix}`,
+      picked.length >= 150 ? 180 : Math.max(15, picked.length),
+      picked.length >= 150 ? 'groups' : 'overall',
+      options?.subject
+    );
+  }
+
   // 1. Mistake notebook drill
   if (setId === 'mistakes') {
     const ids = source.profile.mistakeIds || [];
@@ -278,11 +646,138 @@ export function buildExamFromSource(
     return withSubjectFilter(picked, 'ซ่อมข้อสอบที่ตอบผิด', Math.max(10, picked.length), 'overall', options?.subject);
   }
 
-  // 2. Bookmarked questions drill
-  if (setId === 'bookmarks') {
-    const ids = source.profile.bookmarks || [];
-    const picked = ids.map((id) => source.findById(id)).filter((q): q is QuestionRecord => Boolean(q));
-    return withSubjectFilter(picked, 'ทบทวนข้อสอบที่ติดดาวไว้', Math.max(10, picked.length), 'overall', options?.subject);
+  // 2. Bookmarked / Review Vault questions drill
+  if (setId === 'bookmarks' || setId === 'review-form' || setId === 'review-subject' || setId === 'review-topic') {
+    const bookmarkIds = source.profile.bookmarks || [];
+    if (options?.qid && Number.isFinite(options.qid)) {
+      const single = source.findById(options.qid);
+      const picked = single ? [single] : [];
+      return {
+        title: `คลังทบทวนรายข้อ · ข้อ #${options.qid}`,
+        durationSec: 5 * 60,
+        passRule: 'overall',
+        items: picked.map(toRunnerQuestion),
+      };
+    }
+
+    const reviewPool = bookmarkIds
+      .map((id) => source.findById(id))
+      .filter((q): q is QuestionRecord => Boolean(q))
+      .sort((a, b) => a.id - b.id);
+
+    if (setId === 'review-subject') {
+      const sk = (options?.subject || 'math') as SubjectKey;
+      const meta = SUBJECT_MAP[sk] || SUBJECTS[0];
+      const subjPool = reviewPool.filter((q) => q.subject_key === meta.key);
+      const chunkSize = Math.max(1, Math.min(200, options?.count || 20));
+      if (options?.setIndex && Number.isFinite(options.setIndex) && options.setIndex >= 1) {
+        const totalSets = Math.max(1, Math.ceil(subjPool.length / chunkSize));
+        const safeSetIdx = Math.min(Math.floor(options.setIndex), totalSets);
+        const start = (safeSetIdx - 1) * chunkSize;
+        const picked = subjPool.slice(start, start + chunkSize);
+        return {
+          title: `คลังทบทวน · วิชา${meta.name} ชุดที่ ${safeSetIdx}/${totalSets}`,
+          durationSec: Math.max(5, picked.length) * 60,
+          passRule: 'overall',
+          items: picked.map(toRunnerQuestion),
+        };
+      }
+      const picked = options?.shuffleMode ? shufflePool(subjPool).slice(0, chunkSize) : subjPool;
+      return {
+        title: `คลังทบทวน · วิชา${meta.name} (${picked.length} ข้อ)`,
+        durationSec: Math.max(5, picked.length) * 60,
+        passRule: 'overall',
+        items: picked.map(toRunnerQuestion),
+      };
+    }
+
+    if (setId === 'review-topic') {
+      const topicMatcher = resolveTopicSelection(options?.topic);
+      const topicPool = reviewPool.filter(
+        (q) =>
+          (!options?.subject || q.subject_key === options.subject) &&
+          topicMatcher.matches(q.title)
+      );
+      const picked = options?.shuffleMode ? shufflePool(topicPool) : topicPool;
+      return {
+        title: `คลังทบทวน · ${topicMatcher.displayTopic} (${picked.length} ข้อ)`,
+        durationSec: Math.max(5, picked.length) * 60,
+        passRule: 'overall',
+        items: picked.map(toRunnerQuestion),
+      };
+    }
+
+    if (setId === 'review-form') {
+      const chunkSize = Math.max(5, Math.min(200, options?.count || 150));
+      if (options?.shuffleMode) {
+        const picked = shufflePool(reviewPool).slice(0, chunkSize);
+        return withSubjectFilter(
+          picked,
+          `คลังทบทวน · สุ่มรวม ${picked.length} ข้อ`,
+          Math.max(10, picked.length),
+          'overall',
+          options?.subject
+        );
+      }
+      if (options?.setIndex && Number.isFinite(options.setIndex) && options.setIndex >= 1) {
+        const totalSets = Math.max(1, Math.ceil(reviewPool.length / chunkSize));
+        const safeSetIdx = Math.min(Math.floor(options.setIndex), totalSets);
+        const start = (safeSetIdx - 1) * chunkSize;
+        const picked = reviewPool.slice(start, start + chunkSize);
+        return withSubjectFilter(
+          picked,
+          `คลังทบทวนรวม · ชุดที่ ${safeSetIdx}/${totalSets}`,
+          Math.max(10, picked.length),
+          'overall',
+          options?.subject
+        );
+      }
+    }
+
+    const picked = options?.shuffleMode ? shufflePool(reviewPool) : reviewPool;
+    return withSubjectFilter(
+      picked,
+      `คลังทบทวนรายข้อ (${picked.length} ข้อ)`,
+      Math.max(10, picked.length),
+      'overall',
+      options?.subject
+    );
+  }
+
+  // 2b. Dynamic Re-packed 150-Question Form Sets (`repack-form`)
+  if (setId === 'repack-form') {
+    const packMode: DynamicPackMode = options?.packMode === 'strict' ? 'strict' : 'fill';
+    const packs = buildDynamicFormPacks(all, allCompletedSet, {
+      packMode,
+      trackName: options?.trackName,
+      chunkSize: options?.count || 150,
+    });
+    const isRemainderReq = options?.setIndex === 0;
+    const chosenPack = isRemainderReq
+      ? packs.remainderSet
+      : packs.fullSets[
+          Math.min(
+            Math.max(0, Math.floor((options?.setIndex || 1) - 1)),
+            Math.max(0, packs.fullSets.length - 1)
+          )
+        ] || packs.remainderSet;
+
+    const picked = (chosenPack?.ids || [])
+      .map((id) => source.findById(id))
+      .filter((q): q is QuestionRecord => Boolean(q));
+
+    const modeSuffix = packMode === 'strict' ? 'สัดส่วนสายสอบ' : 'เติมเต็ม 150 ข้อ';
+    const baseTitle = chosenPack?.isRemainder
+      ? `ชุดเก็บตก (ข้อที่เหลือ ${picked.length} ข้อ) · ${modeSuffix}`
+      : `ชุดจัดระเบียบใหม่ ชุดที่ ${chosenPack?.setIndex || 1}/${Math.max(1, packs.fullSets.length)} · ${modeSuffix}`;
+
+    return withSubjectFilter(
+      picked,
+      baseTitle,
+      picked.length >= 150 ? 180 : Math.max(15, picked.length),
+      picked.length >= 150 ? 'groups' : 'overall',
+      options?.subject
+    );
   }
 
   // 3. Completed-Question Review Sets (/catalog/completed)
@@ -385,9 +880,12 @@ export function buildExamFromSource(
 
   const shouldExcludeCompleted =
     options?.excludeCompleted !== undefined ? options.excludeCompleted : false;
+  const nonRealExamPool = all.filter(
+    (q) => !REAL_EXAM_ID_SET.has(q.id) && !HIDDEN_SUBJECT_KEYS.has(q.subject_key)
+  );
   const activePool = shouldExcludeCompleted
-    ? all.filter((q) => !allCompletedSet.has(q.id))
-    : all;
+    ? nonRealExamPool.filter((q) => !allCompletedSet.has(q.id))
+    : nonRealExamPool;
 
   // 4. Specific Sub-Topic drill (supports ordered sets set=1..N and normalized/aliased topic names)
   if (setId === 'topic') {
